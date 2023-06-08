@@ -2,52 +2,52 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://cnjslw.github.io/</loc>
+    <loc>https://cnjslw.github.io/en/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://cnjslw.github.io/zh/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
                 href="https://cnjslw.github.io/"
                 />
-  </url><url>
-    <loc>https://cnjslw.github.io/categories/</loc>
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh"
-                href="https://cnjslw.github.io/zh/categories/"
-                />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
+                href="https://cnjslw.github.io/en/"
+                />
+  </url><url>
+    <loc>https://cnjslw.github.io/en/categories/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
                 href="https://cnjslw.github.io/categories/"
                 />
-  </url><url>
-    <loc>https://cnjslw.github.io/series/</loc>
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh"
-                href="https://cnjslw.github.io/zh/series/"
-                />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
+                href="https://cnjslw.github.io/en/categories/"
+                />
+  </url><url>
+    <loc>https://cnjslw.github.io/en/series/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
                 href="https://cnjslw.github.io/series/"
                 />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://cnjslw.github.io/en/series/"
+                />
   </url><url>
-    <loc>https://cnjslw.github.io/tags/</loc>
+    <loc>https://cnjslw.github.io/en/tags/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://cnjslw.github.io/zh/tags/"
+                href="https://cnjslw.github.io/tags/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://cnjslw.github.io/tags/"
+                href="https://cnjslw.github.io/en/tags/"
                 />
   </url>
 </urlset>
