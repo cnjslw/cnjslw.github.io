@@ -3,20 +3,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>AWei’s Kernel Tour | 编程</title>
+    <title>AWei’s Kernel Tour | 【C&#43;&#43; Primer(edition 5) 04】表达式</title>
     <meta name="description"
-        content=" ">
-    <link rel="canonical" href="https://cnjslw.github.io/tags/%E7%BC%96%E7%A8%8B/" />
+        content="表达式 ">
+    <link rel="canonical" href="https://cnjslw.github.io/posts/%E8%A1%A8%E8%BE%BE%E5%BC%8F/" />
     <link rel="icon" type="image/x-icon" href="/images/linux_pic.ico">
-    <meta property="og:title" content="编程" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://cnjslw.github.io/tags/%E7%BC%96%E7%A8%8B/" />
+    <meta property="og:title" content="【C&#43;&#43; Primer(edition 5) 04】表达式" />
+<meta property="og:description" content="表达式" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://cnjslw.github.io/posts/%E8%A1%A8%E8%BE%BE%E5%BC%8F/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-01-15T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-01-15T00:00:00+00:00" />
+<meta property="og:see_also" content="https://cnjslw.github.io/posts/%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%90%91%E9%87%8F%E5%92%8C%E6%95%B0%E7%BB%84/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/" />
 
 
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="编程"/>
-<meta name="twitter:description" content=""/>
+<meta name="twitter:title" content="【C&#43;&#43; Primer(edition 5) 04】表达式"/>
+<meta name="twitter:description" content="表达式"/>
 
     
     
@@ -194,29 +197,41 @@
 
 
         <div id="content">
-    
 
 
 
 
-
-
-    
-        
-    
 
 
 
 
     <div class="hero">
         
-            
-                <div class="hero-img">
-                    <img class="lazyload" src="/images/thumbnail.gif" data-src="" alt="">
-                </div>
-            
+            <div class="hero-img">
+                <img class="lazyload" src="/images/thumbnail.gif" data-src="" alt="">
+            </div>
+        
         <div class="hero-content">
-            <h1 class="hero-title">标签: 编程</h1>
+            <div class="hero-title">【C&#43;&#43; Primer(edition 5) 04】表达式</div>
+            <div class="hero-subtitle"></div>
+            <div class="hero-date">
+                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2023-1-15 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2023-1-15 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-folder"></i>
+                        收录于:
+                        
+                            <a href='
+                                /categories/cpp
+                            '>
+                                Cpp
+                            </a>
+                    </span>    
+            </div>
+            <div class="timelong">
+                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 334 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 2 分钟 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-eye"></i> 阅读量: <span id="busuanzi_value_page_pv"></span></span>
+            </div>
         </div>
     </div>
 
@@ -235,7 +250,7 @@
     
 
 
-<div class="terms-body">
+<div class="content-root">
     <div class="long">
         <button class="tosides-1 text-wbd">
             <i class="fa fa-arrow-right"></i>
@@ -248,100 +263,349 @@
         </button>
     </div>
     
-        <div class="terms-row">
+        <div class="content">
+            <div class="content-self">
+                <p>表达式由一个或多个运算对象(operand)组成，对表达式求值将得到一个结果(result )。字面值和变量是最简单的表达式(expression),其结果就是字面值和变量的值。把一个运算符(operator)和一个或多个运算对象组合起来可以生成较复杂的表达式。 ^0c892c</p>
+<h1 id="一表达式基础">一、表达式基础</h1>
+<ul>
+<li><strong>运算对象转换</strong>：小整数类型会被提升为较大的整数类型</li>
+<li><strong>重载运算符</strong>：当运算符作用在类类型的运算对象时，用户可以自行定义其含义。</li>
+<li><strong>左值和右值</strong>：
+<ul>
+<li>C中原意：左值<strong>可以</strong>在表达式左边，右值不能。</li>
+<li><code>C++</code>：当一个对象被用作<strong>右值</strong>的时候，用的是对象的<strong>值</strong>（内容）；</li>
+<li>被用做<strong>左值</strong>时，用的是对象的<strong>身份</strong>（在内存中的位置）。</li>
+</ul>
+</li>
+<li><strong>求值顺序</strong>：<code>int i = f1() + f2()</code>
+<ul>
+<li>先计算<code>f1() + f2()</code>,再计算<code>int i = f1() + f2()</code>。但是f1和f2的计算<strong>先后不确定</strong></li>
+<li>但是，如果f1、f2都对同一对象进行了修改，因为顺序不确定，所以会编译出错，显示未定义</li>
+</ul>
+</li>
+</ul>
+<h1 id="二算术运算符">二、算术运算符</h1>
+<ul>
+<li><strong>溢出</strong>：当计算的结果超出该类型所能表示的范围时就会产生溢出。</li>
+<li><strong>bool类型不应该参与计算</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">bool</span> <span class="n">b</span><span class="o">=</span><span class="nb">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">bool</span> <span class="n">b2</span><span class="o">=-</span><span class="n">b</span><span class="p">;</span>   <span class="c1">//仍然为true
+</span></span></span><span class="line"><span class="cl"><span class="c1">//b为true，提升为对应int=1，-b=-1
+</span></span></span><span class="line"><span class="cl"><span class="c1">//b2=-1≠0，所以b2仍未true
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>取余运算m%n，结果符号与m相同</li>
+</ul>
+<h1 id="三逻辑运算符">三、逻辑运算符</h1>
+<ul>
+<li><strong>短路求值</strong>：逻辑与运算符和逻辑或运算符都是先求左侧运算对象的值再求右侧运算对象的值，当且仅当左侧运算对象无法确定表达式的结果时才会计算右侧运算对象的值。<strong>先左再右</strong></li>
+<li>小技巧，声明为引用类型可以避免对元素的拷贝，如下，如string特别大时可以节省大量时间。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">text</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span><span class="p">(</span><span class="k">const</span> <span class="k">auto</span> <span class="o">&amp;</span><span class="nl">s</span><span class="p">:</span> <span class="n">text</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">  <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">s</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="四赋值运算符">四、赋值运算符</h1>
+<ul>
+<li>赋值运算的<strong>返回结果时它的左侧运算对象</strong>，且是一个左值。类型也就是左侧对象的类型。</li>
+<li>如果赋值运算的左右侧运算对象类型不同，则右侧运算对象将转换成左侧运算对象的类型。</li>
+<li>赋值运算符满足<strong>右结合律</strong>，这点和其他二元运算符不一样。 <code>ival = jval = 0;</code>等价于<code>ival = (jval = 0);</code></li>
+<li>赋值运算优先级比较低，使用其当条件时应该加括号。</li>
+<li>复合赋值运算符，<strong>复合运算符只求值一次</strong>，普通运算符求值两次。（对性能有一点点点点影响）
+任意复合运算符op等价于<code>a = a op b;</code></li>
+</ul>
+<h1 id="五递增递减运算符">五、递增递减运算符</h1>
+<ul>
+<li>前置版本<code>j = ++i</code>，先加一后赋值</li>
+<li>后置版本<code>j = i++</code>，先赋值后加一</li>
+</ul>
+<p><strong>优先使用前置</strong>版本，后置多一步储存原始值。（除非需要变化前的值）</p>
+<h2 id="混用解引用和递增运算符">混用解引用和递增运算符</h2>
+<p><code>*iter++</code>等价于<code>*(iter++)</code>，递增优先级较高</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">auto</span> <span class="n">iter</span> <span class="o">=</span> <span class="n">vi</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="k">while</span> <span class="p">(</span><span class="n">iter</span><span class="o">!=</span><span class="n">vi</span><span class="p">.</span><span class="n">end</span><span class="p">()</span><span class="o">&amp;&amp;*</span><span class="n">iter</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="n">cout</span><span class="o">&lt;&lt;*</span><span class="n">iter</span><span class="o">++&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>	<span class="c1">// 输出当前值，指针向前移1
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p><strong>简洁是一种美德</strong>，追求简洁能降低程序出错可能性</p>
+</blockquote>
+<h1 id="六成员访问运算符">六、成员访问运算符</h1>
+<p><code>ptr-&gt;mem</code>等价于<code>(*ptr).mem</code></p>
+<p>注意<code>.</code>运算符优先级大于<code>*</code>，所以记得加括号</p>
+<h1 id="七条件运算符">七、条件运算符</h1>
+<ul>
+<li>
+<p>条件运算符（<code>?:</code>）允许我们把简单的<code>if-else</code>逻辑嵌入到单个表达式中去，按照如下形式：<code>cond? expr1: expr2</code></p>
+</li>
+<li>
+<p>可以嵌套使用，<strong>右结合律</strong>，从右向左顺序组合</p>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">finalgrade</span> <span class="o">=</span> <span class="p">(</span><span class="n">grade</span> <span class="o">&gt;</span> <span class="mi">90</span><span class="p">)</span> <span class="o">?</span> <span class="s">&#34;high pass&#34;</span><span class="o">:</span><span class="p">(</span><span class="n">grade</span> <span class="o">&lt;</span> <span class="mi">60</span><span class="p">)</span> <span class="o">?</span> <span class="s">&#34;fail&#34;</span> <span class="o">:</span> <span class="s">&#34;pass&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//等价于
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">finalgrade</span> <span class="o">=</span> <span class="p">(</span><span class="n">grade</span> <span class="o">&gt;</span> <span class="mi">90</span><span class="p">)</span> <span class="o">?</span> <span class="s">&#34;high pass&#34;</span><span class="o">:</span> <span class="p">((</span><span class="n">grade</span> <span class="o">&lt;</span> <span class="mi">60</span><span class="p">)</span> <span class="o">?</span> <span class="s">&#34;fail&#34;</span> <span class="o">:</span> <span class="s">&#34;pass&#34;</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>输出表达式使用条件运算符记得加括号，条件运算符优先级太低。</li>
+</ul>
+<h1 id="八位运算符">八、位运算符</h1>
+<p>用于检查和设置二进制位的功能。</p>
+<ul>
+<li>位运算符是作用于<strong>整数类型</strong>的运算对象。</li>
+<li>二进制位向左移（<code>&lt;&lt;</code>）或者向右移（<code>&gt;&gt;</code>），移出边界外的位就被舍弃掉了。</li>
+<li>位取反（<code>~</code>）（逐位求反）、与（<code>&amp;</code>）、或（<code>|</code>）、异或（<code>^</code>）</li>
+</ul>
+<p>有符号数负值可能移位后变号，所以强烈建议<strong>位运算符仅用于无符号数</strong>。</p>
+<p>应用：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">quiz1</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>    <span class="c1">// 每一位代表一个学生是否通过考试
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="mi">1UL</span> <span class="o">&lt;&lt;</span> <span class="mi">12</span><span class="p">;</span>  <span class="c1">// 代表第12个学生通过
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">quiz1</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1UL</span> <span class="o">&lt;&lt;</span> <span class="mi">12</span><span class="p">);</span>   <span class="c1">// 将第12个学生置为已通过
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">quiz1</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="p">(</span><span class="mi">1UL</span> <span class="o">&lt;&lt;</span> <span class="mi">12</span><span class="p">);</span>  <span class="c1">// 将第12个学生修改为未通过
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">bool</span> <span class="n">stu12</span> <span class="o">=</span> <span class="n">quiz1</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1UL</span> <span class="o">&lt;&lt;</span> <span class="mi">12</span><span class="p">);</span>   <span class="c1">// 判断第12个学生是否通过
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>位运算符使用较少，但是重载cout、cin大家都用过</p>
+</blockquote>
+<p>位运算符满足左结合律，优先级介于中间，使用时尽量加括号。</p>
+<h1 id="九sizeof运算符">九、sizeof运算符</h1>
+<ul>
+<li>返回一条表达式或一个类型名字所占的<strong>字节数</strong>。</li>
+<li>返回的类型是 <code>size_t</code>的常量表达式。</li>
+<li><code>sizeof</code>并不实际计算其运算对象的值。</li>
+<li>两种形式：
+<ol>
+<li><code>sizeof (type)</code>，给出类型名</li>
+<li><code>sizeof expr</code>，给出表达式</li>
+</ol>
+</li>
+<li>可用sizeof返回数组的大小</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">ia</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// sizeof(ia)返回整个数组所占空间的大小
+</span></span></span><span class="line"><span class="cl"><span class="c1">// sizeof(ia)/sizeof(*ia)返回数组的大小
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">constexpr</span> <span class="n">size_t</span> <span class="n">sz</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">ia</span><span class="p">)</span><span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">ia</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">arr</span><span class="p">[</span><span class="n">sz</span><span class="p">];</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="十逗号运算符">十、逗号运算符</h1>
+<p>从左向右依次求值。</p>
+<p>左侧求值结果丢弃，逗号运算符<strong>结果是右侧表达式</strong>的值。</p>
+<h1 id="十一类型转换">十一、类型转换</h1>
+<h2 id="1隐式类型转换">1、隐式类型转换</h2>
+<blockquote>
+<p>设计为尽可能避免损失精度，即转换为更精细类型。</p>
+</blockquote>
+<ul>
+<li>比 <code>int</code>类型小的整数值先提升为较大的整数类型。</li>
+<li>条件中，非布尔转换成布尔。</li>
+<li>初始化中，初始值转换成变量的类型。</li>
+<li>算术运算或者关系运算的运算对象有多种类型，要转换成同一种类型。</li>
+<li>函数调用时也会有转换。</li>
+</ul>
+<h2 id="11-算术转换">1.1 算术转换</h2>
+<p>算术转换(arithmetic conversion) 的含义是把一种算术类型转换成另外一种算术类型</p>
+<h3 id="111-整型提升">1.1.1 整型提升</h3>
+<ul>
+<li>常见的char、bool、short能存在int就会转换成int，否则提升为<code>unsigned int</code></li>
+<li><code>wchar_t,char16_t,char32_t</code>提升为整型中<code>int,long,long long ……</code>最小的，且能容纳原类型所有可能值的类型。</li>
+</ul>
+<h3 id="112-无符号类型的运算对象">1.1.2 无符号类型的运算对象</h3>
+<ul>
+<li>都带符号 or 都不带符号，小类型转大类型</li>
+<li>一个带符号，另一个不带符号
+<ul>
+<li>带符号&gt;不带符号：无符号能存入带符号类型，则转化为带符号类型，反之则转为无符号类型</li>
+<li>带符号≤不带符号：带符号转为不带符号
+不同符号的类型转换带来了隐患，比如 unsigned int 类型的变量大于int类型的变量，则有转为为 int-&gt;unsigned int , 如果恰巧这个int 是一个负数，则转化为就会产生歧义</li>
+</ul>
+</li>
+</ul>
+<h2 id="12-其他转换">1.2 其他转换</h2>
+<blockquote>
+<p>p143</p>
+</blockquote>
+<h2 id="2显式类型转换尽量避免">2、显式类型转换（尽量避免）</h2>
+<h2 id="21-static_cast">2.1 static_cast</h2>
+<p>任何明确定义的类型转换，只要不包含底层const，都可以使用。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">i</span> <span class="o">&gt;&gt;</span> <span class="n">j</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">double</span> <span class="n">slope</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="o">/</span><span class="n">i</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>常用于较大算数运算符转换为较小算数运算符，旨在告诉编译器，不在乎精度的损失。</p>
+<h2 id="22-dynamic_cast">2.2 dynamic_cast</h2>
+<p>支持运行时类型识别。</p>
+<h2 id="23-const_cast">2.3 const_cast</h2>
+<p><strong>只能</strong>改变运算对象的底层const，一般可用于去除const性质。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">pc</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl"><span class="kt">char</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="k">const_cast</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">pc</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>只有const_cast 可以消除底层const，其他类型转换会报错，但是如果被消除的变量本身就是常量对象，通过const_cast消除其底层const后再修改，就是未定义的行为</p>
+<h2 id="24-reinterpret_cast">2.4 reinterpret_cast</h2>
+<p>通常为运算对象的位模式提供较低层次上的重新解释。</p>
+<h2 id="3旧式强制类型转换">3、旧式强制类型转换</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">char</span> <span class="o">*</span><span class="n">pc</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="n">ip</span><span class="p">;</span> <span class="c1">//ip原类型为指向整数的指针
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="十二运算符优先级表">十二、运算符优先级表</h1>
+<blockquote>
+<p>《C++ Primer（edition 5）》p166</p>
+</blockquote>
+<h1 id="十三常量表达式">十三、常量表达式</h1>
+<p>常量表达式是指不会改变并且在编译过程中就能得到计算结果的表达式，字面值属于常量表达式，用常量表达式初始化的const对象也是常量表达式。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">int</span> <span class="n">max_file</span> <span class="o">=</span> <span class="mi">20</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">int</span> <span class="n">limit</span> <span class="o">=</span> <span class="n">max_file</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div>
+            </div>
             
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-                <img class="lazyload" src="/images/thumbnail.gif" data-src="" alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/">【模板与泛型编程01】函数模板</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-6-8 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-6-8 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                    收录于:
+                <div class="tags">
                     
-                        <a href='
-                                        /categories/cpp
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#cpp
                                     '>
-                                Cpp
+                                <i class="fa fa-tag"></i> #Cpp
                             </a>
-                
-            </span>
+                        </div>
+                    </span>
+                    
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
+                                    '>
+                                <i class="fa fa-tag"></i> #语法特性
+                            </a>
+                        </div>
+                    </span>
+                    
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#%E7%BC%96%E7%A8%8B
+                                    '>
+                                <i class="fa fa-tag"></i> #编程
+                            </a>
+                        </div>
+                    </span>
+                    
+                </div>
+            
         </div>
-        <div class="down-summary">函数模板</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/">
-            <span><i class="fa fa-arrow-right"></i></span>
+        
+            
+                <div class="pre-next">
+                    
+    
+        
+        <a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/" class="pre pre-last" style="text-align: center;">
+            <span class="pre-icon"><i class="fa fa-hand-o-left"></i></span>
+            <div class="pre-title-root">
+                <span>【模板与泛型编程01】函数模板</span>
+            </div>
         </a>
-    </div>
-</div>
-
-
-
+        
+    
     
 
+                </div>
+            
+        
+    
+</div>
 
-    <div class="down-type">
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/cpp
-                        '>
-                    <i class="fa fa-tag"></i> Cpp
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
-                        '>
-                    <i class="fa fa-tag"></i> #语法特性
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/%E7%BC%96%E7%A8%8B
-                        '>
-                    <i class="fa fa-tag"></i> 编程
-                </a>
-            </div>
-        </span>
-        
-    </div>
-
-<div class="dang"></div>
-            </div>
+    
+        <div class="content-last">
+            
+                <button class="aixin content-last-item efct-button">
+                    <i class="fa fa-heart"></i>
+                </button>
+            
             
         </div>
     
-</div>
 
 
             </div>
@@ -418,53 +682,16 @@
 
 
 
+    
+    
+
 
 <div class="other">
     <div class="other-up">
-        <div class="other-qita text-wbd">最新文章</div>
+        <div class="other-qita text-wbd">相关文章</div>
         <div class="xian"></div>
     </div>
     <div class="list">
-        
-            <a href="https://cnjslw.github.io/posts/%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
-                
-<a href="https://cnjslw.github.io/posts/%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
-    <div class="list-item">
-        <div class="icon-other-root">
-            
-                <div class="icon-other" style="background-image: url(  );"></div>
-            
-        </div>
-        <div class="list-right">
-            <div class="other-title">
-                【C&#43;&#43; Primer(edition 5) 04】表达式
-            </div>
-            <div class="other-summary">表达式</div>
-            <div class="other-date">2023-1-15</div>
-        </div>
-    </div>
-</a>
-            </a>
-        
-            <a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/">
-                
-<a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/">
-    <div class="list-item">
-        <div class="icon-other-root">
-            
-                <div class="icon-other" style="background-image: url(  );"></div>
-            
-        </div>
-        <div class="list-right">
-            <div class="other-title">
-                【模板与泛型编程01】函数模板
-            </div>
-            <div class="other-summary">函数模板</div>
-            <div class="other-date">2022-6-8</div>
-        </div>
-    </div>
-</a>
-            </a>
         
             <a href="https://cnjslw.github.io/posts/%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%90%91%E9%87%8F%E5%92%8C%E6%95%B0%E7%BB%84/">
                 
@@ -526,6 +753,26 @@
 </a>
             </a>
         
+            <a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/">
+                
+<a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/">
+    <div class="list-item">
+        <div class="icon-other-root">
+            
+                <div class="icon-other" style="background-image: url(  );"></div>
+            
+        </div>
+        <div class="list-right">
+            <div class="other-title">
+                【模板与泛型编程01】函数模板
+            </div>
+            <div class="other-summary">函数模板</div>
+            <div class="other-date">2022-6-8</div>
+        </div>
+    </div>
+</a>
+            </a>
+        
     </div>
 </div>
         </div>
@@ -537,6 +784,46 @@
 
             </div>
         </div>
+    </div>
+</div>
+
+    
+
+<div class="sponsor">
+    <div class="sponsor-self">
+        <div class="sponsor-title">赞赏</div>
+        <div class="sponsor-btn">
+            
+                
+                    
+                        <div class="sponsor-btn-1 border-r">Wechat</div>
+                    
+                
+                
+            
+                
+                    
+                        <div class="sponsor-btn-2 border-l">Alipay</div>
+                    
+                
+                
+            
+        </div>
+        
+        <div class="sponsor-img">
+            
+                
+                    <img class="sponsor-img-1" src="/images/wechat.png" alt="">
+                
+                
+            
+                
+                    <img class="sponsor-img-2" src="/images/alipay.png" alt="" style="display: none;">
+                
+                
+            
+        </div>
+        <div class="cancel efct-button">取消</div>
     </div>
 </div>
 
