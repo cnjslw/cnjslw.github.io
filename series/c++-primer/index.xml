@@ -6,7 +6,16 @@
     <description>Recent content in 《C&#43;&#43; Primer》 on AWei’s Kernel Tour</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sat, 04 Sep 2021 19:45:34 +0800</lastBuildDate><atom:link href="https://cnjslw.github.io/series/c++-primer/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 06 Sep 2021 20:14:34 +0800</lastBuildDate><atom:link href="https://cnjslw.github.io/series/c++-primer/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>【C&#43;&#43; Primer(edition 5) 02】复合类型</title>
+      <link>https://cnjslw.github.io/posts/%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B/</link>
+      <pubDate>Mon, 06 Sep 2021 20:14:34 +0800</pubDate>
+      
+      <guid>https://cnjslw.github.io/posts/%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B/</guid>
+      <description>复合类型</description>
+    </item>
+    
     <item>
       <title>【C&#43;&#43; Primer(edition 5) 01】变量和基本类型</title>
       <link>https://cnjslw.github.io/posts/%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/</link>
@@ -14,15 +23,6 @@
       
       <guid>https://cnjslw.github.io/posts/%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/</guid>
       <description>变量和基本类型</description>
-    </item>
-    
-    <item>
-      <title>【C&#43;&#43; Primer(edition 5) 02】复合类型</title>
-      <link>https://cnjslw.github.io/posts/%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://cnjslw.github.io/posts/%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B/</guid>
-      <description>复合类型</description>
     </item>
     
   </channel>
