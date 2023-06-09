@@ -2,16 +2,10 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://cnjslw.github.io/</loc>
-    <lastmod>2023-06-08T16:44:34+08:00</lastmod>
-  </url><url>
-    <loc>https://cnjslw.github.io/posts/first-post/</loc>
-    <lastmod>2023-06-08T16:44:34+08:00</lastmod>
-  </url><url>
-    <loc>https://cnjslw.github.io/posts/</loc>
-    <lastmod>2023-06-08T16:44:34+08:00</lastmod>
-  </url><url>
     <loc>https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/</loc>
+    <lastmod>2022-06-08T15:45:34+08:00</lastmod>
+  </url><url>
+    <loc>https://cnjslw.github.io/</loc>
     <lastmod>2022-06-08T15:45:34+08:00</lastmod>
   </url><url>
     <loc>https://cnjslw.github.io/tags/c&#43;&#43;/</loc>
@@ -26,6 +20,9 @@
     <loc>https://cnjslw.github.io/categories/</loc>
     <lastmod>2022-06-08T15:45:34+08:00</lastmod>
   </url><url>
+    <loc>https://cnjslw.github.io/posts/</loc>
+    <lastmod>2022-06-08T15:45:34+08:00</lastmod>
+  </url><url>
     <loc>https://cnjslw.github.io/series/</loc>
     <lastmod>2022-06-08T15:45:34+08:00</lastmod>
   </url><url>
@@ -34,5 +31,15 @@
   </url><url>
     <loc>https://cnjslw.github.io/tags/%E7%BC%96%E7%A8%8B/</loc>
     <lastmod>2022-06-08T15:45:34+08:00</lastmod>
+  </url><url>
+    <loc>https://cnjslw.github.io/series/c&#43;&#43;-primer/</loc>
+  </url><url>
+    <loc>https://cnjslw.github.io/posts/%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/</loc>
+  </url><url>
+    <loc>https://cnjslw.github.io/posts/%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B/</loc>
+  </url><url>
+    <loc>https://cnjslw.github.io/tags/cpp/</loc>
+  </url><url>
+    <loc>https://cnjslw.github.io/categories/cpp/</loc>
   </url>
 </urlset>
