@@ -3,20 +3,24 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>AWei’s Kernel Tour | #编程</title>
+    <title>AWei’s Kernel Tour | 【C&#43;&#43; Primer(edition 5) 09】关联容器</title>
     <meta name="description"
-        content=" ">
-    <link rel="canonical" href="https://cnjslw.github.io/tags/#%E7%BC%96%E7%A8%8B/" />
+        content="关联容器 ">
+    <link rel="canonical" href="https://cnjslw.github.io/posts/%E5%85%B3%E8%81%94%E5%AE%B9%E5%99%A8/" />
     <link rel="icon" type="image/x-icon" href="/images/linux_pic.ico">
-    <meta property="og:title" content="#编程" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://cnjslw.github.io/tags/#%E7%BC%96%E7%A8%8B/" />
+    <meta property="og:title" content="【C&#43;&#43; Primer(edition 5) 09】关联容器" />
+<meta property="og:description" content="关联容器" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://cnjslw.github.io/posts/%E5%85%B3%E8%81%94%E5%AE%B9%E5%99%A8/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-09-28T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-09-28T00:00:00+00:00" />
+<meta property="og:see_also" content="https://cnjslw.github.io/posts/%E6%B3%9B%E5%9E%8B%E7%AE%97%E6%B3%95/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/%E9%A1%BA%E5%BA%8F%E5%AE%B9%E5%99%A8/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/%E7%B1%BB/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/%E8%AF%AD%E5%8F%A5/" />
+
 
 
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="#编程"/>
-<meta name="twitter:description" content=""/>
+<meta name="twitter:title" content="【C&#43;&#43; Primer(edition 5) 09】关联容器"/>
+<meta name="twitter:description" content="关联容器"/>
 
     
     
@@ -194,29 +198,41 @@
 
 
         <div id="content">
-    
 
 
 
 
-
-
-    
-        
-    
 
 
 
 
     <div class="hero">
         
-            
-                <div class="hero-img">
-                    <img class="lazyload" src="/images/thumbnail.gif" data-src="" alt="">
-                </div>
-            
+            <div class="hero-img">
+                <img class="lazyload" src="/images/thumbnail.gif" data-src="" alt="">
+            </div>
+        
         <div class="hero-content">
-            <h1 class="hero-title">标签: #编程</h1>
+            <div class="hero-title">【C&#43;&#43; Primer(edition 5) 09】关联容器</div>
+            <div class="hero-subtitle"></div>
+            <div class="hero-date">
+                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2021-9-28 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2021-9-28 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-folder"></i>
+                        收录于:
+                        
+                            <a href='
+                                /categories/cpp
+                            '>
+                                Cpp
+                            </a>
+                    </span>    
+            </div>
+            <div class="timelong">
+                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 294 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 2 分钟 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-eye"></i> 阅读量: <span id="busuanzi_value_page_pv"></span></span>
+            </div>
         </div>
     </div>
 
@@ -235,7 +251,7 @@
     
 
 
-<div class="terms-body">
+<div class="content-root">
     <div class="long">
         <button class="tosides-1 text-wbd">
             <i class="fa fa-arrow-right"></i>
@@ -248,940 +264,496 @@
         </button>
     </div>
     
-        <div class="terms-row">
+        <div class="content">
+            <div class="content-self">
+                <p>关联容器和顺序容器的不同：关联容器中的元素时按照<strong>关键字</strong>来保存和访问的。
+关联容器支持通过关键字来高效地查找和读取元素，基本的关联容器类型是 <code>map</code>和 <code>set</code>。</p>
+<p><strong>关联容器类型</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>容器类型</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>按顺序存储</td>
+<td></td>
+</tr>
+<tr>
+<td><code>map</code></td>
+<td>关键数组：保存<code>关键字-值</code>对</td>
+</tr>
+<tr>
+<td><code>set</code></td>
+<td>关键字即值，即只保存关键字的容器</td>
+</tr>
+<tr>
+<td><code>multimap</code></td>
+<td>支持同一个键多次出现的<code>map</code></td>
+</tr>
+<tr>
+<td><code>multiset</code></td>
+<td>支持同一个键多次出现的<code>set</code></td>
+</tr>
+<tr>
+<td>无序集合</td>
+<td></td>
+</tr>
+<tr>
+<td><code>unordered_map</code></td>
+<td>用哈希函数组织的<code>map</code></td>
+</tr>
+<tr>
+<td><code>unordered_set</code></td>
+<td>用哈希函数组织的<code>set</code></td>
+</tr>
+<tr>
+<td><code>unordered_multimap</code></td>
+<td>哈希组织的<code>map</code>，关键字可以重复出现</td>
+</tr>
+<tr>
+<td><code>unordered_multiset</code></td>
+<td>哈希组织的<code>set</code>，关键字可以重复出现</td>
+</tr>
+</tbody>
+</table>
+<h1 id="一使用关联容器">一、使用关联容器</h1>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">//map
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">map</span><span class="o">&lt;</span><span class="kt">int</span> <span class="p">,</span> <span class="n">size_t</span><span class="o">&gt;</span> <span class="n">word_count</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">string</span> <span class="n">word</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">while</span><span class="p">(</span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">word</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="o">++</span><span class="n">word_count</span><span class="p">[</span><span class="n">word</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span><span class="p">(</span><span class="k">const</span> <span class="k">auto</span> <span class="o">&amp;</span><span class="nl">w</span> <span class="p">:</span> <span class="n">word_count</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">w</span><span class="p">.</span><span class="n">first</span><span class="o">&lt;&lt;</span><span class="s">&#34; occurs &#34;</span><span class="o">&lt;&lt;</span><span class="n">w</span><span class="p">.</span><span class="n">second</span>
+</span></span><span class="line"><span class="cl">	    <span class="o">&lt;&lt;</span><span class="p">((</span><span class="n">w</span><span class="p">.</span><span class="n">second</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">)</span><span class="o">?</span><span class="s">&#34;times&#34;</span><span class="o">:</span><span class="s">&#34;time&#34;</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//set
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="n">size_t</span><span class="o">&gt;</span> <span class="n">word_count</span><span class="p">;</span> <span class="c1">// string 到 size_t 的空 map 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">set</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">exclude</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#34;The&#34;</span><span class="p">,</span> <span class="s">&#34;But&#34;</span><span class="p">,</span> <span class="s">&#34;And”， MOr&#39;*, &#34;</span><span class="n">An</span><span class="s">&#34;, &#34;</span><span class="n">A</span><span class="err">”，</span> <span class="s">&#34;the”， “but”， &#34;</span><span class="n">and</span><span class="err">”，</span> <span class="n">norn</span> <span class="p">,</span> <span class="s">&#34;ann , &#34;</span><span class="n">a</span><span class="s">&#34;};</span>
+</span></span><span class="line"><span class="cl"><span class="n">string</span> <span class="n">word</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">while</span> <span class="p">(</span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">word</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//只统计不在exclude中的单词
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">if</span> <span class="p">(</span><span class="n">exclude</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="o">==</span> <span class="n">exclude</span><span class="p">.</span><span class="n">end</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">	<span class="o">++</span><span class="n">word_count</span> <span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="p">;</span> <span class="c1">//获取并递增word的计数器
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="二关联容器概述">二、关联容器概述</h1>
+<ul>
+<li>关联容器基本支持普通容器的所有操作，但是不支持顺序容器的位置相关操作，例如<code>push_back</code>，<code>push_front</code></li>
+<li>关联容器还支持特有的操作和类型别名</li>
+<li>无序容器还支持一些来调整哈希性能的操作</li>
+</ul>
+<h2 id="1定义关联容器">1、定义关联容器</h2>
+<ul>
+<li>必须需要指定元素类型，并且值符合要求或者可以转化。</li>
+<li>默认构造</li>
+<li>关联容器初始化为另一个同类型容器的拷贝</li>
+<li>值范围初始化</li>
+<li>列表初始化：
+<ul>
+<li><code>map</code>：<code>map&lt;string, int&gt; word_count = {{&quot;a&quot;, 1}, {&quot;b&quot;, 2}};</code></li>
+<li><code>set</code>：<code>set&lt;string&gt; exclude = {&quot;the&quot;, &quot;a&quot;};</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="2关键字类型的要求">2、关键字类型的要求</h2>
+<ul>
+<li>对于有序容器，关键字类型必须定义元素比较的方法。默认是<code>&lt;</code>。</li>
+<li>如果想传递一个比较的函数，可以这样定义：<code>multiset&lt;Sales_data, decltype(compareIsbn)*&gt; bookstore(compareIsbn);</code></li>
+</ul>
+<h2 id="3pair">3、pair</h2>
+<ul>
+<li>在<code>utility</code>头文件中定义。</li>
+<li>一个<code>pair</code>保存两个数据成员，两个类型不要求一样。</li>
+</ul>
+<h2 id="pair的操作">pair的操作</h2>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pair&lt;T1, T2&gt; p;</code></td>
+<td><code>p</code>是一个<code>pair</code>，两个类型分别是<code>T1</code>和<code>T2</code>的成员都进行了值初始化。</td>
+</tr>
+<tr>
+<td><code>pair&lt;T1, T2&gt; p(v1, v2);</code></td>
+<td><code>first</code>和<code>second</code>分别用<code>v1</code>和<code>v2</code>进行初始化。</td>
+</tr>
+<tr>
+<td><code>pair&lt;T1, T2&gt;p = {v1, v2};</code></td>
+<td>等价于`p(v1, v2)</td>
+</tr>
+<tr>
+<td><code>make_pair(v1, v2);</code></td>
+<td><code>pair</code>的类型从<code>v1</code>和<code>v2</code>的类型推断出来。</td>
+</tr>
+<tr>
+<td><code>p.first</code></td>
+<td>返回<code>p</code>的名为<code>first</code>的数据成员。</td>
+</tr>
+<tr>
+<td><code>p.second</code></td>
+<td>返回<code>p</code>的名为<code>second</code>的数据成员。</td>
+</tr>
+<tr>
+<td><code>p1 relop p2</code></td>
+<td>运算关系符按字典序定义。</td>
+</tr>
+<tr>
+<td><code>p1 == p2</code></td>
+<td>必须两对元素两两相等</td>
+</tr>
+<tr>
+<td><code>p1 != p2</code></td>
+<td>同上</td>
+</tr>
+</tbody>
+</table>
+<h1 id="三关联容器操作">三、关联容器操作</h1>
+<p><strong>关联容器额外的类型别名</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>类型别名</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>key_type</code></td>
+<td>此容器类型的关键字类型</td>
+</tr>
+<tr>
+<td><code>mapped_type</code></td>
+<td>每个关键字关联的类型，只适用于<code>map</code></td>
+</tr>
+<tr>
+<td><code>value_type</code></td>
+<td>对于<code>map</code>，是<code>pair&lt;const key_type, mapped_type&gt;</code>; 对于<code>set</code>，和<code>key_type</code>相同。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="1关联容器迭代器">1、关联容器迭代器</h2>
+<ul>
+<li>解引用一个关联容器迭代器时，会得到一个类型为容器的<code>value_type</code>的值的引用。</li>
+<li><code>map</code>中的迭代器解引用返回一个<code>pair&lt;const value_type , value_type&gt;</code></li>
+<li><code>set</code>的迭代器是<code>const</code>的。</li>
+<li>遍历关联容器：使用<code>begin</code>和<code>end</code>，遍历<code>map</code>、<code>multimap</code>、<code>set</code>、<code>multiset</code>时，迭代器按<strong>关键字升序</strong>遍历元素。</li>
+</ul>
+<h2 id="2添加元素">2、添加元素</h2>
+<p><strong>关联容器<code>insert</code>操作</strong>：</p>
+<table>
+<thead>
+<tr>
+<th><code>insert</code>操作</th>
+<th>关联容器</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>c.insert(v)</code>  <code>c.emplace(args)</code></td>
+<td><code>v</code>是<code>value_type</code>类型的对象；<code>args</code>用来构造一个元素。 对于<code>map</code>和<code>set</code>，只有元素的关键字不存在<code>c</code>中才插入或构造元素。函数返回一个<code>pair</code>，包含一个迭代器，指向具有指定关键字的元素，以及一个指示插入是否成功的<code>bool</code>值。对于<code>multimap</code>和<code>multiset</code>则会插入范围中的每个元素。</td>
+</tr>
+<tr>
+<td><code>c.insert(b, e)</code> <code>c.insert(il)</code></td>
+<td><code>b</code>和<code>e</code>是迭代器，表示一个<code>c::value_type</code>类型值的范围；<code>il</code>是这种值的花括号列表。函数返回<code>void</code>。对于 <code>map</code>和<code>set</code>，只插入关键字不在<code>c</code>中的元素。</td>
+</tr>
+<tr>
+<td><code>c.insert(p, v)</code>  <code>c.emplace(p, args)</code></td>
+<td>类似<code>insert(v)</code>，但将迭代器<code>p</code>作为一个提示，指出从哪里开始搜索新元素应该存储的位置。返回一个迭代器，指向具有给定关键字的元素。</td>
+</tr>
+</tbody>
+</table>
+<p>向<code>map</code>添加元素：</p>
+<ul>
+<li><code>word_count.insert({word, 1});</code></li>
+<li><code>word_count.insert(make_pair(word, 1));</code></li>
+<li><code>word_count.insert(pair&lt;string, size_t&gt;(word, 1));</code></li>
+<li><code>word_count.insert(map&lt;string, size_t&gt;::value_type (word, 1));</code></li>
+</ul>
+<h2 id="3删除元素">3、删除元素</h2>
+<p><strong>从关联容器中删除元素</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>c.erase(k)</code></td>
+<td>从<code>c</code>中删除每个关键字为<code>k</code>的元素。返回一个<code>size_type</code>值，指出删除的元素的数量。</td>
+</tr>
+<tr>
+<td><code>c.erase(p)</code></td>
+<td>从<code>c</code>中删除迭代器<code>p</code>指定的元素。<code>p</code>必须指向<code>c</code>中一个真实元素，不能等于<code>c.end()</code>。返回一个指向<code>p</code>之后元素的迭代器，若<code>p</code>指向<code>c</code>中的尾元素，则返回<code>c.end()</code></td>
+</tr>
+<tr>
+<td><code>c.erase(b, e)</code></td>
+<td>删除迭代器对<code>b</code>和<code>e</code>所表示范围中的元素。返回<code>e</code>。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4下标操作">4、下标操作</h2>
+<p><strong><code>map</code>和<code>unordered_map</code>的下标操作</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>c[k]</code></td>
+<td>返回关键字为<code>k</code>的元素；如果<code>k</code>不在<code>c</code>中，添加一个关键字为<code>k</code>的元素，对其值初始化。</td>
+</tr>
+<tr>
+<td><code>c.at(k)</code></td>
+<td>访问关键字为<code>k</code>的元素，带参数检查；若<code>k</code>不存在在<code>c</code>中，抛出一个<code>out_of_range</code>异常。</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>set</code>不支持下标操作，<code>multimap</code>也不支持</li>
+<li>对<code>map</code>使用下标操作
+<ul>
+<li>关键字存在，返回<code>mapped_type</code></li>
+<li>关键字不存在，添加下标元素</li>
+</ul>
+</li>
+</ul>
+<h2 id="5查找元素">5、查找元素</h2>
+<p><strong>在一个关联容器中查找元素</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>c.find(k)</code></td>
+<td>返回一个迭代器，指向第一个关键字为<code>k</code>的元素，若<code>k</code>不在容器中，则返回尾后迭代器</td>
+</tr>
+<tr>
+<td><code>c.count(k)</code></td>
+<td>返回关键字等于<code>k</code>的元素的数量。对于不允许重复关键字的容器，返回值永远是0或1。</td>
+</tr>
+<tr>
+<td><code>c.lower_bound(k)</code></td>
+<td>返回一个迭代器，指向第一个关键字<strong>不小于</strong><code>k</code>的元素。</td>
+</tr>
+<tr>
+<td><code>c.upper_bound(k)</code></td>
+<td>返回一个迭代器，指向第一个关键字<strong>大于</strong><code>k</code>的元素。</td>
+</tr>
+<tr>
+<td><code>c.equal_range(k)</code></td>
+<td>返回一个迭代器<code>pair</code>，表示关键字等于<code>k</code>的元素的范围。若<code>k</code>不存在，<code>pair</code>的两个成员均等于<code>c.end()</code>。</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>lower_bound</code>和<code>upper_bound</code>不适用于无序容器。</li>
+<li>下标和<code>at</code>操作只适用于非<code>const</code>的<code>map</code>和<code>unordered_map</code>。</li>
+</ul>
+<h1 id="四无序容器">四、无序容器</h1>
+<ul>
+<li>有序容器使用比较运算符来组织元素；无序容器使用哈希函数和关键字类型的<code>==</code>运算符。</li>
+<li>理论上哈希技术可以获得更好的性能。</li>
+<li>无序容器在存储上组织为一组桶(bucket)，每个桶保存零个或多个元素。无序容器使用一个哈希函数将元素映射到桶。</li>
+</ul>
+<p><strong>无序容器管理操作</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>桶接口</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><code>c.bucket_count()</code></td>
+<td>正在使用的桶的数目</td>
+</tr>
+<tr>
+<td><code>c.max_bucket_count()</code></td>
+<td>容器能容纳的最多的桶的数目</td>
+</tr>
+<tr>
+<td><code>c.bucket_size(n)</code></td>
+<td>第<code>n</code>个桶中有多少个元素</td>
+</tr>
+<tr>
+<td><code>c.bucket(k)</code></td>
+<td>关键字为<code>k</code>的元素在哪个桶中</td>
+</tr>
+<tr>
+<td><strong>桶迭代</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><code>local_iterator</code></td>
+<td>可以用来访问桶中元素的迭代器类型</td>
+</tr>
+<tr>
+<td><code>const_local_iterator</code></td>
+<td>桶迭代器的<code>const</code>版本</td>
+</tr>
+<tr>
+<td><code>c.begin(n)</code>，<code>c.end(n)</code></td>
+<td>桶<code>n</code>的首元素迭代器</td>
+</tr>
+<tr>
+<td><code>c.cbegin(n)</code>，<code>c.cend(n)</code></td>
+<td>与前两个函数类似，但返回<code>const_local_iterator</code>。</td>
+</tr>
+<tr>
+<td><strong>哈希策略</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><code>c.load_factor()</code></td>
+<td>每个桶的平均元素数量，返回<code>float</code>值。</td>
+</tr>
+<tr>
+<td><code>c.max_load_factor()</code></td>
+<td><code>c</code>试图维护的平均比桶大小，返回<code>float</code>值。<code>c</code>会在需要时添加新的桶，以使得<code>load_factor&lt;=max_load_factor</code></td>
+</tr>
+<tr>
+<td><code>c.rehash(n)</code></td>
+<td>重组存储，使得<code>bucket_count&gt;=n</code>，且<code>bucket_count&gt;size/max_load_factor</code></td>
+</tr>
+<tr>
+<td><code>c.reverse(n)</code></td>
+<td>重组存储，使得<code>c</code>可以保存<code>n</code>个元素且不必<code>rehash</code>。</td>
+</tr>
+</tbody>
+</table>
+
+            </div>
             
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-                <img class="lazyload" src="/images/thumbnail.gif" data-src="" alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/%E6%B3%9B%E5%9E%8B%E7%AE%97%E6%B3%95/">【C&#43;&#43; Primer(edition 5) 10】泛型算法</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2021-10-1 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2021-10-1 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                    收录于:
+                <div class="tags">
                     
-                        <a href='
-                                        /categories/cpp
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#cpp
                                     '>
-                                Cpp
+                                <i class="fa fa-tag"></i> #Cpp
                             </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">泛型算法</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/%E6%B3%9B%E5%9E%8B%E7%AE%97%E6%B3%95/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-    
-
-
-    <div class="down-type">
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#cpp
-                        '>
-                    <i class="fa fa-tag"></i> #Cpp
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
-                        '>
-                    <i class="fa fa-tag"></i> #语法特性
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E7%BC%96%E7%A8%8B
-                        '>
-                    <i class="fa fa-tag"></i> #编程
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/c&#43;&#43;%E6%A0%87%E5%87%86%E5%BA%93
-                        '>
-                    <i class="fa fa-tag"></i> C&#43;&#43;标准库
-                </a>
-            </div>
-        </span>
-        
-    </div>
-
-<div class="dang"></div>
-            </div>
-            
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-                <img class="lazyload" src="/images/thumbnail.gif" data-src="" alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/%E5%85%B3%E8%81%94%E5%AE%B9%E5%99%A8/">【C&#43;&#43; Primer(edition 5) 09】关联容器</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2021-9-28 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2021-9-28 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                    收录于:
+                        </div>
+                    </span>
                     
-                        <a href='
-                                        /categories/cpp
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
                                     '>
-                                Cpp
+                                <i class="fa fa-tag"></i> #语法特性
                             </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">关联容器</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/%E5%85%B3%E8%81%94%E5%AE%B9%E5%99%A8/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-    
-
-
-    <div class="down-type">
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#cpp
-                        '>
-                    <i class="fa fa-tag"></i> #Cpp
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
-                        '>
-                    <i class="fa fa-tag"></i> #语法特性
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E7%BC%96%E7%A8%8B
-                        '>
-                    <i class="fa fa-tag"></i> #编程
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/c&#43;&#43;%E6%A0%87%E5%87%86%E5%BA%93
-                        '>
-                    <i class="fa fa-tag"></i> C&#43;&#43;标准库
-                </a>
-            </div>
-        </span>
-        
-    </div>
-
-<div class="dang"></div>
-            </div>
-            
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-                <img class="lazyload" src="/images/thumbnail.gif" data-src="" alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/%E9%A1%BA%E5%BA%8F%E5%AE%B9%E5%99%A8/">【C&#43;&#43; Primer(edition 5) 08】顺序容器</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2021-9-25 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2021-9-25 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                    收录于:
+                        </div>
+                    </span>
                     
-                        <a href='
-                                        /categories/cpp
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#%E7%BC%96%E7%A8%8B
                                     '>
-                                Cpp
+                                <i class="fa fa-tag"></i> #编程
                             </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">顺序容器</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/%E9%A1%BA%E5%BA%8F%E5%AE%B9%E5%99%A8/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-    
-
-
-    <div class="down-type">
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#cpp
-                        '>
-                    <i class="fa fa-tag"></i> #Cpp
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
-                        '>
-                    <i class="fa fa-tag"></i> #语法特性
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E7%BC%96%E7%A8%8B
-                        '>
-                    <i class="fa fa-tag"></i> #编程
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/c&#43;&#43;%E6%A0%87%E5%87%86%E5%BA%93
-                        '>
-                    <i class="fa fa-tag"></i> C&#43;&#43;标准库
-                </a>
-            </div>
-        </span>
-        
-    </div>
-
-<div class="dang"></div>
-            </div>
-            
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-                <img class="lazyload" src="/images/thumbnail.gif" data-src="" alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/%E7%B1%BB/">【C&#43;&#43; Primer(edition 5) 07】类</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2021-9-20 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2021-9-20 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                    收录于:
+                        </div>
+                    </span>
                     
-                        <a href='
-                                        /categories/cpp
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/c&#43;&#43;%E6%A0%87%E5%87%86%E5%BA%93
                                     '>
-                                Cpp
+                                <i class="fa fa-tag"></i> C&#43;&#43;标准库
                             </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">类</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/%E7%B1%BB/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-    
-
-
-    <div class="down-type">
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#cpp
-                        '>
-                    <i class="fa fa-tag"></i> #Cpp
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
-                        '>
-                    <i class="fa fa-tag"></i> #语法特性
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E7%BC%96%E7%A8%8B
-                        '>
-                    <i class="fa fa-tag"></i> #编程
-                </a>
-            </div>
-        </span>
-        
-    </div>
-
-<div class="dang"></div>
-            </div>
-            
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-                <img class="lazyload" src="/images/thumbnail.gif" data-src="" alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0/">【C&#43;&#43; Primer(edition 5) 06】函数</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2021-9-13 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2021-9-13 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                    收录于:
+                        </div>
+                    </span>
                     
-                        <a href='
-                                        /categories/cpp
-                                    '>
-                                Cpp
-                            </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">函数</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-    
-
-
-    <div class="down-type">
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#cpp
-                        '>
-                    <i class="fa fa-tag"></i> #Cpp
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
-                        '>
-                    <i class="fa fa-tag"></i> #语法特性
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E7%BC%96%E7%A8%8B
-                        '>
-                    <i class="fa fa-tag"></i> #编程
-                </a>
-            </div>
-        </span>
-        
-    </div>
-
-<div class="dang"></div>
-            </div>
+                </div>
             
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
+        </div>
         
-                <img class="lazyload" src="/images/thumbnail.gif" data-src="" alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/%E8%AF%AD%E5%8F%A5/">【C&#43;&#43; Primer(edition 5) 05】语句</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2021-9-12 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2021-9-12 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                    收录于:
+            
+                <div class="pre-next">
                     
-                        <a href='
-                                        /categories/cpp
-                                    '>
-                                Cpp
-                            </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">语句</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/%E8%AF%AD%E5%8F%A5/">
-            <span><i class="fa fa-arrow-right"></i></span>
+    
+        
+        <a href="https://cnjslw.github.io/posts/%E9%A1%BA%E5%BA%8F%E5%AE%B9%E5%99%A8/" class="pre">
+            <span class="pre-icon"><i class="fa fa-hand-o-left"></i></span>
+            <div class="pre-title-root">
+                <span>【C&#43;&#43; Primer(edition 5) 08】顺序容器</span>
+            </div>
         </a>
-    </div>
-</div>
+        
 
-
+        
+        <a href="https://cnjslw.github.io/posts/%E6%B3%9B%E5%9E%8B%E7%AE%97%E6%B3%95/" class="next">
+            <div class="next-title-root">
+                <span>【C&#43;&#43; Primer(edition 5) 10】泛型算法</span>
+            </div>
+            <span class="next-icon"><i class="fa fa-hand-o-right"></i></span>
+        </a>
+        
 
     
+    
 
-
-    <div class="down-type">
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#cpp
-                        '>
-                    <i class="fa fa-tag"></i> #Cpp
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
-                        '>
-                    <i class="fa fa-tag"></i> #语法特性
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E7%BC%96%E7%A8%8B
-                        '>
-                    <i class="fa fa-tag"></i> #编程
-                </a>
-            </div>
-        </span>
-        
-    </div>
-
-<div class="dang"></div>
-            </div>
+                </div>
             
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
         
-                <img class="lazyload" src="/images/thumbnail.gif" data-src="" alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/%E8%A1%A8%E8%BE%BE%E5%BC%8F/">【C&#43;&#43; Primer(edition 5) 04】表达式</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2021-9-9 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2021-9-9 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                    收录于:
-                    
-                        <a href='
-                                        /categories/cpp
-                                    '>
-                                Cpp
-                            </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">表达式</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
+    
 </div>
 
-
-
     
-
-
-    <div class="down-type">
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#cpp
-                        '>
-                    <i class="fa fa-tag"></i> #Cpp
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
-                        '>
-                    <i class="fa fa-tag"></i> #语法特性
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E7%BC%96%E7%A8%8B
-                        '>
-                    <i class="fa fa-tag"></i> #编程
-                </a>
-            </div>
-        </span>
-        
-    </div>
-
-<div class="dang"></div>
-            </div>
+        <div class="content-last">
             
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-                <img class="lazyload" src="/images/thumbnail.gif" data-src="" alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%90%91%E9%87%8F%E5%92%8C%E6%95%B0%E7%BB%84/">【C&#43;&#43; Primer(edition 5) 03】字符串、向量和数组</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2021-9-8 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2021-9-8 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                    收录于:
-                    
-                        <a href='
-                                        /categories/cpp
-                                    '>
-                                Cpp
-                            </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">字符串、向量和数组</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%90%91%E9%87%8F%E5%92%8C%E6%95%B0%E7%BB%84/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-    
-
-
-    <div class="down-type">
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#cpp
-                        '>
-                    <i class="fa fa-tag"></i> #Cpp
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
-                        '>
-                    <i class="fa fa-tag"></i> #语法特性
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E7%BC%96%E7%A8%8B
-                        '>
-                    <i class="fa fa-tag"></i> #编程
-                </a>
-            </div>
-        </span>
-        
-    </div>
-
-<div class="dang"></div>
-            </div>
+                <button class="aixin content-last-item efct-button">
+                    <i class="fa fa-heart"></i>
+                </button>
             
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-                <img class="lazyload" src="/images/thumbnail.gif" data-src="" alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B/">【C&#43;&#43; Primer(edition 5) 02】复合类型</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2021-9-6 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2021-9-6 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                    收录于:
-                    
-                        <a href='
-                                        /categories/cpp
-                                    '>
-                                Cpp
-                            </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">复合类型</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-    
-
-
-    <div class="down-type">
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#cpp
-                        '>
-                    <i class="fa fa-tag"></i> #Cpp
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
-                        '>
-                    <i class="fa fa-tag"></i> #语法特性
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E7%BC%96%E7%A8%8B
-                        '>
-                    <i class="fa fa-tag"></i> #编程
-                </a>
-            </div>
-        </span>
-        
-    </div>
-
-<div class="dang"></div>
-            </div>
-            
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-                <img class="lazyload" src="/images/thumbnail.gif" data-src="" alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/">【C&#43;&#43; Primer(edition 5) 01】变量和基本类型</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2021-9-4 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2021-9-4 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                    收录于:
-                    
-                        <a href='
-                                        /categories/cpp
-                                    '>
-                                Cpp
-                            </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">变量和基本类型</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-    
-
-
-    <div class="down-type">
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#cpp
-                        '>
-                    <i class="fa fa-tag"></i> #Cpp
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
-                        '>
-                    <i class="fa fa-tag"></i> #语法特性
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E7%BC%96%E7%A8%8B
-                        '>
-                    <i class="fa fa-tag"></i> #编程
-                </a>
-            </div>
-        </span>
-        
-    </div>
-
-<div class="dang"></div>
-            </div>
             
         </div>
     
-</div>
 
 
             </div>
@@ -1258,33 +830,16 @@
 
 
 
+    
+    
+
 
 <div class="other">
     <div class="other-up">
-        <div class="other-qita text-wbd">最新文章</div>
+        <div class="other-qita text-wbd">相关文章</div>
         <div class="xian"></div>
     </div>
     <div class="list">
-        
-            <a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/">
-                
-<a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/">
-    <div class="list-item">
-        <div class="icon-other-root">
-            
-                <div class="icon-other" style="background-image: url(  );"></div>
-            
-        </div>
-        <div class="list-right">
-            <div class="other-title">
-                【模板与泛型编程01】函数模板
-            </div>
-            <div class="other-summary">函数模板</div>
-            <div class="other-date">2022-6-8</div>
-        </div>
-    </div>
-</a>
-            </a>
         
             <a href="https://cnjslw.github.io/posts/%E6%B3%9B%E5%9E%8B%E7%AE%97%E6%B3%95/">
                 
@@ -1301,26 +856,6 @@
             </div>
             <div class="other-summary">泛型算法</div>
             <div class="other-date">2021-10-1</div>
-        </div>
-    </div>
-</a>
-            </a>
-        
-            <a href="https://cnjslw.github.io/posts/%E5%85%B3%E8%81%94%E5%AE%B9%E5%99%A8/">
-                
-<a href="https://cnjslw.github.io/posts/%E5%85%B3%E8%81%94%E5%AE%B9%E5%99%A8/">
-    <div class="list-item">
-        <div class="icon-other-root">
-            
-                <div class="icon-other" style="background-image: url(  );"></div>
-            
-        </div>
-        <div class="list-right">
-            <div class="other-title">
-                【C&#43;&#43; Primer(edition 5) 09】关联容器
-            </div>
-            <div class="other-summary">关联容器</div>
-            <div class="other-date">2021-9-28</div>
         </div>
     </div>
 </a>
@@ -1386,6 +921,46 @@
 </a>
             </a>
         
+            <a href="https://cnjslw.github.io/posts/%E8%AF%AD%E5%8F%A5/">
+                
+<a href="https://cnjslw.github.io/posts/%E8%AF%AD%E5%8F%A5/">
+    <div class="list-item">
+        <div class="icon-other-root">
+            
+                <div class="icon-other" style="background-image: url(  );"></div>
+            
+        </div>
+        <div class="list-right">
+            <div class="other-title">
+                【C&#43;&#43; Primer(edition 5) 05】语句
+            </div>
+            <div class="other-summary">语句</div>
+            <div class="other-date">2021-9-12</div>
+        </div>
+    </div>
+</a>
+            </a>
+        
+            <a href="https://cnjslw.github.io/posts/%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+                
+<a href="https://cnjslw.github.io/posts/%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+    <div class="list-item">
+        <div class="icon-other-root">
+            
+                <div class="icon-other" style="background-image: url(  );"></div>
+            
+        </div>
+        <div class="list-right">
+            <div class="other-title">
+                【C&#43;&#43; Primer(edition 5) 04】表达式
+            </div>
+            <div class="other-summary">表达式</div>
+            <div class="other-date">2021-9-9</div>
+        </div>
+    </div>
+</a>
+            </a>
+        
     </div>
 </div>
         </div>
@@ -1397,6 +972,46 @@
 
             </div>
         </div>
+    </div>
+</div>
+
+    
+
+<div class="sponsor">
+    <div class="sponsor-self">
+        <div class="sponsor-title">赞赏</div>
+        <div class="sponsor-btn">
+            
+                
+                    
+                        <div class="sponsor-btn-1 border-r">Wechat</div>
+                    
+                
+                
+            
+                
+                    
+                        <div class="sponsor-btn-2 border-l">Alipay</div>
+                    
+                
+                
+            
+        </div>
+        
+        <div class="sponsor-img">
+            
+                
+                    <img class="sponsor-img-1" src="/images/wechat.png" alt="">
+                
+                
+            
+                
+                    <img class="sponsor-img-2" src="/images/alipay.png" alt="" style="display: none;">
+                
+                
+            
+        </div>
+        <div class="cancel efct-button">取消</div>
     </div>
 </div>
 

@@ -6,7 +6,34 @@
     <description>Recent content in 《C&#43;&#43; Primer》 on AWei’s Kernel Tour</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Mon, 20 Sep 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://cnjslw.github.io/series/c++-primer/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 01 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://cnjslw.github.io/series/c++-primer/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>【C&#43;&#43; Primer(edition 5) 10】泛型算法</title>
+      <link>https://cnjslw.github.io/posts/%E6%B3%9B%E5%9E%8B%E7%AE%97%E6%B3%95/</link>
+      <pubDate>Fri, 01 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://cnjslw.github.io/posts/%E6%B3%9B%E5%9E%8B%E7%AE%97%E6%B3%95/</guid>
+      <description>泛型算法</description>
+    </item>
+    
+    <item>
+      <title>【C&#43;&#43; Primer(edition 5) 09】关联容器</title>
+      <link>https://cnjslw.github.io/posts/%E5%85%B3%E8%81%94%E5%AE%B9%E5%99%A8/</link>
+      <pubDate>Tue, 28 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://cnjslw.github.io/posts/%E5%85%B3%E8%81%94%E5%AE%B9%E5%99%A8/</guid>
+      <description>关联容器</description>
+    </item>
+    
+    <item>
+      <title>【C&#43;&#43; Primer(edition 5) 08】顺序容器</title>
+      <link>https://cnjslw.github.io/posts/%E9%A1%BA%E5%BA%8F%E5%AE%B9%E5%99%A8/</link>
+      <pubDate>Sat, 25 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://cnjslw.github.io/posts/%E9%A1%BA%E5%BA%8F%E5%AE%B9%E5%99%A8/</guid>
+      <description>顺序容器</description>
+    </item>
+    
     <item>
       <title>【C&#43;&#43; Primer(edition 5) 07】类</title>
       <link>https://cnjslw.github.io/posts/%E7%B1%BB/</link>
