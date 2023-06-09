@@ -3,23 +3,24 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>AWei’s Kernel Tour | 【C&#43;&#43; Primer(edition 5) 06】函数</title>
+    <title>AWei’s Kernel Tour | 【C&#43;&#43; Primer(edition 5) 15】继承</title>
     <meta name="description"
-        content="函数 ">
-    <link rel="canonical" href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0/" />
+        content="继承 ">
+    <link rel="canonical" href="https://cnjslw.github.io/posts/%E5%A4%9A%E6%80%81/" />
     <link rel="icon" type="image/x-icon" href="/images/linux_pic.ico">
-    <meta property="og:title" content="【C&#43;&#43; Primer(edition 5) 06】函数" />
-<meta property="og:description" content="函数" />
+    <meta property="og:title" content="【C&#43;&#43; Primer(edition 5) 15】继承" />
+<meta property="og:description" content="继承" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2021-09-13T00:00:00+00:00" />
-<meta property="article:modified_time" content="2021-09-13T00:00:00+00:00" />
-<meta property="og:see_also" content="https://cnjslw.github.io/posts/%E5%A4%9A%E6%80%81/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/%E7%BB%A7%E6%89%BF/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/%E6%93%8D%E4%BD%9C%E9%87%8D%E8%BD%BD%E4%B8%8E%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/%E6%8B%B7%E8%B4%9D%E6%8E%A7%E5%88%B6/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/%E5%8A%A8%E6%80%81%E5%88%86%E9%85%8D/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/%E6%B3%9B%E5%9E%8B%E7%AE%97%E6%B3%95/" />
+<meta property="og:url" content="https://cnjslw.github.io/posts/%E5%A4%9A%E6%80%81/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-10-27T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-10-27T00:00:00+00:00" />
+<meta property="og:see_also" content="https://cnjslw.github.io/posts/%E7%BB%A7%E6%89%BF/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/%E6%93%8D%E4%BD%9C%E9%87%8D%E8%BD%BD%E4%B8%8E%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/%E6%8B%B7%E8%B4%9D%E6%8E%A7%E5%88%B6/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/%E5%8A%A8%E6%80%81%E5%88%86%E9%85%8D/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/%E6%B3%9B%E5%9E%8B%E7%AE%97%E6%B3%95/" />
+
 
 
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="【C&#43;&#43; Primer(edition 5) 06】函数"/>
-<meta name="twitter:description" content="函数"/>
+<meta name="twitter:title" content="【C&#43;&#43; Primer(edition 5) 15】继承"/>
+<meta name="twitter:description" content="继承"/>
 
     
     
@@ -212,11 +213,11 @@
             </div>
         
         <div class="hero-content">
-            <div class="hero-title">【C&#43;&#43; Primer(edition 5) 06】函数</div>
+            <div class="hero-title">【C&#43;&#43; Primer(edition 5) 15】继承</div>
             <div class="hero-subtitle"></div>
             <div class="hero-date">
-                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2021-9-13 &nbsp;</span>
-                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2021-9-13 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2021-10-27 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2021-10-27 &nbsp;</span>
                     <span class="no-wrap"><i class="fa fa-folder"></i>
                         收录于:
                         
@@ -228,8 +229,8 @@
                     </span>    
             </div>
             <div class="timelong">
-                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 981 &nbsp;</span>
-                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 5 分钟 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 150 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 1 分钟 &nbsp;</span>
                 <span class="no-wrap"><i class="fa fa-eye"></i> 阅读量: <span id="busuanzi_value_page_pv"></span></span>
             </div>
         </div>
@@ -265,660 +266,46 @@
     
         <div class="content">
             <div class="content-self">
-                <h1 id="一函数基础">一、函数基础</h1>
+                <p><strong>OOP的核心思想是多态性（polymorphism）</strong>（动态绑定是多态性得以实现的重要因素）</p>
+<h1 id="一静态类型和动态类型">一、静态类型和动态类型</h1>
 <ul>
-<li><strong>函数定义</strong>：函数是一个命名了的代码块。</li>
-<li><strong>编写函数</strong>：包括返回类型、函数名字和0个或者多个<strong>形参</strong>（parameter）组成的列表和函数体。</li>
-<li><strong>调用运算符调用函数</strong>：调用运算符的形式是一对圆括号 <code>()</code>，作用于一个表达式，该表达式是函数或者指向函数的指针。
+<li>动态类型:  变量或表达式表示的内存中的对象类型，直到运行时才可见</li>
+<li>静态类型:  变量申明的类型或表达式生成的类型，在编译时就已知</li>
+<li>可以将基类的指针或引用绑定到派生类对象上。</li>
+<li>如果不是指针也不是引用，则它的动态类型和静态类型永远保持一致</li>
+<li>不存在从基类向派生类的隐式类型转换。</li>
+<li>派生类向基类的自动类型转换只对指针或引用类型有效，对象之间不存在类型转换。对象之间的转换会导致某些对象被<code>切掉(sliced down)</code>。所谓的切掉，就是当派生类和基类之间通过拷贝构造，赋值构造等进行转化时，有一些成员会因为数据成员的不同导致成员丢失，有点像被切掉了。</li>
+</ul>
+<h1 id="二虚函数与动态绑定">二、虚函数与动态绑定</h1>
+<h2 id="1如何实现多态">1、如何实现多态</h2>
+<p>基类通过在其成员函数的声明语句前加上关键字<code>virtual</code>使得该函数执行<strong>动态绑定</strong>。
+任何非静态函数都可以是虚函数。关键字<code>virtual</code>只能出现在内内部的声明语句之前，而不能用于类外部的函数定义。如果基类把一个函数声明成虚函数，则该函数在派生类中隐式的也是虚函数。如果成员函数没有被声明为虚函数，则解析过程发生在编译时而非运行时。</p>
+<p><strong>当且仅当</strong>对通过指针或引用调用虚函数时，才会在运行时解析该调用，也只有在这种情况下对象的动态类型才有可能与静态类型不同。</p>
 <ul>
-<li>圆括号内是用逗号隔开的<strong>实参</strong>（argument）列表。</li>
-<li>函数调用过程：
+<li>派生类必须在其内部对所有重新定义的虚函数进行声明。可以在函数之前加上<code>virtual</code>关键字，也可以不加。</li>
+<li>派生类函数如果覆盖了某个继承而来的虚函数, 它的形参必须与被它覆盖的基类函数完全一致,返回类型必须与基类函数匹配，<strong>除非</strong>返回类本身的指针或引用时，不要求一致，<strong>但是</strong>要求要求两个类</li>
+<li>如果虚函数使用默认实参，则基类和派生类中定义的默认实参最好一致。之间可以进行类型转化</li>
+</ul>
+<h2 id="2override和final关键字">2、override和final关键字</h2>
 <ul>
-<li>1.主调函数（calling function）的执行被中断。</li>
-<li>2.被调函数（called function）开始执行。</li>
+<li>C++11新标准允许派生类显式地注明它将使用哪个成员函数改写基类的虚函数，即在函数的形参列表之后加一个<code>override</code>关键字。</li>
+<li>如果我们想覆盖某个虚函数，但不小心把形参列表弄错了，这个时候就不会覆盖基类中的虚函数。加上<code>override</code>可以明确程序员的意图，让编译器帮忙确认参数列表是否出错。（在派生类中申明一个除了参数列表之外与基类中虚函数一致的函数是合法，但是不要这样做，为了防止不是刻意构造这样的函数，而是写错了，设置了<code>override</code>关键字）</li>
+<li>如果某个函数被指定为<code>final</code>，则之后的任何尝试覆盖函数的操作都将引发错误</li>
 </ul>
-</li>
-</ul>
-</li>
-<li><strong>形参和实参</strong>：形参和实参的<strong>个数</strong>和<strong>类型</strong>必须匹配上。</li>
-<li><strong>返回类型</strong>： <code>void</code>表示函数不返回任何值。函数的返回类型<strong>不能是</strong>数组类型或者函数类型，但可以是指向数组或者函数的指针。</li>
-<li><strong>名字</strong>：名字的作用于是程序文本的一部分，名字在其中可见。</li>
-</ul>
-<h2 id="1局部对象">1、局部对象</h2>
+<h2 id="3禁止动态绑定">3、禁止动态绑定</h2>
+<p>在某些情况下，我们希望对虚函数的调用不要进行动态绑定，而是强迫其执行虚函数的某个特定版本。使用<strong>作用域运算符</strong>（<code>::</code>）可以实现。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">double</span> <span class="n">undiscounted</span> <span class="o">=</span> <span class="n">baseP</span><span class="o">-&gt;</span><span class="n">Quote</span><span class="o">::</span><span class="n">net_price</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="三多态实例">三、多态实例</h1>
 <ul>
-<li><strong>生命周期</strong>：对象的生命周期是程序执行过程中该对象存在的一段时间。</li>
-<li><strong>局部变量</strong>（local variable）：形参和函数体内部定义的变量统称为局部变量。它对函数而言是局部的，对函数外部而言是<strong>隐藏</strong>的。</li>
-<li><strong>自动对象</strong>：只存在于块执行期间的对象。当块的执行结束后，它的值就变成<strong>未定义</strong>的了。</li>
-<li><strong>局部静态对象</strong>： <code>static</code>类型的局部变量，生命周期贯穿函数调用前后。</li>
+<li>编译产生的代码将在运行时确定使用虚函数的哪个版本，判断的依据是该指针所绑定对象的真实类型即动态类型。</li>
 </ul>
-<h2 id="2函数声明">2、函数声明</h2>
-<ul>
-<li><strong>函数声明</strong>：函数的声明和定义唯一的区别是声明无需函数体，用一个分号替代。函数声明主要用于描述函数的接口，也称<strong>函数原型</strong>。</li>
-<li><strong>在头文件中进行函数声明</strong>：建议变量在头文件中声明；在源文件中定义。</li>
-<li><strong>分离编译</strong>： <code>CC a.cc b.cc</code>直接编译生成可执行文件；<code>CC -c a.cc b.cc</code>编译生成对象代码<code>a.o b.o</code>； <code>CC a.o b.o</code>编译生成可执行文件。</li>
-</ul>
-<h1 id="二参数传递">二、参数传递</h1>
-<ul>
-<li>形参初始化的机理和变量初始化一样。</li>
-<li><strong>引用传递</strong>（passed by reference）：又称传引用调用（called by reference），指<strong>形参是引用类型</strong>，引用形参是它对应的实参的别名。</li>
-<li><strong>值传递</strong>（passed by value）：又称传值调用（called by value），指实参的值是通过<strong>拷贝</strong>传递给形参。</li>
-</ul>
-<h2 id="1传值参数">1、传值参数</h2>
-<ul>
-<li>当初始化一个非引用类型的变量时，初始值被拷贝给变量。</li>
-<li>函数对形参做的所有操作都不会影响实参。</li>
-<li><strong>指针形参</strong>：常用在C中，<code>C++</code>建议使用引用类型的形参代替指针。</li>
-</ul>
-<h2 id="2传引用参数">2、传引用参数</h2>
-<ul>
-<li>通过使用引用形参，允许函数改变一个或多个实参的值。</li>
-<li>引用形参直接关联到绑定的对象，而非对象的副本。</li>
-<li>使用引用形参可以用于<strong>返回额外的信息</strong>。</li>
-<li>经常用引用形参来避免不必要的复制。</li>
-<li><code>void swap(int &amp;v1, int &amp;v2)</code></li>
-<li>如果无需改变引用形参的值，最好将其声明为常量引用。</li>
-</ul>
-<h2 id="3const形参和实参">3、const形参和实参</h2>
-<ul>
-<li>形参的顶层<code>const</code>被忽略。<code>void func(const int i);</code>调用时既可以传入<code>const int</code>也可以传入<code>int</code>。</li>
-<li>我们可以使用非常量初始化一个底层<code>const</code>对象，但是反过来不行。</li>
-<li>在函数中，不能改变实参的<strong>局部副本</strong>。</li>
-<li>尽量使用常量引用。</li>
-</ul>
-<h2 id="4数组形参">4、数组形参</h2>
-<h2 id="41-数组形参的定义">4.1 数组形参的定义</h2>
-<p>因为<strong>不能拷贝数组</strong>，所以<strong>无法以值传递的方式</strong>使用数组参数，因为数组会转换成指针，所以当为函数传递一个数组时，<strong>实际上</strong>传递的是指向数组首元素的指针</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span><span class="lnt">9
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">print</span><span class="p">(</span><span class="k">const</span> <span class="kt">int</span> <span class="o">*</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">print</span><span class="p">(</span><span class="k">const</span> <span class="kt">int</span><span class="p">[]);</span>
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">print</span><span class="p">(</span><span class="k">const</span> <span class="kt">int</span><span class="p">[</span><span class="mi">10</span><span class="p">]);</span> <span class="c1">//这里的10只是期望数组含有多少元素，实际不一定
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl"><span class="c1">//三种print函数声明等价,形参都是const int* 类型
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">,</span> <span class="n">j</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">};</span>
-</span></span><span class="line"><span class="cl"><span class="n">print</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="n">print</span><span class="p">(</span><span class="n">j</span><span class="p">);</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="42-数组形参的越界问题">4.2 数组形参的越界问题</h2>
-<p><strong>要注意在函数中使用数组时，不能越界</strong>。管理指针形参有三种常用的技术。</p>
-<p><strong>1. 使用标记指定的数组长度</strong>
-管理数据实参的第一个方法是要求数组本身包含一个结束标记，使用这种方法的典型示例是C风格字符串。C风格的是字符串是以<code>\0</code>为结束的，函数在处理C风格字符串时，遇到空字符停止</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">print</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">cp</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="k">if</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span>                    <span class="c1">//非空指针
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="k">while</span><span class="p">(</span><span class="o">*</span><span class="n">cp</span><span class="p">)</span>            <span class="c1">//非空字符
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="n">count</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">cp</span><span class="o">++</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>2.使用标准库规范</strong>
-管理数组实参的第二种技术是传递指向数组首元素和尾后元素的指针</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">print</span><span class="p">(</span><span class="k">const</span> <span class="kt">int</span> <span class="o">*</span><span class="n">beg</span> <span class="p">,</span> <span class="k">const</span> <span class="kt">int</span> <span class="o">*</span><span class="n">end</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="k">while</span><span class="p">(</span><span class="n">beg</span> <span class="o">!=</span> <span class="n">end</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">		<span class="n">cout</span> <span class="o">&lt;&lt;*</span><span class="n">beg</span><span class="o">++&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">j</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">};</span>
-</span></span><span class="line"><span class="cl"><span class="n">print</span><span class="p">(</span><span class="n">begin</span><span class="p">(</span><span class="n">j</span><span class="p">),</span><span class="n">end</span><span class="p">(</span><span class="n">j</span><span class="p">));</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>3.显示传递一个表示数组大小的形参</strong>
-第三种管理方法，就是专门定义一个表示数组大小的形参</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span><span class="lnt">9
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">print</span><span class="p">(</span><span class="k">const</span> <span class="kt">int</span> <span class="n">ia</span><span class="p">[],</span> <span class="n">size_t</span> <span class="n">size</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="k">for</span><span class="p">(</span><span class="n">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span> <span class="p">;</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">size</span> <span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">){</span>
-</span></span><span class="line"><span class="cl">		<span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">ia</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">j</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">};</span>
-</span></span><span class="line"><span class="cl"><span class="n">print</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">end</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="o">-</span><span class="n">begin</span><span class="p">(</span><span class="n">j</span><span class="p">));</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="43-数组引用形参">4.3 数组引用形参</h2>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">f</span><span class="p">(</span><span class="kt">int</span> <span class="o">&amp;</span><span class="n">arr</span><span class="p">[</span><span class="mi">10</span><span class="p">]);</span>    <span class="c1">//arr是一个数组，每一个元素都引用变量
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">f</span><span class="p">(</span><span class="kt">int</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">arr</span><span class="p">)[</span><span class="mi">10</span><span class="p">]);</span>  <span class="c1">//arr是引用变量，指向一个含有10个元素的数组
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">,</span> <span class="n">j</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">};</span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">k</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">};</span>
-</span></span><span class="line"><span class="cl"><span class="n">f</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i</span><span class="p">);</span>   <span class="c1">//错误
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">f</span><span class="p">(</span><span class="n">j</span><span class="p">);</span>    <span class="c1">//错误
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">f</span><span class="p">(</span><span class="n">k</span><span class="p">);</span>    <span class="c1">//正确
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="44-传递多维数组">4.4 传递多维数组</h2>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">print</span><span class="p">(</span><span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">matrix</span><span class="p">)[</span><span class="mi">10</span><span class="p">]</span> <span class="p">,</span> <span class="kt">int</span> <span class="n">rowSize</span><span class="p">);</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="5main处理命令行选项">5、main处理命令行选项</h2>
-<ul>
-<li><code>int main(int argc, char *argv[]){...}</code></li>
-<li>第一个形参代表参数的个数；第二个形参是参数C风格字符串数组。</li>
-</ul>
-<h2 id="6可变形参">6、可变形参</h2>
-<p>如果函数的实参数量未知但是全部实参的类型都相同，可以使用<code>initializer_list</code>类型的形参，这是一种标准库类型，用于表示某种特定类型的值的数组。定能一在同名头文件中。</p>
-<p><code>initializer_list</code>提供的操作（<code>C++11</code>）：</p>
-<table>
-<thead>
-<tr>
-<th>操作</th>
-<th>解释</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>initializer_list&lt;T&gt; lst;</code></td>
-<td>默认初始化；<code>T</code>类型元素的空列表</td>
-</tr>
-<tr>
-<td><code>initializer_list&lt;T&gt; lst{a,b,c...};</code></td>
-<td><code>lst</code>的元素数量和初始值一样多；<code>lst</code>的元素是对应初始值的副本；列表中的元素是<code>const</code>。</td>
-</tr>
-<tr>
-<td><code>lst2(lst)</code></td>
-<td>拷贝或赋值一个<code>initializer_list</code>对象不会拷贝列表中的元素；拷贝后，原始列表和副本共享元素。</td>
-</tr>
-<tr>
-<td><code>lst2 = lst</code></td>
-<td>同上</td>
-</tr>
-<tr>
-<td><code>lst.size()</code></td>
-<td>列表中的元素数量</td>
-</tr>
-<tr>
-<td><code>lst.begin()</code></td>
-<td>返回指向<code>lst</code>中首元素的指针</td>
-</tr>
-<tr>
-<td><code>lst.end()</code></td>
-<td>返回指向<code>lst</code>中微元素下一位置的指针</td>
-</tr>
-</tbody>
-</table>
-<p><code>initializer_list</code>使用demo：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">err_msg</span><span class="p">(</span><span class="n">ErrCode</span> <span class="n">e</span><span class="p">,</span> <span class="n">initializer_list</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">il</span><span class="p">){</span>
-</span></span><span class="line"><span class="cl">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">e</span><span class="p">.</span><span class="n">msg</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="n">bed</span> <span class="o">=</span> <span class="n">il</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span> <span class="n">beg</span> <span class="o">!=</span> <span class="n">il</span><span class="p">.</span><span class="n">end</span><span class="p">();</span> <span class="o">++</span> <span class="n">beg</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">beg</span> <span class="o">&lt;&lt;</span> <span class="s">&#34; &#34;</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="n">err_msg</span><span class="p">(</span><span class="n">ErrCode</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="p">{</span><span class="s">&#34;functionX&#34;</span><span class="p">,</span> <span class="s">&#34;okay});</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
-<li>所有实参类型相同，可以使用 <code>initializer_list</code>的标准库类型。</li>
-<li>实参类型不同，可以使用<code>可变参数模板</code>。</li>
-<li>省略形参符： <code>...</code>，便于<code>C++</code>访问某些C代码，这些C代码使用了 <code>varargs</code>的C标准功能。</li>
-</ul>
-<h1 id="三返回类型和return语句">三、返回类型和return语句</h1>
-<h2 id="1无返回值函数">1、无返回值函数</h2>
-<p>没有返回值的 <code>return</code>语句只能用在返回类型是 <code>void</code>的函数中，返回 <code>void</code>的函数不要求非得有 <code>return</code>语句。</p>
-<h2 id="2有返回值函数">2、有返回值函数</h2>
-<p><code>return</code>语句的返回值的类型必须和函数的返回类型相同，或者能够<strong>隐式地</strong>转换成函数的返回类型。</p>
-<h2 id="21-值是如何被返回的">2.1 值是如何被返回的</h2>
-<p>![[c++ 临时对象以及引用的一些知识]]
-返回的值用于初始化调用点的一个<strong>临时量(除了指针和引用)</strong>，该临时量就是函数调用的结果。</p>
-<p>函数返回的是一个string对象，意味着返回值将被拷贝到调用点，因此，该函数返回word的副本或者一个未命名的临时string对象</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">string</span> <span class="nf">make_plural</span><span class="p">(</span><span class="n">size_t</span> <span class="n">ctr</span> <span class="p">,</span> <span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">word</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">								<span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">ending</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="p">(</span><span class="n">ctr</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">?</span> <span class="n">word</span><span class="o">+</span><span class="nl">ending</span> <span class="p">:</span> <span class="n">word</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="n">string</span> <span class="n">word</span> <span class="o">=</span> <span class="n">make_plural</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">word</span><span class="p">,</span><span class="s">&#34;s&#34;</span><span class="p">);</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>如果函数返回引用，该引用仅是它所引用对象的一个别名</p>
-<h2 id="22-不要返回局部对象的引用或指针">2.2 不要返回局部对象的引用或指针</h2>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span><span class="lnt">9
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">// 严重错误：这个函数试图返回局部对象的引用
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">mainp</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="n">string</span> <span class="n">ret</span> <span class="p">;</span> 
-</span></span><span class="line"><span class="cl">	<span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">ret</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span>
-</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="k">else</span> 
-</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="s">&#34;Empty&#34;</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>返回局部对象的引用是错误的；同样，返回局部对象的指针也是错误的。
-一旦函数完成，局部对象被释放，指针将指向一个不存在的对象。要想确保返回值的安全，不妨提问：引用所引（指针所指向）的是在函数之前已经存在的哪个对象？</p>
-<p><strong>⚠️不要，而不是不能</strong>
-![[C++中返回临时变量指针问题]]</p>
-<h2 id="23-返回类类型的函数和调用运算符">2.3 返回类类型的函数和调用运算符</h2>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">//调用string对象的size成员，该string对象是由shorterString函数返回的
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">auto</span> <span class="n">sz</span> <span class="o">=</span> <span class="n">shorterString</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span><span class="n">s2</span><span class="p">).</span><span class="n">size</span><span class="p">();</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="24-引用返回左值">2.4 引用返回左值</h2>
-<p>函数的返回类型决定函数调用是否是左值。==调用一个返回引用的函数得到左值==；其他返回类型得到右值。</p>
-<h2 id="25-列表初始化返回值">2.5 列表初始化返回值</h2>
-<p>函数可以返回花括号包围的值的列表。（<code>C++11</code>）
-此处的列表也用来对表示函数返回的临时量进行初始化</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">process</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="c1">//string expected , actual
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span><span class="p">(</span><span class="n">expected</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span>
-</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="p">{};</span>
-</span></span><span class="line"><span class="cl">	<span class="k">else</span> <span class="nf">if</span><span class="p">(</span><span class="n">expected</span> <span class="o">==</span> <span class="n">actual</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="p">{</span><span class="s">&#34;functionX&#34;</span> <span class="p">,</span><span class="s">&#34;okay&#34;</span><span class="p">};</span>
-</span></span><span class="line"><span class="cl">	<span class="k">else</span>
-</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="p">{</span><span class="s">&#34;fuctionX&#34;</span><span class="p">,</span><span class="n">expected</span><span class="p">,</span><span class="n">actual</span><span class="p">};</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>如果函数返回的是内置类型,则花括号包围的列表最多包含一个值，而且该值所占空间不应该大于目标类型的空间。如果函数返回的是类类型，由类本身定义初始值如何使用。</p>
-<h2 id="26-主函数main的返回值">2.6 主函数main的返回值</h2>
-<p>main函数可以没有return语句直接结束
-如果结尾没有return，编译器将隐式地插入一条返回0的return语句。返回0代表执行成功。main的返回值可以看作状态指示器，0表示成功，其他表示失败，其中非0的具体含义根据机器定夺，如果期望返回值与机器无关，则可调用cstdlib头文件中定义的两个预处理变量</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="k">if</span><span class="p">(</span><span class="n">some_failure</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="k">else</span>
-</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>其为预处理变量，所以不用在前面添加<code>std::</code></p>
-<h2 id="27-返回数组指针">2.7 返回数组指针</h2>
-<p>因为数组不能被拷贝，所以函数不能返回数组。不过，函数可以返回数组的指针或引用。虽然从语法上来说，要想定义一个返回数组的指针或引用 的函数比较烦琐，但是有一些方法可以简化这一任务，其中最直接的方法是使用类型别名：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="kt">int</span> <span class="n">arrT</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span>  <span class="c1">//arrT是包含10个整数的数组
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">using</span> <span class="n">arrT</span> <span class="o">=</span> <span class="kt">int</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span>  <span class="c1">//等价声明 
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">arrT</span><span class="o">*</span> <span class="nf">func</span><span class="p">()</span> <span class="p">{...}</span>     <span class="c1">//func返回一个指向含有10个整数的数组指针
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>如果不使用类型别名</strong></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">func</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">))[</span><span class="mi">10</span><span class="p">]</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
-<li><code>func (int i)</code>表示调用func函数时需要一个int类型的实参。</li>
-<li><code>(*func(int i))</code>意味着我们可以对函数调用的结果执行解引用操作。</li>
-<li><code>(*func(int i)) [10]</code>表示解引用func的调用将得到一个大小是10的数组,</li>
-<li><code>int (*func (int i)) [10]</code>表示数组中的元素是int类型</li>
-</ul>
-<p><strong>使用 <code>decltype</code></strong>
-如果我们知道函数返回的指针将指向哪个数组，就可以使用decltype关键字声明返回类型</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">odd</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">9</span><span class="p">};</span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">even</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">10</span><span class="p">};</span>
-</span></span><span class="line"><span class="cl"><span class="k">decltype</span><span class="p">(</span><span class="n">odd</span><span class="p">)</span> <span class="o">*</span><span class="n">arrPtr</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="p">(</span> <span class="n">i</span><span class="o">%</span><span class="mi">2</span> <span class="p">)</span> <span class="o">?</span> <span class="o">&amp;</span><span class="nl">odd</span> <span class="p">:</span> <span class="o">&amp;</span><span class="n">even</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>尾置返回类型</strong>
-使用尾置返回类型 (trailing return type)。任何函数的定义都能使用，但是这种形式对返回类型复杂的函数最有效，比如返是数组的指针或者数组的引用。尾置返回类型跟在<strong>形参列表后面并以<code>-&gt;</code>符号开头</strong>。为了表示函数真正的返回类型跟在形参列表之后，在本应该出现返回类型的地方放置一个auto：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">auto</span> <span class="n">func</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">int</span><span class="p">(</span><span class="o">*</span><span class="p">)[</span><span class="mi">10</span><span class="p">]</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h1 id="四函数重载">四、函数重载</h1>
-<h2 id="1重载概念">1、重载概念</h2>
-<ul>
-<li><strong>重载</strong>：如果同一作用域内几个函数名字相同<strong>但形参列表不同</strong>，我们称之为重载（overload）函数。</li>
-<li><code>main</code>函数不能重载。</li>
-<li><strong>重载和const形参</strong>：
-<ul>
-<li>一个有顶层const的形参和没有它的函数无法区分。 <code>Record lookup(Phone* const)</code>和 <code>Record lookup(Phone*)</code>无法区分。</li>
-<li>相反，是否有某个底层const形参可以区分。 <code>Record lookup(Account*)</code>和 <code>Record lookup(const Account*)</code>可以区分。</li>
-</ul>
-</li>
-<li><strong>重载和作用域</strong>：若在内层作用域中声明名字，它将隐藏外层作用域中声明的同名实体，在不同的作用域中无法重载函数名。</li>
-</ul>
-<h2 id="2函数匹配">2、函数匹配</h2>
-<ul>
-<li>重载函数匹配的<strong>三个步骤</strong>：1.候选函数；2.可行函数；3.寻找最佳匹配。</li>
-<li><strong>候选函数</strong>：选定本次调用对应的重载函数集，集合中的函数称为候选函数（candidate function）。</li>
-<li><strong>可行函数</strong>：考察本次调用提供的实参，选出可以被这组实参调用的函数，新选出的函数称为可行函数（viable function）。</li>
-<li><strong>寻找最佳匹配</strong>：基本思想：实参类型和形参类型越接近，它们匹配地越好。</li>
-</ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">string</span> <span class="nf">read</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">print</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">print</span><span class="p">(</span><span class="kt">double</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">fooBar</span><span class="p">(</span><span class="kt">int</span> <span class="n">val</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="kt">bool</span> <span class="n">read</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="n">string</span> <span class="n">s</span> <span class="o">=</span> <span class="n">read</span><span class="p">();</span> <span class="c1">//WRONG
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kt">void</span> <span class="n">print</span><span class="p">(</span><span class="kt">int</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">	<span class="n">print</span><span class="p">(</span><span class="s">&#34;Value:&#34;</span><span class="p">);</span>   <span class="c1">//WRONG
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">print</span><span class="p">(</span><span class="n">val</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">	<span class="n">print</span><span class="p">(</span><span class="mf">3.14</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h1 id="五特殊用途语言特性">五、特殊用途语言特性</h1>
-<h2 id="1默认实参">1、默认实参</h2>
-<ul>
-<li><code>string screen(sz ht = 24, sz wid = 80, char backgrnd = ' ');</code></li>
-<li>一旦某个形参被赋予了默认值，那么它之后的形参都必须要有默认值。</li>
-</ul>
-<h2 id="2内联inline函数">2、内联（inline）函数</h2>
-<ul>
-<li>普通函数的缺点：调用函数比求解等价表达式要慢得多。</li>
-<li><code>inline</code>函数可以避免函数调用的开销，可以让编译器在编译时<strong>内联地展开</strong>该函数。</li>
-<li><code>inline</code>函数应该在头文件中定义。</li>
-</ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">shorterString</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span><span class="n">s2</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>   <span class="c1">//inline
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">s1</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">s2</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">?</span> <span class="nl">s1</span> <span class="p">:</span> <span class="n">s2</span><span class="p">)</span> <span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>   <span class="c1">//编译时
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="3constexpr函数">3、constexpr函数</h2>
-<ul>
-<li>指能用于常量表达式的函数。编译器会把所有调用constexpr函数的地方替换成结果值，被隐式的指定成内联函数</li>
-<li>函数的返回类型及所有形参类型都要是字面值类型，并且有且仅有一条return语句</li>
-</ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">constexpr</span> <span class="kt">int</span> <span class="nf">new_sz</span><span class="p">()</span> <span class="p">{</span><span class="k">return</span> <span class="mi">42</span><span class="p">;}</span>
-</span></span><span class="line"><span class="cl"><span class="k">constexpr</span> <span class="kt">int</span> <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">new_sz</span><span class="p">();</span>      <span class="c1">//foo是一个常量表达式
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl"><span class="c1">//返回值可以不是常量
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">constexpr</span> <span class="n">size_t</span> <span class="nf">scale</span><span class="p">(</span><span class="n">size_t</span> <span class="n">cnt</span><span class="p">){</span><span class="k">return</span> <span class="n">new_sz</span><span class="p">()</span><span class="o">*</span><span class="n">cnt</span><span class="p">;}</span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">arr</span><span class="p">[</span><span class="n">scale</span><span class="p">(</span><span class="mi">2</span><span class="p">)];</span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span><span class="mi">2</span> <span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">a2</span><span class="p">[</span><span class="n">scale</span><span class="p">(</span><span class="n">i</span><span class="p">)];</span>  <span class="c1">//WRONG
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
-<li><code>constexpr</code>函数应该在头文件中定义。</li>
-</ul>
-<h2 id="4调试帮助">4、调试帮助</h2>
-<h2 id="41-assert">4.1 assert</h2>
-<p>预处理宏（preprocessor macro）
-<code>assert(expr);</code>
-如果expr为假（0），输出信息并终止程序的执行
-如果为真（1），什么也不做
-定义在<code>cassert</code>头文件中，预处理器而不是编译器管理</p>
-<h2 id="42-ndebug">4.2 NDEBUG</h2>
-<p>assert的行为依赖于一个名为NDEBUG的预处理变量，该变量定义，则不是执行，未定义，则执行检查</p>
-<p><strong>定义NDEBUG的方法</strong></p>
-<ol>
-<li>利用<code>#define NDEBUG</code> 关闭assert</li>
-<li>利用编译器参数控制调试状态：
-<code>CC -D NDEBUG main.c</code>可以定义这个变量<code>NDEBUG</code>。</li>
-</ol>
-<p><strong>利用NDEBUG编写条件调试代码</strong>
-如果定义了NDEBUG，忽略掉调试代码
-如果未定义NDEBUG，执行 <code>#ifndef</code> 和 <code>#endif</code>之间的代码</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">print</span><span class="p">(){</span>
-</span></span><span class="line"><span class="cl">    <span class="cp">#ifndef NDEBUG
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span>        <span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="n">__func__</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;...&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="cp">#endif
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>预处理器定义的一些变量</strong></p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">变量名</th>
-<th style="text-align:center">含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center"><code>__FILE__</code></td>
-<td style="text-align:center">存放文件名的字符串字面量</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__LINE__</code></td>
-<td style="text-align:center">存放当前行号的整型字面值</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__FILE__</code></td>
-<td style="text-align:center">存放文件编译时间的字符串字面值</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>__FILE__</code></td>
-<td style="text-align:center">存放文件编译日期的字符串字面量</td>
-</tr>
-</tbody>
-</table>
-<h1 id="六函数指针">六、函数指针</h1>
-<h2 id="1函数指针">1、函数指针</h2>
-<p>是<strong>指向函数的指针</strong>。
-<code>bool (*pf)(const string &amp;, const string &amp;);</code>
-注：两端的括号不可少。
-将函数名作为一个值使用时，该函数自动转换为指针</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">bool</span> <span class="o">*</span><span class="n">pf</span> <span class="o">=</span> <span class="n">func</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="kt">bool</span> <span class="o">*</span><span class="n">pf</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">func</span><span class="p">;</span>  <span class="c1">//&amp;可选
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="2函数指针形参">2、函数指针形参</h2>
-<p>形参中使用函数定义或者函数指针定义效果一样。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">useBigger</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">s1</span> <span class="p">,</span> <span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">s2</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">			   <span class="kt">bool</span> <span class="n">pf</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span> <span class="p">,</span> <span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">useBigger</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">s1</span> <span class="p">,</span> <span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">s2</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">			   <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">pf</span><span class="p">)(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span> <span class="p">,</span> <span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1">//调用
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">useBigger</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span><span class="n">s2</span><span class="p">,</span><span class="n">func</span><span class="p">);</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>过于冗余的形参，可以使用类型别名或者<code>decltype</code>来简化</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -934,84 +321,83 @@
 </span><span class="lnt">11
 </span><span class="lnt">12
 </span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">//func1 , func2 , funcU1 都是函数类型
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">typedef</span> <span class="kt">bool</span> <span class="nf">func1</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span> <span class="p">,</span> <span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="nf">decltype</span><span class="p">(</span><span class="n">lengthCompare</span><span class="p">)</span> <span class="n">func2</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="k">using</span> <span class="n">funcU1</span> <span class="o">=</span> <span class="kt">bool</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span> <span class="p">,</span> <span class="k">const</span> <span class="n">tring</span> <span class="o">&amp;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="c1">//func3 , func4 , funcU2是指向函数的指针
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">typedef</span> <span class="nf">bool</span><span class="p">(</span><span class="o">*</span><span class="n">func3</span><span class="p">)(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span> <span class="p">,</span> <span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="nf">decltype</span><span class="p">(</span><span class="n">lengthCompare</span><span class="p">)</span> <span class="o">*</span><span class="n">func4</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="k">using</span> <span class="n">funcU2</span> <span class="o">=</span> <span class="kt">bool</span><span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span> <span class="p">,</span> <span class="k">const</span> <span class="n">tring</span> <span class="o">&amp;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="c1">//更加简洁的形式
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">useBigger</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">s1</span> <span class="p">,</span> <span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">s2</span><span class="p">,</span> <span class="n">func1</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">useBigger</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">s1</span> <span class="p">,</span> <span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">s2</span><span class="p">,</span> <span class="n">func3</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">useBigger</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">s1</span> <span class="p">,</span> <span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">s2</span><span class="p">,</span> <span class="n">funcU1</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">useBigger</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">s1</span> <span class="p">,</span> <span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">s2</span><span class="p">,</span> <span class="n">funcU2</span><span class="p">);</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>这里直接给函数名字作为形参，会自动转为函数指针</p>
-<h2 id="3返回指向函数的指针">3、返回指向函数的指针</h2>
-<p><strong>直接声明</strong></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">f1</span><span class="p">(</span><span class="kt">int</span><span class="p">))(</span><span class="kt">int</span> <span class="o">*</span><span class="p">,</span><span class="kt">int</span><span class="o">*</span><span class="p">);</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>类型别名</strong>
-和形参不同，返回类型不会自动识别函数名为函数指针类型，所以要明确的定义</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">using</span> <span class="n">F</span> <span class="o">=</span> <span class="kt">int</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">,</span> <span class="kt">int</span><span class="o">*</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="k">using</span> <span class="n">Fp</span> <span class="o">=</span> <span class="kt">int</span><span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">int</span> <span class="o">*</span><span class="p">,</span><span class="kt">int</span><span class="o">*</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Base</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">	<span class="k">virtual</span> <span class="n">itn</span> <span class="n">fcn</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="n">Fp</span> <span class="nf">f1</span><span class="p">(</span><span class="kt">int</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="n">F</span> <span class="nf">f2</span><span class="p">(</span><span class="kt">int</span><span class="p">);</span>      <span class="c1">//WRONG
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>尾置返回类型</strong></p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">auto</span> <span class="nf">f1</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="o">-&gt;</span><span class="kt">int</span><span class="p">(</span><span class="o">*</span><span class="p">)(</span><span class="kt">int</span> <span class="o">*</span><span class="p">,</span><span class="kt">int</span><span class="o">*</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">D1</span><span class="o">:</span><span class="k">public</span> <span class="n">Base</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="n">fcn</span><span class="p">(</span><span class="kt">int</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="k">virtual</span> <span class="kt">void</span> <span class="nf">f2</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">D2</span><span class="o">:</span><span class="k">public</span> <span class="n">D1</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="nf">fcn</span><span class="p">(</span><span class="kt">int</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="nf">fcn</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">void</span> <span class="nf">f2</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">Base</span> <span class="n">bobj</span> <span class="p">;</span> <span class="n">D1</span> <span class="n">dlobj</span> <span class="p">;</span> <span class="n">D2</span> <span class="n">d1obj</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">Base</span> <span class="o">*</span><span class="n">bpl</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">bobj</span><span class="p">,</span> <span class="o">*</span><span class="n">bp2</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">dlobj</span><span class="p">,</span> <span class="o">*</span><span class="n">bp3</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">d2obj</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">bpl</span><span class="o">-&gt;</span><span class="n">fcn</span> <span class="p">();</span> 
+</span></span><span class="line"><span class="cl"><span class="n">bp2</span><span class="o">-&gt;</span><span class="n">fcn</span> <span class="p">();</span> 
+</span></span><span class="line"><span class="cl"><span class="n">bp3</span><span class="o">-&gt;</span><span class="n">fcn</span> <span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">D1</span> <span class="o">*</span><span class="n">dlp</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">dlobj</span><span class="p">;</span> <span class="n">D2</span> <span class="o">*</span><span class="n">d2p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">d2obj</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">bp2</span><span class="o">-&gt;</span><span class="n">f2</span><span class="p">();</span>	
+</span></span><span class="line"><span class="cl"><span class="n">dlp</span><span class="o">-&gt;</span><span class="n">f2</span><span class="p">()</span> <span class="p">;</span>	
+</span></span><span class="line"><span class="cl"><span class="n">d2p</span><span class="o">-&gt;</span><span class="n">f2</span><span class="p">()</span> <span class="p">;</span>	
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="4重载函数的指针">4、重载函数的指针</h2>
-<p>定义指向重载函数的指针必须精准匹配</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">ff</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">ff</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">pf1</span><span class="p">)(</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span> <span class="o">=</span> <span class="n">ff</span><span class="p">;</span>   <span class="c1">//pf1指向ff(unsigned int)
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">pf2</span><span class="p">)(</span><span class="kt">int</span><span class="p">)</span> <span class="o">=</span> <span class="n">ff</span><span class="p">;</span>   <span class="c1">//WRONG
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">double</span> <span class="p">(</span><span class="o">*</span><span class="n">pf3</span><span class="p">)(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span> <span class="o">=</span><span class="n">ff</span><span class="p">;</span> <span class="c1">//WRONG
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div>
+</div><!-- raw HTML omitted -->
+<h1 id="四抽象基类">四、抽象基类</h1>
+<ul>
+<li><strong>纯虚函数</strong>（pure virtual）：清晰地告诉用户当前的函数是没有实际意义的。纯虚函数无需定义，只用在函数体的位置前书写<code>=0</code>就可以将一个虚函数说明为纯虚函数。</li>
+<li>含有纯虚函数的类是<strong>抽象基类</strong>（abstract base class）。不能创建抽象基类的对象。</li>
+</ul>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<h1 id="五广义的多态">五、广义的多态</h1>
+<h2 id="1重载多态编译期间">1.重载多态（编译期间）</h2>
+<h2 id="11-函数重载">1.1 函数重载</h2>
+<p><a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0/"></a></p>
+<!-- raw HTML omitted -->
+<h2 id="12-运算符重载">1.2 运算符重载</h2>
+<p><a href="https://cnjslw.github.io/posts/%E6%93%8D%E4%BD%9C%E9%87%8D%E8%BD%BD%E4%B8%8E%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/"></a></p>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<h2 id="2子类型重载运行期间">2.子类型重载（运行期间）</h2>
+<h2 id="21-虚函数">2.1 虚函数</h2>
+<p>见上面内容</p>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<h2 id="3参数多态性编译器">3.参数多态性（编译器）</h2>
+<h2 id="31-类模板">3.1 类模板</h2>
+<!-- raw HTML omitted -->
+<h2 id="32-函数模板">3.2 函数模板</h2>
+<p><a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/"></a></p>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<h2 id="4强制多态编译期间运行期">4.强制多态（编译期间、运行期）</h2>
+<h2 id="41-基本类型转换">4.1 基本类型转换</h2>
+<p><a href="https://cnjslw.github.io/posts/%E8%A1%A8%E8%BE%BE%E5%BC%8F/"></a></p>
+<!-- raw HTML omitted -->
+<h2 id="42-自定义类型转换">4.2 自定义类型转换</h2>
+<p><a href="https://cnjslw.github.io/posts/%E6%93%8D%E4%BD%9C%E9%87%8D%E8%BD%BD%E4%B8%8E%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/"></a></p>
+
             </div>
             
                 <div class="tags">
@@ -1046,6 +432,16 @@
                         </div>
                     </span>
                     
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#c&#43;&#43;%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1
+                                    '>
+                                <i class="fa fa-tag"></i> #C&#43;&#43;面向对象
+                            </a>
+                        </div>
+                    </span>
+                    
                 </div>
             
         </div>
@@ -1055,18 +451,18 @@
                     
     
         
-        <a href="https://cnjslw.github.io/posts/%E8%AF%AD%E5%8F%A5/" class="pre">
+        <a href="https://cnjslw.github.io/posts/%E7%BB%A7%E6%89%BF/" class="pre">
             <span class="pre-icon"><i class="fa fa-hand-o-left"></i></span>
             <div class="pre-title-root">
-                <span>【C&#43;&#43; Primer(edition 5) 05】语句</span>
+                <span>【C&#43;&#43; Primer(edition 5) 14】继承</span>
             </div>
         </a>
         
 
         
-        <a href="https://cnjslw.github.io/posts/%E7%B1%BB/" class="next">
+        <a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/" class="next">
             <div class="next-title-root">
-                <span>【C&#43;&#43; Primer(edition 5) 07】类</span>
+                <span>【模板与泛型编程01】函数模板</span>
             </div>
             <span class="next-icon"><i class="fa fa-hand-o-right"></i></span>
         </a>
@@ -1178,26 +574,6 @@
     </div>
     <div class="list">
         
-            <a href="https://cnjslw.github.io/posts/%E5%A4%9A%E6%80%81/">
-                
-<a href="https://cnjslw.github.io/posts/%E5%A4%9A%E6%80%81/">
-    <div class="list-item">
-        <div class="icon-other-root">
-            
-                <div class="icon-other" style="background-image: url(  );"></div>
-            
-        </div>
-        <div class="list-right">
-            <div class="other-title">
-                【C&#43;&#43; Primer(edition 5) 15】继承
-            </div>
-            <div class="other-summary">继承</div>
-            <div class="other-date">2021-10-27</div>
-        </div>
-    </div>
-</a>
-            </a>
-        
             <a href="https://cnjslw.github.io/posts/%E7%BB%A7%E6%89%BF/">
                 
 <a href="https://cnjslw.github.io/posts/%E7%BB%A7%E6%89%BF/">
@@ -1293,6 +669,26 @@
             </div>
             <div class="other-summary">泛型算法</div>
             <div class="other-date">2021-10-1</div>
+        </div>
+    </div>
+</a>
+            </a>
+        
+            <a href="https://cnjslw.github.io/posts/%E5%85%B3%E8%81%94%E5%AE%B9%E5%99%A8/">
+                
+<a href="https://cnjslw.github.io/posts/%E5%85%B3%E8%81%94%E5%AE%B9%E5%99%A8/">
+    <div class="list-item">
+        <div class="icon-other-root">
+            
+                <div class="icon-other" style="background-image: url(  );"></div>
+            
+        </div>
+        <div class="list-right">
+            <div class="other-title">
+                【C&#43;&#43; Primer(edition 5) 09】关联容器
+            </div>
+            <div class="other-summary">关联容器</div>
+            <div class="other-date">2021-9-28</div>
         </div>
     </div>
 </a>
