@@ -6,7 +6,16 @@
     <description>Recent content in #Cpp on AWei’s Kernel Tour</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Mon, 06 Sep 2021 20:14:34 +0800</lastBuildDate><atom:link href="https://cnjslw.github.io/tags/#cpp/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 08 Sep 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://cnjslw.github.io/tags/#cpp/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>【C&#43;&#43; Primer(edition 5) 03】字符串、向量和数组</title>
+      <link>https://cnjslw.github.io/posts/%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%90%91%E9%87%8F%E5%92%8C%E6%95%B0%E7%BB%84/</link>
+      <pubDate>Wed, 08 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://cnjslw.github.io/posts/%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%90%91%E9%87%8F%E5%92%8C%E6%95%B0%E7%BB%84/</guid>
+      <description>字符串、向量和数组</description>
+    </item>
+    
     <item>
       <title>【C&#43;&#43; Primer(edition 5) 02】复合类型</title>
       <link>https://cnjslw.github.io/posts/%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B/</link>

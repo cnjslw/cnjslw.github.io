@@ -3,20 +3,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>AWei’s Kernel Tour | 《C&#43;&#43; Primer》</title>
+    <title>AWei’s Kernel Tour | 【C&#43;&#43; Primer(edition 5) 03】字符串、向量和数组</title>
     <meta name="description"
-        content=" ">
-    <link rel="canonical" href="https://cnjslw.github.io/series/c&#43;&#43;-primer/" />
+        content="字符串、向量和数组 ">
+    <link rel="canonical" href="https://cnjslw.github.io/posts/%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%90%91%E9%87%8F%E5%92%8C%E6%95%B0%E7%BB%84/" />
     <link rel="icon" type="image/x-icon" href="/images/linux_pic.ico">
-    <meta property="og:title" content="《C&#43;&#43; Primer》" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://cnjslw.github.io/series/c&#43;&#43;-primer/" />
+    <meta property="og:title" content="【C&#43;&#43; Primer(edition 5) 03】字符串、向量和数组" />
+<meta property="og:description" content="字符串、向量和数组" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://cnjslw.github.io/posts/%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%90%91%E9%87%8F%E5%92%8C%E6%95%B0%E7%BB%84/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-09-08T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-09-08T00:00:00+00:00" />
+<meta property="og:see_also" content="https://cnjslw.github.io/posts/%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/" />
 
 
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="《C&#43;&#43; Primer》"/>
-<meta name="twitter:description" content=""/>
+<meta name="twitter:title" content="【C&#43;&#43; Primer(edition 5) 03】字符串、向量和数组"/>
+<meta name="twitter:description" content="字符串、向量和数组"/>
 
     
     
@@ -194,29 +197,41 @@
 
 
         <div id="content">
-    
 
 
 
 
-
-
-    
-        
-    
 
 
 
 
     <div class="hero">
         
-            
-                <div class="hero-img">
-                    <img class="lazyload" src="/images/thumbnail.gif" data-src="" alt="">
-                </div>
-            
+            <div class="hero-img">
+                <img class="lazyload" src="/images/thumbnail.gif" data-src="" alt="">
+            </div>
+        
         <div class="hero-content">
-            <h1 class="hero-title">系列: 《C&#43;&#43; Primer》</h1>
+            <div class="hero-title">【C&#43;&#43; Primer(edition 5) 03】字符串、向量和数组</div>
+            <div class="hero-subtitle"></div>
+            <div class="hero-date">
+                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2021-9-8 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2021-9-8 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-folder"></i>
+                        收录于:
+                        
+                            <a href='
+                                /categories/cpp
+                            '>
+                                Cpp
+                            </a>
+                    </span>    
+            </div>
+            <div class="timelong">
+                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 466 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 3 分钟 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-eye"></i> 阅读量: <span id="busuanzi_value_page_pv"></span></span>
+            </div>
         </div>
     </div>
 
@@ -235,7 +250,7 @@
     
 
 
-<div class="terms-body">
+<div class="content-root">
     <div class="long">
         <button class="tosides-1 text-wbd">
             <i class="fa fa-arrow-right"></i>
@@ -248,278 +263,597 @@
         </button>
     </div>
     
-        <div class="terms-row">
+        <div class="content">
+            <div class="content-self">
+                <h1 id="一string">一、string</h1>
+<ul>
+<li>标准库类型<code>string</code>表示可变长的字符序列。</li>
+<li><code>#include &lt;string&gt;</code>，然后 <code>using std::string;</code></li>
+<li><strong>string对象</strong>：注意，不同于字符串字面值。</li>
+</ul>
+<h2 id="1定义和初始化string对象">1、定义和初始化string对象</h2>
+<p>定义<code>string</code>对象的方式：</p>
+<table>
+<thead>
+<tr>
+<th>方式</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>string s1</code></td>
+<td>默认初始化，<code>s1</code>是个空字符串</td>
+</tr>
+<tr>
+<td><code>string s2(s1)</code></td>
+<td><code>s2</code>是<code>s1</code>的副本</td>
+</tr>
+<tr>
+<td><code>string s2 = s1</code></td>
+<td>等价于<code>s2(s1)</code>，<code>s2</code>是<code>s1</code>的副本</td>
+</tr>
+<tr>
+<td><code>string s3(&quot;value&quot;)</code></td>
+<td><code>s3</code>是字面值“value”的副本，除了字面值最后的那个空字符外</td>
+</tr>
+<tr>
+<td><code>string s3 = &quot;value&quot;</code></td>
+<td>等价于<code>s3(&quot;value&quot;)</code>，<code>s3</code>是字面值&quot;value&quot;的副本</td>
+</tr>
+<tr>
+<td><code>string s4(n, 'c')</code></td>
+<td>把<code>s4</code>初始化为由连续<code>n</code>个字符<code>c</code>组成的串</td>
+</tr>
+</tbody>
+</table>
+<p>[[顺序容器#^5f2418|构造string的其他方法]]</p>
+<ul>
+<li>拷贝初始化（copy initialization）：使用等号<code>=</code>将一个已有的对象拷贝到正在创建的对象。</li>
+<li>直接初始化（direct initialization）：通过括号给对象赋值。</li>
+</ul>
+<h2 id="2string对象上的操作">2、string对象上的操作</h2>
+<p><code>string</code>的操作：</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>os &lt;&lt; s</code></td>
+<td>将<code>s</code>写到输出流<code>os</code>当中，返回<code>os</code></td>
+</tr>
+<tr>
+<td><code>is &gt;&gt; s</code></td>
+<td>从<code>is</code>中读取字符串赋给<code>s</code>，字符串以空白分割，返回<code>is</code></td>
+</tr>
+<tr>
+<td><code>getline(is, s)</code></td>
+<td>从<code>is</code>中读取一行赋给<code>s</code>，返回<code>is</code></td>
+</tr>
+<tr>
+<td><code>s.empty()</code></td>
+<td><code>s</code>为空返回<code>true</code>，否则返回<code>false</code></td>
+</tr>
+<tr>
+<td><code>s.size()</code></td>
+<td>返回<code>s</code>中字符的个数</td>
+</tr>
+<tr>
+<td><code>s[n]</code></td>
+<td>返回<code>s</code>中第<code>n</code>个字符的引用，位置<code>n</code>从0计起</td>
+</tr>
+<tr>
+<td><code>s1+s2</code></td>
+<td>返回<code>s1</code>和<code>s2</code>连接后的结果</td>
+</tr>
+<tr>
+<td><code>s1=s2</code></td>
+<td>用<code>s2</code>的副本代替<code>s1</code>中原来的字符</td>
+</tr>
+<tr>
+<td><code>s1==s2</code></td>
+<td>如果<code>s1</code>和<code>s2</code>中所含的字符完全一样，则它们相等；<code>string</code>对象的相等性判断对字母的大小写敏感</td>
+</tr>
+<tr>
+<td><code>s1!=s2</code></td>
+<td>同上</td>
+</tr>
+<tr>
+<td><code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code></td>
+<td>利用字符在字典中的顺序进行比较，且对字母的大小写敏感（对第一个不相同的位置进行比较）</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>string io：
+<ul>
+<li>执行读操作<code>&gt;&gt;</code>：忽略掉开头的空白（包括空格、换行符和制表符），直到遇到下一处空白为止。</li>
+<li><code>getline</code>：读取一整行，<strong>包括空白符</strong>。</li>
+</ul>
+</li>
+<li><code>s.size()</code>返回的时<code>string::size_type</code>类型，记住是一个<strong>无符号</strong>类型的值，不要和<code>int</code>混用</li>
+<li><code>s1+s2</code>使用时，保证至少一侧是string类型。<code>string s1 = &quot;hello&quot; + &quot;world&quot; // 错误，两侧均为字符串字面值</code></li>
+<li><strong>字符串字面值和string是不同的类型。</strong></li>
+</ul>
+<h2 id="3处理string对象中的字符">3、处理string对象中的字符</h2>
+<ul>
+<li><strong>ctype.h vs. cctype</strong>：C++修改了c的标准库，名称为去掉<code>.h</code>，前面加<code>c</code>。
+<blockquote>
+<p>如c++版本为<code>cctype</code>，c版本为<code>ctype.h</code></p>
+</blockquote>
+<ul>
+<li><strong>尽量使用c++版本的头文件</strong>，即<code>cctype</code></li>
+</ul>
+</li>
+</ul>
+<p><code>cctype</code>头文件中定义了一组标准函数：</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>isalnum(c)</code></td>
+<td>当<code>c</code>是字母或数字时为真</td>
+</tr>
+<tr>
+<td><code>isalpha(c)</code></td>
+<td>当<code>c</code>是字母时为真</td>
+</tr>
+<tr>
+<td><code>iscntrl(c)</code></td>
+<td>当<code>c</code>是控制字符时为真</td>
+</tr>
+<tr>
+<td><code>isdigit(c)</code></td>
+<td>当<code>c</code>是数字时为真</td>
+</tr>
+<tr>
+<td><code>isgraph(c)</code></td>
+<td>当<code>c</code>不是空格但可以打印时为真</td>
+</tr>
+<tr>
+<td><code>islower(c)</code></td>
+<td>当<code>c</code>是小写字母时为真</td>
+</tr>
+<tr>
+<td><code>isprint(c)</code></td>
+<td>当<code>c</code>是可打印字符时为真</td>
+</tr>
+<tr>
+<td><code>ispunct(c)</code></td>
+<td>当<code>c</code>是标点符号时为真</td>
+</tr>
+<tr>
+<td><code>isspace(c)</code></td>
+<td>当<code>c</code>是空白时为真（空格、横向制表符、纵向制表符、回车符、换行符、进纸符）</td>
+</tr>
+<tr>
+<td><code>isupper(c)</code></td>
+<td>当<code>c</code>是大写字母时为真</td>
+</tr>
+<tr>
+<td><code>isxdigit(c)</code></td>
+<td>当<code>c</code>是十六进制数字时为真</td>
+</tr>
+<tr>
+<td><code>tolower(c)</code></td>
+<td>当<code>c</code>是大写字母，输出对应的小写字母；否则原样输出<code>c</code></td>
+</tr>
+<tr>
+<td><code>toupper(c)</code></td>
+<td>当<code>c</code>是小写字母，输出对应的大写字母；否则原样输出<code>c</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>遍历字符串：使用<strong>范围for</strong>（range for）语句： <code>for (auto c: str)</code>，或者 <code>for (auto &amp;c: str)</code>使用引用直接改变字符串中的字符。 （C++11）</li>
+<li><code>str[x]</code>,<code>[]</code>输入参数为<code>string::size_type</code>类型，给出<code>int</code>整型也会自动转化为该类型</li>
+</ul>
+<h1 id="二vector">二、vector</h1>
+<p>[[C++Primer#第九章|深层次的介绍]]</p>
+<ul>
+<li>vector是一个<strong>容器</strong>，也是一个类模板；</li>
+<li><code>#include &lt;vector&gt;</code> 然后 <code>using std::vector;</code></li>
+<li>容器：包含其他对象。</li>
+<li>类模板：本身不是类，但可以<strong>实例化instantiation</strong>(编译器根据模板创建类或函数的过程称为实例化)出一个类。 <code>vector</code>是一个模板， <code>vector&lt;int&gt;</code>是一个类型。</li>
+<li>通过将类型放在类模板名称后面的<strong>尖括号</strong>中来指定<strong>类型</strong>，如<code>vector&lt;int&gt; ivec</code>。</li>
+</ul>
+<h2 id="1定义和初始化vector对象">1、定义和初始化vector对象</h2>
+<p>初始化<code>vector</code>对象的方法</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>vector&lt;T&gt; v1</code></td>
+<td><code>v1</code>是一个空<code>vector</code>，它潜在的元素是<code>T</code>类型的，执行默认初始化</td>
+</tr>
+<tr>
+<td><code>vector&lt;T&gt; v2(v1)</code></td>
+<td><code>v2</code>中包含有<code>v1</code>所有元素的副本</td>
+</tr>
+<tr>
+<td><code>vector&lt;T&gt; v2 = v1</code></td>
+<td>等价于<code>v2(v1)</code>，<code>v2</code>中包含<code>v1</code>所有元素的副本</td>
+</tr>
+<tr>
+<td><code>vector&lt;T&gt; v3(n, val)</code></td>
+<td><code>v3</code>包含了n个重复的元素，每个元素的值都是<code>val</code></td>
+</tr>
+<tr>
+<td><code>vector&lt;T&gt; v4(n)</code></td>
+<td><code>v4</code>包含了n个重复地执行了值初始化的对象</td>
+</tr>
+<tr>
+<td><code>vector&lt;T&gt; v5{a, b, c...}</code></td>
+<td><code>v5</code>包含了初始值个数的元素，每个元素被赋予相应的初始值</td>
+</tr>
+<tr>
+<td><code>vector&lt;T&gt; v5={a, b, c...}</code></td>
+<td>等价于<code>v5{a, b, c...}</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>列表初始化： <code>vector&lt;string&gt; v{&quot;a&quot;, &quot;an&quot;, &quot;the&quot;};</code> （C++11）</li>
+<li>元素由内默认初始化有两个限制，其一有些类必须明确的提供初始值，其二,如果只提供了元素的数量，而没有设定初始值，只能使用直接初始化。</li>
+<li>如果初始化时使用了花括号的形式，但是提供了值又不能用来列表初始化就要考虑用这样的值来构造vector对象。</li>
+</ul>
+<h2 id="2向vector对象中添加元素">2、向vector对象中添加元素</h2>
+<ul>
+<li><code>v.push_back(e)</code> 在尾部增加元素。</li>
+</ul>
+<h2 id="3其他vector操作">3、其他vector操作</h2>
+<p><code>vector</code>支持的操作：</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>v.emtpy()</code></td>
+<td>如果<code>v</code>不含有任何元素，返回真；否则返回假</td>
+</tr>
+<tr>
+<td><code>v.size()</code></td>
+<td>返回<code>v</code>中元素的个数</td>
+</tr>
+<tr>
+<td><code>v.push_back(t)</code></td>
+<td>向<code>v</code>的尾端添加一个值为<code>t</code>的元素</td>
+</tr>
+<tr>
+<td><code>v[n]</code></td>
+<td>返回<code>v</code>中第<code>n</code>个位置上元素的<strong>引用</strong></td>
+</tr>
+<tr>
+<td><code>v1 = v2</code></td>
+<td>用<code>v2</code>中的元素拷贝替换<code>v1</code>中的元素</td>
+</tr>
+<tr>
+<td><code>v1 = {a,b,c...}</code></td>
+<td>用列表中元素的拷贝替换<code>v1</code>中的元素</td>
+</tr>
+<tr>
+<td><code>v1 == v2</code></td>
+<td><code>v1</code>和<code>v2</code>相等当且仅当它们的元素数量相同且对应位置的元素值都相同</td>
+</tr>
+<tr>
+<td><code>v1 != v2</code></td>
+<td>同上</td>
+</tr>
+<tr>
+<td><code>&lt;</code>,<code>&lt;=</code>,<code>&gt;</code>, <code>&gt;=</code></td>
+<td>以字典顺序进行比较</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>范围<code>for</code>语句内不应该改变其遍历序列的大小。</li>
+<li><code>vector</code>对象（以及<code>string</code>对象）的下标运算符，只能对确知已存在的元素执行下标操作，不能用于添加元素。</li>
+</ul>
+<h1 id="三迭代器iterator">三、迭代器iterator</h1>
+<ul>
+<li>所有标准库容器都可以使用迭代器。</li>
+<li>类似于指针类型，迭代器也提供了对对象的间接访问。</li>
+</ul>
+<h2 id="1使用迭代器">1、使用迭代器</h2>
+<ul>
+<li><code>vector&lt;int&gt;::iterator iter</code>。</li>
+<li><code>auto b = v.begin();</code>返回指向第一个元素的迭代器。</li>
+<li><code>auto e = v.end();</code>返回指向最后一个元素的下一个（哨兵，尾后,one past the end）的迭代器（off the end）。</li>
+<li>如果容器为空， <code>begin()</code>和 <code>end()</code>返回的是同一个迭代器，都是尾后迭代器。</li>
+<li>使用解引用符<code>*</code>访问迭代器指向的元素。</li>
+<li>养成使用迭代器和<code>!=</code>的习惯（泛型编程）。</li>
+<li><strong>容器</strong>：可以包含其他对象；但所有的对象必须类型相同。</li>
+<li><strong>迭代器（iterator）</strong>：每种标准容器都有自己的迭代器。<code>C++</code>倾向于用迭代器而不是下标遍历元素。</li>
+<li><strong>const_iterator</strong>：只能读取容器内元素不能改变。</li>
+<li><strong>箭头运算符</strong>： 解引用 + 成员访问，<code>it-&gt;mem</code>等价于 <code>(*it).mem</code></li>
+<li><strong>谨记</strong>：但凡是使用了<strong>迭代器</strong>的循环体，都<strong>不要</strong>向迭代器所属的容器<strong>添加元素</strong>。</li>
+</ul>
+<p>标准容器迭代器的运算符:</p>
+<table>
+<thead>
+<tr>
+<th>运算符</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>*iter</code></td>
+<td>返回迭代器<code>iter</code>所指向的<strong>元素的引用</strong></td>
+</tr>
+<tr>
+<td><code>iter-&gt;mem</code></td>
+<td>等价于<code>(*iter).mem</code></td>
+</tr>
+<tr>
+<td><code>++iter</code></td>
+<td>令<code>iter</code>指示容器中的下一个元素</td>
+</tr>
+<tr>
+<td><code>--iter</code></td>
+<td>令<code>iter</code>指示容器中的上一个元素</td>
+</tr>
+<tr>
+<td><code>iter1 == iter2</code></td>
+<td>判断两个迭代器是否相等</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2迭代器运算">2、迭代器运算</h2>
+<p><code>vector</code>和<code>string</code>迭代器支持的运算：</p>
+<table>
+<thead>
+<tr>
+<th>运算符</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>iter + n</code></td>
+<td>迭代器加上一个整数值仍得到一个迭代器，迭代器指示的新位置和原来相比向前移动了若干个元素。结果迭代器或者指示容器内的一个元素，或者指示容器尾元素的下一位置。</td>
+</tr>
+<tr>
+<td><code>iter - n</code></td>
+<td>迭代器减去一个证书仍得到一个迭代器，迭代器指示的新位置比原来向后移动了若干个元素。结果迭代器或者指向容器内的一个元素，或者指示容器尾元素的下一位置。</td>
+</tr>
+<tr>
+<td><code>iter1 += n</code></td>
+<td>迭代器加法的复合赋值语句，将<code>iter1</code>加n的结果赋给<code>iter1</code></td>
+</tr>
+<tr>
+<td><code>iter1 -= n</code></td>
+<td>迭代器减法的复合赋值语句，将<code>iter2</code>减n的加过赋给<code>iter1</code></td>
+</tr>
+<tr>
+<td><code>iter1 - iter2</code></td>
+<td>两个迭代器相减的结果是它们之间的距离，也就是说，将运算符右侧的迭代器向前移动差值个元素后得到左侧的迭代器。参与运算的两个迭代器必须指向的是同一个容器中的元素或者尾元素的下一位置。</td>
+</tr>
+<tr>
+<td><code>&gt;</code>、<code>&gt;=</code>、<code>&lt;</code>、<code>&lt;=</code></td>
+<td>迭代器的关系运算符，如果某迭代器</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>difference_type</strong>：保证足够大以存储任何两个迭代器对象间的距离，可正可负。</li>
+</ul>
+<h1 id="三数组">三、数组</h1>
+<ul>
+<li>相当于vector的低级版，<strong>长度固定</strong>。</li>
+<li>如果不清楚元素的确切个数，请使用vector。</li>
+</ul>
+<h2 id="1定义和初始化内置数组">1、定义和初始化内置数组</h2>
+<ul>
+<li>初始化：<code>char input_buffer[buffer_size];</code>，长度必须是const表达式，或者不写，让编译器自己推断。</li>
+<li>数组不允许直接赋值给另一个数组。</li>
+<li>字符数组的特殊性 : 字符数组有一种额外的初始化形式，可以用字符串字面值对此类数组初始化。<strong>一定要注意字符串字面值的结尾处还有一个空字符</strong>。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">char</span> <span class="n">a1</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="sc">&#39;c&#39;</span> <span class="p">,</span> <span class="sc">&#39;+&#39;</span><span class="p">,</span> <span class="sc">&#39;+&#39;</span><span class="p">};</span><span class="c1">//列表初始化,没有空字符 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">char</span> <span class="n">a2</span><span class="p">[]</span><span class="o">=</span><span class="s">&#34;C++&#34;</span> <span class="c1">//自动添加表示字符串结束的空字符
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>理解复杂的数组声明 : <strong>由内向外，从右向左</strong>。</li>
+<li>用数组初始化 <code>vector</code>： <code>int a[] = {1,2,3,4,5}; vector&lt;int&gt; v(begin(a), end(a));</code> 。</li>
+</ul>
+<h2 id="2访问数组元素">2、访问数组元素</h2>
+<ul>
+<li>数组下标的类型：<code>size_t</code> 。</li>
+<li>字符数组的特殊性：结尾处有一个空字符，如 <code>char a[] = &quot;hello&quot;;</code> 。</li>
+</ul>
+<h2 id="3数组和指针">3、数组和指针</h2>
+<ul>
+<li>使用数组时，编译器一般会把它转换成指针。</li>
+<li>标准库类型限定使用的下标必须是无符号类型，而内置的下标可以处理负值。 <code>int *p=a[2] ; int k= p[-2]; //k=a[0]*</code></li>
+<li><strong>指针访问数组</strong>：在表达式中使用数组名时，名字会自动转换成指向数组的第一个元素的指针。</li>
+<li>当使用数组作为一个<code>auto</code>变量的初始值时，推断得到的类型是指针而非数组。当使用<code>decltype</code>的关键字时，上述转换不会发生。</li>
+<li>在宿主中引入<code>begin</code>和<code>end</code>函数来获取数组的首元素和数组的尾后元素。</li>
+<li>两个指向数组的指针相减的结果是它们之间的距离。 结果类型为<code>ptrdiff_t</code>的标准库类型。</li>
+</ul>
+<h2 id="4c风格字符串">4、C风格字符串</h2>
+<p>C风格的字符串是一种特殊的字符数组</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">c</span> <span class="o">=</span> <span class="s">&#34;Halo,World&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">char</span> <span class="n">c</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="sc">&#39;H&#39;</span><span class="p">,</span><span class="sc">&#39;a&#39;</span><span class="p">,</span><span class="sc">&#39;l&#39;</span><span class="p">,</span><span class="sc">&#39;o&#39;</span><span class="p">,</span><span class="sc">&#39;,&#39;</span><span class="p">,</span><span class="sc">&#39;W&#39;</span><span class="p">,</span><span class="sc">&#39;o&#39;</span><span class="p">,</span><span class="sc">&#39;r&#39;</span><span class="p">,</span><span class="sc">&#39;l&#39;</span><span class="p">,</span><span class="sc">&#39;d&#39;</span><span class="p">,</span><span class="sc">&#39;\0&#39;</span><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>两者等价，请注意，该数组的最后一个字符为空字符<code>\0</code>，这也被称为字符串结束字符，因为它告诉编译器， 字符串到此结束。这种C风格字符串是特殊的字符数组，因为总是在最后一个字符后加上空字符<code>\0</code>，在代码中使用字符串字面量时，编译器将负责在它后面添加<code>\0</code>。
+在数组中间插入<code>\0</code>并不会改变数组的长度，而只会导致将该数组作为输入的字符串处理将到这 个位置结束，如果不加<code>\0</code>，则会导致在打印或者计算长度等操作是无法停止或者输出垃圾数据，从而程序奔溃。</p>
+<p>C风格字符串不仅使用起来不方便而且极易引发程序漏洞是, 诸多安全问题的根本原因。</p>
+<ul>
+<li>从C继承来的字符串。</li>
+<li>用空字符结束（<code>\0</code>）。</li>
+<li>对大多数应用来说，使用标准库 <code>string</code>比使用C风格字符串更安全、更高效。</li>
+<li>获取 <code>string</code> 中的 <code>cstring</code> ： <code>const char *str = s.c_str();</code></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">char</span>  <span class="n">ca</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="sc">&#39;C&#39;</span> <span class="p">,</span> <span class="sc">&#39;+&#39;</span> <span class="p">,</span> <span class="sc">&#39;+&#39;</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">strlen</span><span class="p">(</span><span class="n">ca</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//严重错误CA没有以空字符结束。 Strlen函数将有可能沿着ca在内存中的位置不断向前寻找，直到遇到空字符才停下。
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>C标准库String函数，定义在<code>&lt;cstring&gt;</code> 中：</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>介绍</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>strlen(p)</code></td>
+<td>返回<code>p</code>的长度，空字符不计算在内</td>
+</tr>
+<tr>
+<td><code>strcmp(p1, p2)</code></td>
+<td>比较<code>p1</code>和<code>p2</code>的相等性。如果<code>p1==p2</code>，返回0；如果<code>p1&gt;p2</code>，返回一个正值；如果<code>p1&lt;p2</code>，返回一个负值。</td>
+</tr>
+<tr>
+<td><code>strcat(p1, p2)</code></td>
+<td>将<code>p2</code>附加到<code>p1</code>之后，返回<code>p1</code></td>
+</tr>
+<tr>
+<td><code>strcpy(p1, p2)</code></td>
+<td>将<code>p2</code>拷贝给<code>p1</code>，返回<code>p1</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>尽量使用vector和迭代器，少用数组</strong></p>
+<h2 id="5与旧代码的接口">5、与旧代码的接口</h2>
+<p>混用string对象和C风格字符串</p>
+<ul>
+<li>允许使用以空字符结束的字符数组来初始化string对象，或为string对象赋值。</li>
+<li>允许使用以空字符结束的字符数组作为string对象加法运算中的一个对象，不能两个运算对象都是 ， 在string对象的复合赋值运算中，允许使用以空字符结束的字符数组作为右侧的运算对象。</li>
+<li>上述性质反过来只能用string专门提供的一个名为<code>c_str</code>的成员函数来初始化指向字符的指针。<code>string s =&quot;C++&quot; ; const char *str = s.c_str();</code>该函数的返回结果是一个指针，该指针指向的一个以空字符结束的字读数组, 也就是C风格的字符串，而这个数组所存的数据恰好与那个string对象是一样的，结果指针的类型是<code>const char*</code>，从而确保我们不会改变字符数组的类型。</li>
+</ul>
+<h1 id="六多维数组">六、多维数组</h1>
+<ul>
+<li><strong>多维数组的初始化</strong>： <code>int ia[3][4] = {{0,1,2,3}, ...}</code>。</li>
+<li>使用范围for语句时，除了最内层的循环外，其他所有循环的控制变量都应该是<strong>引用</strong>类型。</li>
+</ul>
+<h1 id="七动态数组">七、动态数组</h1>
+<ul>
+<li>使用 <code>new</code>和 <code>delete</code>表达和c中<code>malloc</code>和<code>free</code>类似的功能，即在堆（自由存储区）中分配存储空间。</li>
+<li>定义： <code>int *pia = new int[10];</code> 10可以被一个变量替代。</li>
+<li>释放： <code>delete [] pia;</code>，注意不要忘记<code>[]</code>。</li>
+</ul>
+
+            </div>
             
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-                <img class="lazyload" src="/images/thumbnail.gif" data-src="" alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%90%91%E9%87%8F%E5%92%8C%E6%95%B0%E7%BB%84/">【C&#43;&#43; Primer(edition 5) 03】字符串、向量和数组</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2021-9-8 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2021-9-8 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                    收录于:
+                <div class="tags">
                     
-                        <a href='
-                                        /categories/cpp
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#cpp
                                     '>
-                                Cpp
+                                <i class="fa fa-tag"></i> #Cpp
                             </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">字符串、向量和数组</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%90%91%E9%87%8F%E5%92%8C%E6%95%B0%E7%BB%84/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-    
-
-
-    <div class="down-type">
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#cpp
-                        '>
-                    <i class="fa fa-tag"></i> #Cpp
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
-                        '>
-                    <i class="fa fa-tag"></i> #语法特性
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E7%BC%96%E7%A8%8B
-                        '>
-                    <i class="fa fa-tag"></i> #编程
-                </a>
-            </div>
-        </span>
-        
-    </div>
-
-<div class="dang"></div>
-            </div>
-            
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-                <img class="lazyload" src="/images/thumbnail.gif" data-src="" alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B/">【C&#43;&#43; Primer(edition 5) 02】复合类型</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2021-9-6 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2021-9-6 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                    收录于:
+                        </div>
+                    </span>
                     
-                        <a href='
-                                        /categories/cpp
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
                                     '>
-                                Cpp
+                                <i class="fa fa-tag"></i> #语法特性
                             </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">复合类型</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-    
-
-
-    <div class="down-type">
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#cpp
-                        '>
-                    <i class="fa fa-tag"></i> #Cpp
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
-                        '>
-                    <i class="fa fa-tag"></i> #语法特性
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E7%BC%96%E7%A8%8B
-                        '>
-                    <i class="fa fa-tag"></i> #编程
-                </a>
-            </div>
-        </span>
-        
-    </div>
-
-<div class="dang"></div>
-            </div>
-            
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-                <img class="lazyload" src="/images/thumbnail.gif" data-src="" alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/">【C&#43;&#43; Primer(edition 5) 01】变量和基本类型</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2021-9-4 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2021-9-4 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                    收录于:
+                        </div>
+                    </span>
                     
-                        <a href='
-                                        /categories/cpp
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#%E7%BC%96%E7%A8%8B
                                     '>
-                                Cpp
+                                <i class="fa fa-tag"></i> #编程
                             </a>
-                
-            </span>
+                        </div>
+                    </span>
+                    
+                </div>
+            
         </div>
-        <div class="down-summary">变量和基本类型</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/">
-            <span><i class="fa fa-arrow-right"></i></span>
+        
+            
+                <div class="pre-next">
+                    
+    
+        
+        <a href="https://cnjslw.github.io/posts/%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B/" class="pre">
+            <span class="pre-icon"><i class="fa fa-hand-o-left"></i></span>
+            <div class="pre-title-root">
+                <span>【C&#43;&#43; Primer(edition 5) 02】复合类型</span>
+            </div>
         </a>
-    </div>
-</div>
+        
 
-
+        
+        <a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/" class="next">
+            <div class="next-title-root">
+                <span>【模板与泛型编程01】函数模板</span>
+            </div>
+            <span class="next-icon"><i class="fa fa-hand-o-right"></i></span>
+        </a>
+        
 
     
+    
 
+                </div>
+            
+        
+    
+</div>
 
-    <div class="down-type">
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#cpp
-                        '>
-                    <i class="fa fa-tag"></i> #Cpp
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
-                        '>
-                    <i class="fa fa-tag"></i> #语法特性
-                </a>
-            </div>
-        </span>
-        
-        <span class="down-type-item">
-            <div class="shuxian-root">
-                <div class="shuxian"></div>
-            </div>
-            <div class="type-text">
-                <a href='
-                            /tags/#%E7%BC%96%E7%A8%8B
-                        '>
-                    <i class="fa fa-tag"></i> #编程
-                </a>
-            </div>
-        </span>
-        
-    </div>
-
-<div class="dang"></div>
-            </div>
+    
+        <div class="content-last">
+            
+                <button class="aixin content-last-item efct-button">
+                    <i class="fa fa-heart"></i>
+                </button>
+            
             
         </div>
     
-</div>
 
 
             </div>
@@ -596,53 +930,16 @@
 
 
 
+    
+    
+
 
 <div class="other">
     <div class="other-up">
-        <div class="other-qita text-wbd">最新文章</div>
+        <div class="other-qita text-wbd">相关文章</div>
         <div class="xian"></div>
     </div>
     <div class="list">
-        
-            <a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/">
-                
-<a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/">
-    <div class="list-item">
-        <div class="icon-other-root">
-            
-                <div class="icon-other" style="background-image: url(  );"></div>
-            
-        </div>
-        <div class="list-right">
-            <div class="other-title">
-                【模板与泛型编程01】函数模板
-            </div>
-            <div class="other-summary">函数模板</div>
-            <div class="other-date">2022-6-8</div>
-        </div>
-    </div>
-</a>
-            </a>
-        
-            <a href="https://cnjslw.github.io/posts/%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%90%91%E9%87%8F%E5%92%8C%E6%95%B0%E7%BB%84/">
-                
-<a href="https://cnjslw.github.io/posts/%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%90%91%E9%87%8F%E5%92%8C%E6%95%B0%E7%BB%84/">
-    <div class="list-item">
-        <div class="icon-other-root">
-            
-                <div class="icon-other" style="background-image: url(  );"></div>
-            
-        </div>
-        <div class="list-right">
-            <div class="other-title">
-                【C&#43;&#43; Primer(edition 5) 03】字符串、向量和数组
-            </div>
-            <div class="other-summary">字符串、向量和数组</div>
-            <div class="other-date">2021-9-8</div>
-        </div>
-    </div>
-</a>
-            </a>
         
             <a href="https://cnjslw.github.io/posts/%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B/">
                 
@@ -684,6 +981,26 @@
 </a>
             </a>
         
+            <a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/">
+                
+<a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/">
+    <div class="list-item">
+        <div class="icon-other-root">
+            
+                <div class="icon-other" style="background-image: url(  );"></div>
+            
+        </div>
+        <div class="list-right">
+            <div class="other-title">
+                【模板与泛型编程01】函数模板
+            </div>
+            <div class="other-summary">函数模板</div>
+            <div class="other-date">2022-6-8</div>
+        </div>
+    </div>
+</a>
+            </a>
+        
     </div>
 </div>
         </div>
@@ -695,6 +1012,46 @@
 
             </div>
         </div>
+    </div>
+</div>
+
+    
+
+<div class="sponsor">
+    <div class="sponsor-self">
+        <div class="sponsor-title">赞赏</div>
+        <div class="sponsor-btn">
+            
+                
+                    
+                        <div class="sponsor-btn-1 border-r">Wechat</div>
+                    
+                
+                
+            
+                
+                    
+                        <div class="sponsor-btn-2 border-l">Alipay</div>
+                    
+                
+                
+            
+        </div>
+        
+        <div class="sponsor-img">
+            
+                
+                    <img class="sponsor-img-1" src="/images/wechat.png" alt="">
+                
+                
+            
+                
+                    <img class="sponsor-img-2" src="/images/alipay.png" alt="" style="display: none;">
+                
+                
+            
+        </div>
+        <div class="cancel efct-button">取消</div>
     </div>
 </div>
 
