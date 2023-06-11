@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>从汇编的视角重学C&#43;&#43; on AWei’s Kernel Tour</title>
+    <link>https://cnjslw.github.io/series/%E4%BB%8E%E6%B1%87%E7%BC%96%E7%9A%84%E8%A7%86%E8%A7%92%E9%87%8D%E5%AD%A6c&#43;&#43;/</link>
+    <description>Recent content in 从汇编的视角重学C&#43;&#43; on AWei’s Kernel Tour</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 01 Nov 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://cnjslw.github.io/series/%E4%BB%8E%E6%B1%87%E7%BC%96%E7%9A%84%E8%A7%86%E8%A7%92%E9%87%8D%E5%AD%A6c++/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>【从汇编的视角重学C&#43;&#43; 01】基本数据类型的表现形式</title>
+      <link>https://cnjslw.github.io/posts/%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E8%A1%A8%E7%8E%B0%E5%BD%A2%E5%BC%8F/</link>
+      <pubDate>Mon, 01 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://cnjslw.github.io/posts/%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E8%A1%A8%E7%8E%B0%E5%BD%A2%E5%BC%8F/</guid>
+      <description>基本数据类型的表现形式</description>
+    </item>
+    
+  </channel>
+</rss>
