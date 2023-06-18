@@ -6,13 +6,22 @@
     <description>Recent content in #编程 on AWei’s Kernel Tour</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Mon, 20 Jun 2022 21:32:51 +0800</lastBuildDate><atom:link href="https://cnjslw.github.io/tags/#%E7%BC%96%E7%A8%8B/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 22 Jun 2022 21:32:51 +0800</lastBuildDate><atom:link href="https://cnjslw.github.io/tags/#%E7%BC%96%E7%A8%8B/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>【模板与泛型编程02】类模板01</title>
-      <link>https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF01/</link>
+      <title>【模板与泛型编程03】类模板和友元</title>
+      <link>https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF%E4%B8%8E%E5%8F%8B%E5%85%83/</link>
+      <pubDate>Wed, 22 Jun 2022 21:32:51 +0800</pubDate>
+      
+      <guid>https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF%E4%B8%8E%E5%8F%8B%E5%85%83/</guid>
+      <description>类模板</description>
+    </item>
+    
+    <item>
+      <title>【模板与泛型编程02】类模板</title>
+      <link>https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF/</link>
       <pubDate>Mon, 20 Jun 2022 21:32:51 +0800</pubDate>
       
-      <guid>https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF01/</guid>
+      <guid>https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF/</guid>
       <description>类模板</description>
     </item>
     
