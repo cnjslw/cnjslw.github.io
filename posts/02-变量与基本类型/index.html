@@ -3,23 +3,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>AWei’s Kernel Tour | 【模板与泛型编程03】类模板和友元</title>
+    <title>AWei’s Kernel Tour | 【x86汇编语言02】变量与基本类型</title>
     <meta name="description"
-        content="类模板 ">
-    <link rel="canonical" href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF%E4%B8%8E%E5%8F%8B%E5%85%83/" />
+        content="汇编语言 ">
+    <link rel="canonical" href="https://cnjslw.github.io/posts/02-%E5%8F%98%E9%87%8F%E4%B8%8E%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/" />
     <link rel="icon" type="image/x-icon" href="/images/linux_pic.ico">
-    <meta property="og:title" content="【模板与泛型编程03】类模板和友元" />
-<meta property="og:description" content="类模板" />
+    <meta property="og:title" content="【x86汇编语言02】变量与基本类型" />
+<meta property="og:description" content="汇编语言" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF%E4%B8%8E%E5%8F%8B%E5%85%83/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2022-06-22T21:32:51+08:00" />
-<meta property="article:modified_time" content="2022-06-22T21:32:51+08:00" />
+<meta property="og:url" content="https://cnjslw.github.io/posts/02-%E5%8F%98%E9%87%8F%E4%B8%8E%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-01-15T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-01-15T00:00:00+00:00" />
 
 
 
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="【模板与泛型编程03】类模板和友元"/>
-<meta name="twitter:description" content="类模板"/>
+<meta name="twitter:title" content="【x86汇编语言02】变量与基本类型"/>
+<meta name="twitter:description" content="汇编语言"/>
 
     
     
@@ -212,24 +212,24 @@
             </div>
         
         <div class="hero-content">
-            <div class="hero-title">【模板与泛型编程03】类模板和友元</div>
+            <div class="hero-title">【x86汇编语言02】变量与基本类型</div>
             <div class="hero-subtitle"></div>
             <div class="hero-date">
-                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-6-22 &nbsp;</span>
-                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-6-22 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-1-15 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-1-15 &nbsp;</span>
                     <span class="no-wrap"><i class="fa fa-folder"></i>
                         收录于:
                         
                             <a href='
-                                /categories/cpp
+                                /categories/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80
                             '>
-                                Cpp
+                                汇编语言
                             </a>
                     </span>    
             </div>
             <div class="timelong">
-                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 558 &nbsp;</span>
-                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 3 分钟 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 161 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 1 分钟 &nbsp;</span>
                 <span class="no-wrap"><i class="fa fa-eye"></i> 阅读量: <span id="busuanzi_value_page_pv"></span></span>
             </div>
         </div>
@@ -265,431 +265,158 @@
     
         <div class="content">
             <div class="content-self">
-                <p>如果一个类模板包含一个非模板友元，则友元被授权可以访问所有模板实例。如果友元自身是模板，类可以授权给所有友元模板实例，也可以只授权给特定实例</p>
-<h1 id="1友元类">1、友元类</h1>
-<p>传统友元类的概念是：让某个类B成为另外一个类A的友元类，这样的话，类B就可以在其成员函数中访问类A的所有成员（成员变量、成员函数），而不管这些成员在类A中是用什么修饰符（private、protected、public）修饰的。</p>
-<h2 id="11-让类模板的某个实例称为友元类">1.1 让类模板的某个实例称为友元类</h2>
+                <h1 id="一数值编码">一、数值编码</h1>
+<ol>
+<li>
+<p>无符号整数（Unsigned Integer）：</p>
+<ul>
+<li>使用二进制<strong>补码</strong>（Binary Unsigned Integer）表示。</li>
+<li>所有位都可用于表示数值，没有符号位。</li>
+<li>最高位为数值的最高位，没有特殊含义。</li>
+<li>能表示的范围：0 到 (2^n - 1)，其中 n 是该整数类型的位数。</li>
+</ul>
+</li>
+<li>
+<p>有符号整数（Signed Integer）：</p>
+<ul>
+<li>使用二进制<strong>补码</strong>（Binary Two&rsquo;s Complement）表示。</li>
+<li>最高位（最左侧的位）作为符号位，0 表示正数，1 表示负数。</li>
+<li>其余位表示数值部分，使用正数的二进制补码表示。</li>
+<li>能表示的范围：-(2^(n-1)) 到 (2^(n-1) - 1)，其中 n 是该整数类型的位数。</li>
+</ul>
+</li>
+<li>
+<p>小数（Floating-point Number）：</p>
+<ul>
+<li>使用<strong>浮点表示法</strong>，例如IEEE 754标准。</li>
+<li>一般分为单精度（32位）和双精度（64位）两种格式。</li>
+<li>包括符号位、指数位和尾数位，用于表示带有小数部分的实数。</li>
+<li>能表示的范围和精度取决于具体的浮点表示格式。</li>
+</ul>
+</li>
+<li>
+<p>字符（Character）：</p>
+<ul>
+<li>使用<strong>字符编码</strong>表来表示，最常见的是<strong>ASCII编码或Unicode编码</strong>。</li>
+<li>通常每个字符占用一个固定大小的字节（如ASCII编码中的一个字节），或者使用多字节表示（如某些Unicode编码）。</li>
+<li>每个编码表将字符映射到一个二进制值，以便在计算机中表示。</li>
+</ul>
+</li>
+<li>
+<p>字符串（String）：</p>
+<ul>
+<li>字符串是由多个字符构成的序列。</li>
+<li>在计算机中，字符串通常被表示为字符数组或字符指针，其中每个字符使用字符的表示方式进行存储。</li>
+<li>字符串的具体表示方式可以根据编程语言和字符串库的不同而有所区别，但基本原理是相同的。</li>
+</ul>
+</li>
+</ol>
+<p>需要注意的是，每种数据类型在计算机中的具体表示方式可能会因编程语言、编译器、操作系统或硬件平台而有所差异。这些表示方式是通过约定和标准来定义的，以确保数据在计算机内部的正确解释和操作。</p>
+<h1 id="二变量">二、变量</h1>
+<h2 id="1定义变量">1、定义变量</h2>
+<p>变量名即汇编语句名字部分，是用户自定义的标识符，表示初值表首个数据的逻辑地址。汇编语言使用这个符号表示地址，故有时被称为符号地址。变量名可以没有，这种情况，汇编程序将直接为初值表分配空间，无符号地址。设置变量名是为了方便存取它指示的存储单元。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">U</span><span class="o">&gt;</span> <span class="k">class</span> <span class="nc">B</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">A</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="k">friend</span> <span class="k">class</span> <span class="nc">B</span><span class="o">&lt;</span><span class="kt">long</span><span class="o">&gt;</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="k">private</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="n">data</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">U</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">B</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">	<span class="kt">void</span> <span class="n">callBAF</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">	<span class="p">{</span>
-</span></span><span class="line"><span class="cl">		<span class="n">A</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">atmpobj</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">		<span class="n">atmpobj</span><span class="p">.</span><span class="n">data</span> <span class="o">=</span> <span class="mi">5</span> <span class="p">;</span>
-</span></span><span class="line"><span class="cl">		<span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">atmpobj</span><span class="p">.</span><span class="n">data</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="n">B</span><span class="o">&lt;</span><span class="kt">long</span><span class="o">&gt;</span> <span class="n">bobj</span> <span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="n">bobj</span><span class="p">.</span><span class="n">callBAF</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
+<pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="err">变量名</span> <span class="err">变量定义伪指令</span> <span class="err">初值表</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>让类模板B的特定类模板实例（也就是<code>B&lt;long&gt;</code>）成为类模板A的友元类。也就是说，<code>B&lt;long&gt;</code>实际上代表的是一个具体的类</p>
-<h2 id="12-让类模板成为友元类模板">1.2 让类模板成为友元类模板</h2>
-<p>整个类模板B变成类模板A的友元类模板</p>
+</div><h3 id="11-初值表">1.1 初值表</h3>
+<p>初值表是用逗号分隔的参数，由各种形式的常量和特殊的符号“?”、“DUP”组成。其中“？”表示初值不确定，即未赋初值。多个存储单元如果初值相同，可以用复制操作符DUP进行说明。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">U</span><span class="o">&gt;</span> <span class="k">class</span> <span class="nc">B</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">A</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="o">&gt;</span> <span class="k">friend</span> <span class="k">class</span> <span class="nc">B</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="k">private</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="n">data</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">U</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">B</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">	<span class="kt">void</span> <span class="n">callBAF</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">	<span class="p">{</span>
-</span></span><span class="line"><span class="cl">		<span class="n">A</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">atmpobj</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">		<span class="n">atmpobj</span><span class="p">.</span><span class="n">data</span> <span class="o">=</span> <span class="mi">5</span> <span class="p">;</span>
-</span></span><span class="line"><span class="cl">		<span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">atmpobj</span><span class="p">.</span><span class="n">data</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="n">B</span><span class="o">&lt;</span><span class="kt">long</span><span class="o">&gt;</span> <span class="n">bobj</span> <span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="n">bobj</span><span class="p">.</span><span class="n">callBAF</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="n">B</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">bobjs</span> <span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="n">bobjs</span><span class="p">.</span><span class="n">callBAF</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
+<pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="err">重复次数</span> <span class="nf">dup</span><span class="p">(</span><span class="err">重复参数</span><span class="p">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="13-让类型模板参数成为友元类c11">1.3 让类型模板参数成为友元类（C++11）</h2>
-<p>如果传递进来的类型模板参数是一个类类型，则这个类类型可以成为当前类模板的友元类</p>
+</div><h3 id="12-变量定义伪指令">1.2 变量定义伪指令</h3>
+<p>变量定义伪指令有DB、DW、DD、DF、DQ和DT（MASM 6.0开始还对应支持BYTE、WORD、DWORD、FWORD、QWORD和TBYTE，两者功能相同），它们根据申请的主存空间单位分类</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202306272316723.png" alt="Pasted image 20230627224603|800"></p>
+<p>除了 DB、DW、DD 等定义的简单变量，汇编语言还支持复杂的数据变量，例如结构（Structure）、记录（Record）、联合（Union）等。</p>
+<h2 id="2变量定位">2、变量定位</h2>
+<p>变量定义的存储空间是按照书写的先后顺序一个接一个分配的。而定位伪指令可以控制其存放的偏移地址。</p>
+<h3 id="21-org伪指令">2.1 ORG伪指令</h3>
+<p>ORG伪指令将参数表达的偏移地址作为当前偏移地址，格式是：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">A2</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="k">friend</span> <span class="n">T</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="k">private</span> 
-</span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="n">data</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">CF</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">	<span class="kt">void</span> <span class="n">callCFAF</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">	<span class="p">{</span>
-</span></span><span class="line"><span class="cl">		<span class="n">A2</span><span class="o">&lt;</span><span class="n">CF</span><span class="o">&gt;</span> <span class="n">aobj</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">		<span class="n">aobj</span><span class="p">.</span><span class="n">data</span><span class="o">=</span><span class="mi">12</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="n">CF</span> <span class="n">mycfobj</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="n">mycfobj</span><span class="p">.</span><span class="n">callCFAF</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
+<pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nf">org</span> <span class="err">参数</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>类模板有其特殊性，如果传递给类模板A2的类型模板参数不是一个类类型，那么代码行friend T;就会被忽略，从而不能访问data成员变量</p>
-<h1 id="2友元函数">2、友元函数</h1>
-<h2 id="21-让函数模板的某个实例成为友元函数">2.1 让函数模板的某个实例成为友元函数</h2>
+</div><p>例如，从偏移地址100H处安排数据或程序，可以使用语句：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">U</span> <span class="p">,</span> <span class="k">typename</span> <span class="n">V</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">func</span><span class="p">(</span><span class="n">U</span> <span class="n">val1</span> <span class="p">,</span> <span class="n">V</span> <span class="n">val2</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Men</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="k">private</span><span class="o">:</span> 
-</span></span><span class="line"><span class="cl">		<span class="kt">void</span> <span class="n">funcmen</span><span class="p">()</span><span class="k">const</span>
-</span></span><span class="line"><span class="cl">		<span class="p">{</span>
-</span></span><span class="line"><span class="cl">			<span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&#34;Men::funcmen被调用了&#34;</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">		<span class="p">}</span>
-</span></span><span class="line"><span class="cl">	<span class="k">friend</span> <span class="kt">void</span> <span class="n">func</span><span class="o">&lt;</span><span class="kt">int</span> <span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">int</span> <span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">	<span class="k">friend</span> <span class="kt">void</span> <span class="n">func</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="kt">float</span> <span class="p">,</span> <span class="kt">int</span><span class="p">);</span><span class="c1">//尖括号内保持为空，编译器会用指定的实参类型推导出模板参数的类型
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">friend</span> <span class="kt">void</span> <span class="n">func</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="kt">int</span> <span class="p">,</span> <span class="kt">float</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">U</span> <span class="p">,</span> <span class="k">typename</span> <span class="n">V</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">func</span><span class="p">(</span><span class="n">U</span> <span class="n">val1</span> <span class="p">,</span> <span class="n">V</span> <span class="n">val2</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="n">Men</span> <span class="n">mymen</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="n">mymen</span><span class="p">.</span><span class="n">funcmen</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="n">func</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">);</span><span class="c1">//func&lt;int ,int&gt;
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">func</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">4.6f</span> <span class="p">,</span> <span class="mi">5</span><span class="p">);</span><span class="c1">//func&lt;float,int&gt;
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">func</span><span class="o">&lt;</span><span class="kt">int</span> <span class="p">,</span> <span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mf">5.6f</span><span class="p">);</span><span class="c1">//func&lt;int ,float&gt;
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+<pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nf">org</span> <span class="mi">100</span><span class="no">h</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="22-友元模板">2.2 友元模板</h2>
-<p>上面的范例中，只是让函数模板func()的某个实例成为Men类模板的友元函数，而且为了应对不同的情况，还要分别设置多个func()函数模板的实例成为Men类模板的友元函数。显然，如果希望所有func()实例都成为Men类模板的友元函数，像上面这样一个个设置很辛苦。所以，为了做到这点，就需要让函数模板func()成为Men类模板的友元模板。</p>
+</div><h3 id="22-align与even伪指令">2.2 ALIGN与Even伪指令</h3>
+<p>在汇编语言中，&ldquo;Align&quot;和&quot;Even&quot;是两个常用的伪指令，它们的作用是调整代码或数据的对齐方式。</p>
+<ol>
+<li>
+<p>Align（对齐）伪指令：</p>
+<ul>
+<li>Align伪指令用于将代码或数据对齐到指定的边界。</li>
+<li>对齐是指将数据或指令的起始地址设置为特定的边界地址，通常是内存地址的倍数。</li>
+<li>对齐可以提高程序执行效率和访问速度，尤其在一些体系结构中，要求某些特定类型的数据必须以特定的对齐方式存储。</li>
+<li>使用Align伪指令，程序员可以指定对齐的边界，如字节、字（2字节）、双字（4字节）等。</li>
+</ul>
+</li>
+<li>
+<p>Even（偶数）伪指令：</p>
+<ul>
+<li>Even伪指令用于将代码或数据的起始地址对齐到偶数地址。</li>
+<li>在某些体系结构中，要求32位数据的起始地址必须为偶数，即内存地址的最低位必须为0。</li>
+<li>使用Even伪指令，程序员可以确保代码或数据的起始地址为偶数地址，从而满足特定体系结构的要求。</li>
+</ul>
+</li>
+</ol>
+<p>这些对齐伪指令可以在编写汇编代码时使用，以确保数据的正确对齐和访问。对齐方式的选择通常受到特定体系结构或编译器的要求和限制。通过使用Align和Even伪指令，程序员可以以最佳的方式进行数据对齐，以提高代码执行效率和访问速度。</p>
+<h3 id="23-变量属性">2.3 变量属性</h3>
+<p>变量定义除分配存储空间和赋初值外，还可以创建变量名。
+这个变量名一经定义便具有两类属性：
+（1）地址属性——指首个变量所在存储单元的逻辑地址，含有段基地址和偏移地址。
+（2）类型属性——指变量定义的数据单位，有字节量、字量、双字量、3 字量、4 字量和10字节量，依次用类型名BYTE、WORD、DWORD、FWORD、QWORD和TBYTE表示。</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202306272316724.png" alt="Pasted image 20230627225937|800"></p>
+<p>TYPE返回该类型变量一个数据项所占的字节数，例如对字节、字和双字变量依次返回1、2和4
+对变量，还可以用LENGTHOF操作符获知某变量名指向多少个数据项，用SIZEOF操作符获知它共占用多少字节空间，即 SIZEOF 值=TYPE 值×LENGHOF 值</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Men</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="k">private</span><span class="o">:</span> 
-</span></span><span class="line"><span class="cl">		<span class="kt">void</span> <span class="n">funcmen</span><span class="p">()</span><span class="k">const</span>
-</span></span><span class="line"><span class="cl">		<span class="p">{</span>
-</span></span><span class="line"><span class="cl">			<span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&#34;Men::funcmen被调用了&#34;</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">		<span class="p">}</span>
-</span></span><span class="line"><span class="cl">	<span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">U</span> <span class="p">,</span> <span class="k">typename</span> <span class="n">V</span><span class="o">&gt;</span> <span class="k">friend</span> <span class="kt">void</span> <span class="n">func</span><span class="p">(</span><span class="n">U</span> <span class="n">val1</span> <span class="p">,</span> <span class="n">V</span> <span class="n">val2</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">U</span> <span class="p">,</span> <span class="k">typename</span> <span class="n">V</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">func</span><span class="p">(</span><span class="n">U</span> <span class="n">val1</span> <span class="p">,</span> <span class="n">V</span> <span class="n">val2</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="n">Men</span> <span class="n">mymen</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="n">mymen</span><span class="p">.</span><span class="n">funcmen</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="n">func</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">);</span><span class="c1">//func&lt;int ,int&gt;
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">func</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">4.6f</span> <span class="p">,</span> <span class="mi">5</span><span class="p">);</span><span class="c1">//func&lt;float,int&gt;
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">func</span><span class="o">&lt;</span><span class="kt">int</span> <span class="p">,</span> <span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mf">5.6f</span><span class="p">);</span><span class="c1">//func&lt;int ,float&gt;
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+<pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nf">mov</span> <span class="no">ax</span><span class="p">,</span><span class="no">word</span> <span class="no">ptr</span> <span class="no">bvar</span> <span class="c1">; 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nf">mov</span> <span class="no">bx</span><span class="p">,</span><span class="no">type</span> <span class="no">bvar</span> <span class="c1">; 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nf">mov</span> <span class="no">cx</span><span class="p">,</span><span class="no">type</span> <span class="no">wvar</span> 
+</span></span><span class="line"><span class="cl"><span class="no">mov</span> <span class="no">dx</span><span class="p">,</span><span class="no">type</span> <span class="no">array</span> 
+</span></span><span class="line"><span class="cl"><span class="no">mov</span> <span class="no">si</span><span class="p">,</span><span class="no">lengthof</span> <span class="no">array</span> 
+</span></span><span class="line"><span class="cl"><span class="no">mov</span> <span class="no">di</span><span class="p">,</span><span class="no">sizeof</span> <span class="no">array</span> 
+</span></span><span class="line"><span class="cl"><span class="no">mov</span> <span class="no">bp</span><span class="p">,</span><span class="no">arr_size</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>所有func()函数模板的实例就都成为Men类模板的友元函数,也不再需要在类模板Men定义的前面增加针对函数模板func()的声明了。编译器是把全特化的func()函数模板看作一个实例化过的函数模板（理解得更直接一点，就是看作一个已经存在了的函数）</p>
-<h2 id="23-在类模板中定义友元函数">2.3 在类模板中定义友元函数</h2>
-<p>可以在一个类模板中定义（不是声明）一个友元函数，这种友元函数是能被调用的，而且也只有在代码中调用了这个函数时，编译器才会实例化这个函数</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">Z</span><span class="o">&gt;</span> 
-</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Men</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">	<span class="k">friend</span> <span class="kt">void</span> <span class="n">func2</span><span class="p">(</span><span class="n">Men</span><span class="o">&lt;</span><span class="n">Z</span><span class="o">&gt;&amp;</span><span class="n">tmpmen</span><span class="p">){</span>
-</span></span><span class="line"><span class="cl">		<span class="n">tmpmen</span><span class="p">.</span><span class="n">funcmen</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">	<span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="kt">void</span> <span class="nf">funcmen</span><span class="p">()</span><span class="k">const</span>
-</span></span><span class="line"><span class="cl">	<span class="p">{</span>
-</span></span><span class="line"><span class="cl">		<span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&#34;Men::funcmen被调用了&#34;</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="n">Men</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">mymen2</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="n">func2</span><span class="p">(</span><span class="n">mymen2</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>虽然func2()友元函数被写在一个类模板中，但是类模板被实例化时并不会实例化这些友元函数，只有代码中调用到这些函数时，这些函数才会被实例化。另外值得一提的就是，因为func2()是写在类模板定义中的，所以，当调用func2()时，如果func2()中的代码非常简单，那么聪明的编译器就会把func2()当作一个内联（Inline）函数来处理；如果func2()中的代码比较复杂（如出现了for循环等），那么func2()就很可能不会被当作一个内联函数处理</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span><span class="lnt">37
-</span><span class="lnt">38
-</span><span class="lnt">39
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">//由cppinsights.io 生成
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">Z</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Men</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="k">public</span><span class="o">:</span> 
-</span></span><span class="line"><span class="cl">  <span class="k">friend</span> <span class="kr">inline</span> <span class="kt">void</span> <span class="n">func2</span><span class="p">(</span><span class="n">Men</span><span class="o">&lt;</span><span class="n">Z</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">tmpmen</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">tmpmen</span><span class="p">.</span><span class="n">funcmen</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">  <span class="p">}</span>
-</span></span><span class="line"><span class="cl">  <span class="kr">inline</span> <span class="kt">void</span> <span class="nf">funcmen</span><span class="p">()</span> <span class="k">const</span>
-</span></span><span class="line"><span class="cl">  <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">,</span> <span class="s">&#34;Men::funcmen</span><span class="se">\350\242\253\350\260\203\347\224\250\344\272\206</span><span class="s">&#34;</span><span class="p">).</span><span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="cm">/* First instantiated from: insights.cpp:20 */</span>
-</span></span><span class="line"><span class="cl"><span class="cp">#ifdef INSIGHTS_USE_TEMPLATE
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="k">template</span><span class="o">&lt;&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Men</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="k">public</span><span class="o">:</span> 
-</span></span><span class="line"><span class="cl">  <span class="k">friend</span> <span class="kr">inline</span> <span class="kt">void</span> <span class="n">func2</span><span class="p">(</span><span class="n">Men</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">tmpmen</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">tmpmen</span><span class="p">.</span><span class="n">funcmen</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">  <span class="p">}</span>
-</span></span><span class="line"><span class="cl">  <span class="kr">inline</span> <span class="kt">void</span> <span class="nf">funcmen</span><span class="p">()</span> <span class="k">const</span>
-</span></span><span class="line"><span class="cl">  <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">,</span> <span class="s">&#34;Men::funcmen</span><span class="se">\350\242\253\350\260\203\347\224\250\344\272\206</span><span class="s">&#34;</span><span class="p">).</span><span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="p">}</span>
-</span></span><span class="line"><span class="cl">  <span class="c1">// inline constexpr Men() noexcept = default;
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">};</span>
-</span></span><span class="line"><span class="cl"><span class="cp">#endif
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="n">Men</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">mymen2</span> <span class="o">=</span> <span class="n">Men</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">  <span class="n">func2</span><span class="p">(</span><span class="n">mymen2</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div>
+</div><h1 id="三寻址方式">三、寻址方式</h1>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202306272316722.png" alt="|800"></p>
+<hr>
+<p>[1] 《汇编语言》王爽</p>
+<p>[2] 《x86汇编语言：从实模式到保护模式（第二版）》李忠、王晓波、余洁</p>
+<p>[3] 《Intel® 64 and IA-32 Architectures  Software Developer’s Manual  Volume 3A:  System Programming Guide, Part 1》</p>
+<p>[4] 《汇编语言简明教程》钱晓捷</p>
+<p>[5]  <a href="https://blog.csdn.net/weixin_45590473/article/details/122975718">8086CPU中14个寄存器的详解_基址寄存器</a></p>
+
             </div>
             
                 <div class="tags">
@@ -697,9 +424,9 @@
                     <span class="down-type-item">
                         <div class="type-text">
                             <a href='
-                                        /tags/#cpp
+                                        /tags/#%E6%B1%87%E7%BC%96
                                     '>
-                                <i class="fa fa-tag"></i> #Cpp
+                                <i class="fa fa-tag"></i> #汇编
                             </a>
                         </div>
                     </span>
@@ -733,18 +460,18 @@
                     
     
         
-        <a href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF/" class="pre">
+        <a href="https://cnjslw.github.io/posts/01-8086%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/" class="pre">
             <span class="pre-icon"><i class="fa fa-hand-o-left"></i></span>
             <div class="pre-title-root">
-                <span>【模板与泛型编程02】类模板</span>
+                <span>【x86汇编语言01】8086体系结构与汇编基础</span>
             </div>
         </a>
         
 
         
-        <a href="https://cnjslw.github.io/posts/%E6%8C%87%E4%BB%A4%E6%A6%82%E8%BF%B0/" class="next">
+        <a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/" class="next">
             <div class="next-title-root">
-                <span>【计算机组成原理与体系架构01】指令系统设计</span>
+                <span>【模板与泛型编程01】函数模板</span>
             </div>
             <span class="next-icon"><i class="fa fa-hand-o-right"></i></span>
         </a>
@@ -856,6 +583,66 @@
     </div>
     <div class="list">
         
+            <a href="https://cnjslw.github.io/posts/01-8086%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">
+                
+<a href="https://cnjslw.github.io/posts/01-8086%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">
+    <div class="list-item">
+        <div class="icon-other-root">
+            
+                <div class="icon-other" style="background-image: url( https://picsum.photos/2500/500 );"></div>
+            
+        </div>
+        <div class="list-right">
+            <div class="other-title">
+                【x86汇编语言01】8086体系结构与汇编基础
+            </div>
+            <div class="other-summary">汇编语言</div>
+            <div class="other-date">2022-1-13</div>
+        </div>
+    </div>
+</a>
+            </a>
+        
+            <a href="https://cnjslw.github.io/posts/%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">
+                
+<a href="https://cnjslw.github.io/posts/%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">
+    <div class="list-item">
+        <div class="icon-other-root">
+            
+                <div class="icon-other" style="background-image: url( https://picsum.photos/2500/500 );"></div>
+            
+        </div>
+        <div class="list-right">
+            <div class="other-title">
+                【从汇编的视角重学C&#43;&#43; 01】基本数据类型的表现形式
+            </div>
+            <div class="other-summary">基本数据类型的表现形式</div>
+            <div class="other-date">2021-11-1</div>
+        </div>
+    </div>
+</a>
+            </a>
+        
+            <a href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF%E4%B8%8E%E5%8F%8B%E5%85%83/">
+                
+<a href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF%E4%B8%8E%E5%8F%8B%E5%85%83/">
+    <div class="list-item">
+        <div class="icon-other-root">
+            
+                <div class="icon-other" style="background-image: url( https://picsum.photos/2500/500 );"></div>
+            
+        </div>
+        <div class="list-right">
+            <div class="other-title">
+                【模板与泛型编程03】类模板和友元
+            </div>
+            <div class="other-summary">类模板</div>
+            <div class="other-date">2022-6-22</div>
+        </div>
+    </div>
+</a>
+            </a>
+        
             <a href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF/">
                 
 <a href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF/">
@@ -896,26 +683,6 @@
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">
-                
-<a href="https://cnjslw.github.io/posts/%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">
-    <div class="list-item">
-        <div class="icon-other-root">
-            
-                <div class="icon-other" style="background-image: url( https://picsum.photos/2500/500 );"></div>
-            
-        </div>
-        <div class="list-right">
-            <div class="other-title">
-                【从汇编的视角重学C&#43;&#43; 01】基本数据类型的表现形式
-            </div>
-            <div class="other-summary">基本数据类型的表现形式</div>
-            <div class="other-date">2021-11-1</div>
-        </div>
-    </div>
-</a>
-            </a>
-        
             <a href="https://cnjslw.github.io/posts/%E5%A4%9A%E6%80%81/">
                 
 <a href="https://cnjslw.github.io/posts/%E5%A4%9A%E6%80%81/">
@@ -931,46 +698,6 @@
             </div>
             <div class="other-summary">多态</div>
             <div class="other-date">2021-10-27</div>
-        </div>
-    </div>
-</a>
-            </a>
-        
-            <a href="https://cnjslw.github.io/posts/%E7%BB%A7%E6%89%BF/">
-                
-<a href="https://cnjslw.github.io/posts/%E7%BB%A7%E6%89%BF/">
-    <div class="list-item">
-        <div class="icon-other-root">
-            
-                <div class="icon-other" style="background-image: url( https://picsum.photos/2500/500 );"></div>
-            
-        </div>
-        <div class="list-right">
-            <div class="other-title">
-                【C&#43;&#43; Primer(edition 5) 14】继承
-            </div>
-            <div class="other-summary">继承</div>
-            <div class="other-date">2021-10-22</div>
-        </div>
-    </div>
-</a>
-            </a>
-        
-            <a href="https://cnjslw.github.io/posts/%E6%93%8D%E4%BD%9C%E9%87%8D%E8%BD%BD%E4%B8%8E%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">
-                
-<a href="https://cnjslw.github.io/posts/%E6%93%8D%E4%BD%9C%E9%87%8D%E8%BD%BD%E4%B8%8E%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">
-    <div class="list-item">
-        <div class="icon-other-root">
-            
-                <div class="icon-other" style="background-image: url( https://picsum.photos/2500/500 );"></div>
-            
-        </div>
-        <div class="list-right">
-            <div class="other-title">
-                【C&#43;&#43; Primer(edition 5) 13】操作重载与类型转换
-            </div>
-            <div class="other-summary">操作重载与类型转换</div>
-            <div class="other-date">2021-10-19</div>
         </div>
     </div>
 </a>
