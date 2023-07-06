@@ -3,23 +3,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>AWei’s Kernel Tour | 【计算机组成原理与体系架构01】指令系统设计</title>
+    <title>AWei’s Kernel Tour | 【Linux Kernel 0.12】启动流程</title>
     <meta name="description"
-        content="指令系统设计 ">
-    <link rel="canonical" href="https://cnjslw.github.io/posts/%E6%8C%87%E4%BB%A4%E6%A6%82%E8%BF%B0/" />
+        content="Linux0.12的启动流程 ">
+    <link rel="canonical" href="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/" />
     <link rel="icon" type="image/x-icon" href="/images/linux_pic.ico">
-    <meta property="og:title" content="【计算机组成原理与体系架构01】指令系统设计" />
-<meta property="og:description" content="指令系统设计" />
+    <meta property="og:title" content="【Linux Kernel 0.12】启动流程" />
+<meta property="og:description" content="Linux0.12的启动流程" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://cnjslw.github.io/posts/%E6%8C%87%E4%BB%A4%E6%A6%82%E8%BF%B0/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2023-01-15T00:00:00+00:00" />
-<meta property="article:modified_time" content="2023-01-15T00:00:00+00:00" />
-
+<meta property="og:url" content="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-02-12T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-02-12T00:00:00+00:00" />
+<meta property="og:see_also" content="https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/" />
 
 
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="【计算机组成原理与体系架构01】指令系统设计"/>
-<meta name="twitter:description" content="指令系统设计"/>
+<meta name="twitter:title" content="【Linux Kernel 0.12】启动流程"/>
+<meta name="twitter:description" content="Linux0.12的启动流程"/>
 
     
     
@@ -212,24 +212,24 @@
             </div>
         
         <div class="hero-content">
-            <div class="hero-title">【计算机组成原理与体系架构01】指令系统设计</div>
+            <div class="hero-title">【Linux Kernel 0.12】启动流程</div>
             <div class="hero-subtitle"></div>
             <div class="hero-date">
-                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2023-1-15 &nbsp;</span>
-                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2023-1-15 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2023-2-12 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2023-2-12 &nbsp;</span>
                     <span class="no-wrap"><i class="fa fa-folder"></i>
                         收录于:
                         
                             <a href='
-                                /categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BD%93%E7%B3%BB%E6%9E%B6%E6%9E%84
+                                /categories/linux-kernel
                             '>
-                                计算机组成原理与体系架构
+                                Linux Kernel
                             </a>
                     </span>    
             </div>
             <div class="timelong">
-                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 46 &nbsp;</span>
-                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 1 分钟 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 359 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 2 分钟 &nbsp;</span>
                 <span class="no-wrap"><i class="fa fa-eye"></i> 阅读量: <span id="busuanzi_value_page_pv"></span></span>
             </div>
         </div>
@@ -265,33 +265,118 @@
     
         <div class="content">
             <div class="content-self">
-                <h1 id="指令系统介绍">指令系统介绍</h1>
-<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202306191702938.png" alt="Pasted image 20230619163712|1000"></p>
-<h1 id="指令系统设计原则">指令系统设计原则</h1>
-<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202306191702939.png" alt="Pasted image 20230619163832|1000"></p>
-<h1 id="指令系统的发展历程">指令系统的发展历程</h1>
-<h2 id="指令内容的演变">指令内容的演变</h2>
-<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202306191702940.png" alt="Pasted image 20230619163945|1000"></p>
-<h2 id="存储管理的演变">存储管理的演变</h2>
-<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202306191702941.png" alt="Pasted image 20230619164108|1000"></p>
-<h2 id="运行级别的演变">运行级别的演变</h2>
-<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202306191702942.png" alt="Pasted image 20230619164140|1000"></p>
-<h1 id="系统指令的组成">系统指令的组成</h1>
-<p>指令系统由若⼲条指令及其操作对象组成。 每条指令都是对⼀个操作的描述, 主要包括操作码和操作数。操作码规定指令功能, 例如加减法; 操作数指示操作对象, 包含数据类型、 访存地址、 寻址方式等内容的定义。</p>
-<h2 id="地址空间">地址空间</h2>
-<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202306191702944.png" alt="Pasted image 20230619164740|1000"></p>
-<h2 id="操作数">操作数</h2>
-<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202306191702945.png" alt="Pasted image 20230619164916|1000"></p>
-<h2 id="指令操作和编码">指令操作和编码</h2>
-<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202306191702946.png" alt="Pasted image 20230619165032|1000"></p>
-<h1 id="补充">补充</h1>
+                <h1 id="从bios开始">从BIOS开始</h1>
+<h2 id="为什么">为什么</h2>
+<p>首先运行的其实是BIOS（Basic Input Output System）
+为什么？
+取决于硬件的先决条件[3]：</p>
+<ol>
+<li>CPU只能运行加载到内存中的程序</li>
+<li>内存中的程序在计算机掉电之后会全部消失</li>
+</ol>
+<p>所以操作系统必须保存在不挥发存储介质中，在上电后由某中机制将其加载到内存中运行。BIOS横空出世。</p>
+<h2 id="bios如何启动">BIOS如何启动？</h2>
+<p>一个新的疑问，BIOS自身又是如何启动的？
+首先，BIOS同样是一段程序，所以同样无法逃脱之前的两个设定（CPU只能运行内存中的程序，内存掉电挥发），BIOS机制是如何应对的呢？
+先做两点说明</p>
+<ol>
+<li>BIOS固化在计算机主机板上的一块很小的ROM芯片里。</li>
+<li>CPU硬件逻辑设计为加电瞬间强行将CS的值置为0xF000、IP的值置为0xFFF0，这样CS:IP就指向0xFFFF0这个地址位置</li>
+</ol>
 <blockquote>
-<p>早期，1980s年代，x86⼀般指当时的处理器8088和80286，不过这两个处理器都是16位的。如今， x86通常指32位指令集架构的处理器，比如80386。 80386处理器是intel在1985年实现的第一款32位指令集架构的处理器，又叫i386， Intel Architecture, 32-bit，缩写为IA-32，现在， IA-32一般又能引喻成所有的支持32位计算的x86架构。按照发展历史看， x86应该是指令集概念，⼀般用于个人PC系统如8086,286,386。 IA-32是intel首推的32位架构。 x86-64/x64/amd64/Intel64。在1999年， AMD公司⾸先在IA-32基础上，增加了64位寄存器，兼容早期的16位和32位软件系统，推出了x86-64的64位微处理器，后来命名为AMD64，实现了超车。然后intel公司也接受了该方案，叫做Intel64。 x86-64应该只算是x86指令集的64位扩展，并不是⼀种全新的64位架构。由于amd64和intel64本质上是⼀样的，叫法也是很多。 AMD通常叫它x86-64、 x86_64，微软和sun等软件公司叫它x64，操作系统厂商则通常用AMD64或者amd64来指代AMD64和Intel64。IA-64是Intel推出的用于Itanium处理器（安腾处理器）的自己的Intel Architecture 64位指令集，一般用于服务器。尽管Intel64也是64位处理器，但这两者完全不是⼀回事。 IA-64软件不能直接运行于Intel64处理器上。 x86-64是IA-32指令集的扩展，⽽IA-64则是完完全全没有⼀点IA-32影子的独立处理器架构。 IA-64需要通过模拟器才能运行IA-32，但是性能大大受影响。<br>
-市面上处理器如何区分AMD64和IA-64呢？市面上买的Intel 64-bit的cpu其实都属于amd64分类，intel64和amd64其实都应该叫做x86_64。IA64则指Itaniums系统cpu，并不是x86架构的，一般都是用于服务器，不是个⼈桌面产品，价格昂贵。<br>
-ARM64/AArch64：ARM是精简指令集RISC下的处理器架构。ARMv3⾄ARMv7⽀持32位寻址空间。 ARMv8-A 开始支持64位寻址空间。 AArch64和ARM64都是指64位的ARM架构。</p>
+<p>At initial power on, the BIOS is executed directly from ROM. The ROM chip is mapped to a fixed location in the processor&rsquo;s memory space (this is typically a feature of the chipset). When the x86 processor comes out of reset, it immediately begins executing from 0xFFFFFFF0.
+However, executing directly from ROM is quite slow, so usually one of the first things the BIOS does is to copy and decompress the BIOS code into RAM, and it executes from there. Of course, the memory controller must be initialized first! The BIOS takes care of that beforehand.
+The memory map layout will vary from system to system. At power-on, the BIOS will query the attached PCI/PCIe devices, determine what resources are needed, and place them in the memory map at the optimal location. If everything is working properly, memory-mapped devices should not overlap with RAM. (Note that on a 64-bit system with &gt;3GB of RAM, things get complicated because you need a &ldquo;hole&rdquo; in the middle of RAM for your 32-bit PCI/PCIe devices. Some early x64 BIOSes and chipsets had issues with this.)[4]</p>
 </blockquote>
+<p>简而言之，在主板初始化的过程中，BIOS固件会被读取到内存中，BIOS固件被加载到内存后，需要进行内存映射。BIOS会将自身的代码和数据存放到特定的内存地址空间中。这是一个纯硬件完成的动作。</p>
+<h2 id="bios如何引导操作系统">BIOS如何引导操作系统</h2>
+<p>主要说明BIOS如何加载操作系统,但BIOS的作用不仅仅如此</p>
+<h3 id="从0xffff0开始">从0xFFFF0开始</h3>
+<p>第一条指令就是跳转指令</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nf">jmpf</span> <span class="mi">0xf000</span><span class="p">:</span><span class="no">e05b</span> 
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202307061035882.png" alt="Pasted image 20230704110835|800"></p>
+<h3 id="在内存中建立中断向量表和中断服务程序">在内存中建立中断向量表和中断服务程序</h3>
+<p>BIOS程序在内存最开始的位置（0x00000）用1 KB的内存空间（0x00000～0x003FF）构建中断向量表，在紧挨着它的位置用256字节的内存空间构建BIOS数据区（0x00400～0x004FF），并在大约57 KB以后的位置（0x0E05B）加载了8 KB左右的与中断向量表相应的若干中断服务程序[2]
+<img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202307061035884.png" alt="Pasted image 20230625182537|800"></p>
+<p>中断向量表中有256个中断向量，每个中断向量占4字节，其中两个字节是CS的值，两个字节是IP的值。每个中断向量都指向一个具体的中断服务程序。</p>
+<p>为什么要建立中断机制？
+因为需要利用中断机制从存储介质中读取系统内核到内存中</p>
+<h3 id="加载bootsect第一部分内核代码">加载bootsect（第一部分内核代码）</h3>
+<p>对于Linux 0.12操作系统而言，计算机将分三批逐次加载操作系统的内核代码。第一批由BIOS中断int 0x19把第一扇区bootsect的内容加载到内存0x7c00处；第二批、第三批在bootsect的指挥下，分别把其后的4个扇区和随后的240个扇区的内容加载至内存。
+计算机硬件体系结构的设计与BIOS联手操作，会让CPU接收到一个int 0x19中断。CPU接收到这个中断后，会立即在中断向量表中找到int 0x19中断向量[2]。相应的中断处理程序的作用就是把软盘第一扇区中的程序（512 B）加载到内存0x07C00处。</p>
+<h1 id="bootsects">bootsect.S</h1>
+<h2 id="分配内存">分配内存</h2>
+<p>为了加载setup，bootsect首先就需要对后续操作所涉及的内存位置进行设置，包括将要加载的setup程序的扇区数（SETUPLEN）以及被加载到的位置（SETUPSEG）；启动扇区被BIOS加载的位置（BOOTSEG）及将要移动到的新位置（INITSEG）；内核（kernel）被加载的位置（SYSSEG）、内核的末尾位置（ENDSEG）及根文件系统设备号（ROOT_DEV）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nf">SETUPLEN</span> <span class="err">=</span> <span class="mi">4</span>				<span class="p">!</span> <span class="no">nr</span> <span class="no">of</span> <span class="no">setup-sectors</span>
+</span></span><span class="line"><span class="cl"><span class="nf">BOOTSEG</span>  <span class="err">=</span> <span class="mi">0x07c0</span>			<span class="p">!</span> <span class="no">original</span> <span class="no">address</span> <span class="no">of</span> <span class="no">boot-sector</span>
+</span></span><span class="line"><span class="cl"><span class="nf">INITSEG</span>  <span class="err">=</span> <span class="no">DEF_INITSEG</span>			<span class="p">!</span> <span class="no">we</span> <span class="no">move</span> <span class="no">boot</span> <span class="no">here</span> <span class="p">-</span> <span class="no">out</span> <span class="no">of</span> <span class="no">the</span> <span class="no">way</span>
+</span></span><span class="line"><span class="cl"><span class="nf">SETUPSEG</span> <span class="err">=</span> <span class="no">DEF_SETUPSEG</span>			<span class="p">!</span> <span class="no">setup</span> <span class="no">starts</span> <span class="no">here</span>
+</span></span><span class="line"><span class="cl"><span class="nf">SYSSEG</span>   <span class="err">=</span> <span class="no">DEF_SYSSEG</span>			<span class="p">!</span> <span class="no">system</span> <span class="no">loaded</span> <span class="no">at</span> <span class="mi">0x10000</span> <span class="p">(</span><span class="mi">65536</span><span class="p">).</span>
+</span></span><span class="line"><span class="cl"><span class="nf">ENDSEG</span>   <span class="err">=</span> <span class="no">SYSSEG</span> <span class="err">+</span> <span class="no">SYSSIZE</span>		<span class="p">!</span> <span class="no">where</span> <span class="no">to</span> <span class="no">stop</span> <span class="no">loading</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">!</span> <span class="nf">ROOT_DEV</span> <span class="err">&amp;</span> <span class="no">SWAP_DEV</span> <span class="no">are</span> <span class="no">now</span> <span class="no">written</span> <span class="no">by</span> <span class="err">&#34;</span><span class="no">build</span><span class="err">&#34;</span><span class="p">.</span>
+</span></span><span class="line"><span class="cl"><span class="nf">ROOT_DEV</span> <span class="err">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="nf">SWAP_DEV</span> <span class="err">=</span> <span class="mi">0</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202307061035885.png" alt="Pasted image 20230625184245|800"></p>
+<h2 id="复制bootsect">复制bootsect</h2>
+<p>bootsect启动程序将它自身（全部的512 B内容）从内存0x07C00（BOOTSEG）处复制至内存0x90000（INITSEG）处。
+<img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202307061035886.png" alt="Pasted image 20230625184446|800"></p>
+<h2 id="加载setup第二部分内核代码">加载setup（第二部分内核代码）</h2>
+<p>借助BIOS提供的int 0x13中断向量所指向的中断服务程序（也就是磁盘服务程序）加载setup到内存中，一共4个扇区</p>
+<h2 id="加载system模块第三部分内核代码">加载system模块（第三部分内核代码）</h2>
+<p>任然利用BIOS 提供的int 0x13中断服务，将system模块加载到内核，一共240个扇区</p>
+<h2 id="确定根设备号">确定根设备号</h2>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202307061035887.png" alt="Pasted image 20230625231340|800"></p>
+<h1 id="setups">setup.s</h1>
+<h2 id="设置内核参数">设置内核参数</h2>
+<p>setup程序做的第一件事情就是利用BIOS提供的中断服务程序从设备上提取内核运行所需的机器系统数据，其中包括光标位置、显示页面等数据，并分别从中断向量0x41和0x46向量值所指的内存地址处获取硬盘参数表1、硬盘参数表2，把它们存放在0x9000:0x0080和0x9000:0x0090处。BIOS提取的机器系统数据将覆盖bootsect程序所在部分区域。
+<img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202307061035888.png" alt="Pasted image 20230625231517|800"></p>
+<h2 id="移动system">移动system</h2>
+<p>将system模块从0x10000~0x8fff(当时认为内核系统模块system的长度不会超过此值：512KB) 整块向下移动到内存绝对地址0x00000处</p>
+<h2 id="进入保护模式">进入保护模式</h2>
+<p>加载中断描述符表寄存器(idtr)和全局描述符表寄存器(gdtr),开启A20地址线，重新设置两个中断控制芯⽚8259A,将硬件中断号重新设置为0x20~0x2f。最后设置CPU的控制寄存器CR0(也称机器状态字)，从而进⼊32位保护模式运行。</p>
+<p>当前内存的映像
+<img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202307061035889.png" alt="Pasted image 20230627150829|800"></p>
+<h1 id="heads">head.S</h1>
+<p>程序自身的代码在程序自身所在的内存空间创建了内核分页机制，即在0x000000的位置创建了页目录表、页表、缓冲区、GDT、IDT，并将head程序已经执行过的代码所占内存空间覆盖。这意味着head程序自己将自己废弃，main函数即将开始执行
+<img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202307061035890.png" alt="Pasted image 20230625231756|800"></p>
+<h2 id="重新设置idt">重新设置IDT</h2>
+<p>首先是加载各个数据段寄存器,重新设置中断描述符表IDT，共256项，并使各个表项均指向一个只报错误的哑中断子程序<code>ignore_int</code>。</p>
+<h2 id="重新设置gdt">重新设置GDT</h2>
+<p>在设置好中断描述符表之后,本程序又重新设置了全局段描述符表gdt</p>
+<h2 id="设置管理内存的分页处理机制">设置管理内存的分页处理机制</h2>
+<p>将页目录表放在绝对物理地址0开始处（也是本程序所处的物理内存位置，因此这段程序将被覆盖掉)，紧随后面放置共可寻址16MB内存的4个页表，并分别设置它们的表项。</p>
+<p>当前内存的映像
+<img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202307061035891.png" alt="Pasted image 20230627151222|800"></p>
 <hr>
-<p>[1] 《计算机组成原理与体系架构（第3版）》胡伟武等</p>
+<p>[1] 《Linux内核完全剖析：基于0.12内核》赵炯著</p>
+<p>[2] 《Linux 内核设计的艺术（第2版）》新设计团队</p>
+<p>[3] 《Linux内核源代码情景分析》毛德操，胡希明等</p>
+<p>[4] <a href="https://stackoverflow.com/questions/20861032/who-loads-the-bios-and-the-memory-map-during-boot-up">x86 - Who loads the BIOS and the memory map during boot-up - Stack Overflow</a></p>
+<p>[5] <a href="https://blog.csdn.net/weixin_45590473/article/details/122975718">8086CPU中14个寄存器的详解_基址寄存器</a></p>
 
             </div>
             
@@ -300,9 +385,9 @@ ARM64/AArch64：ARM是精简指令集RISC下的处理器架构。ARMv3⾄ARMv7�
                     <span class="down-type-item">
                         <div class="type-text">
                             <a href='
-                                        /tags/#%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84
+                                        /tags/#linux-kernel
                                     '>
-                                <i class="fa fa-tag"></i> #计算机体系结构
+                                <i class="fa fa-tag"></i> #Linux Kernel
                             </a>
                         </div>
                     </span>
@@ -310,9 +395,9 @@ ARM64/AArch64：ARM是精简指令集RISC下的处理器架构。ARMv3⾄ARMv7�
                     <span class="down-type-item">
                         <div class="type-text">
                             <a href='
-                                        /tags/#%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86
+                                        /tags/#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83
                                     '>
-                                <i class="fa fa-tag"></i> #底层原理
+                                <i class="fa fa-tag"></i> #开发环境
                             </a>
                         </div>
                     </span>
@@ -326,23 +411,13 @@ ARM64/AArch64：ARM是精简指令集RISC下的处理器架构。ARMv3⾄ARMv7�
                     
     
         
-        <a href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF%E4%B8%8E%E5%8F%8B%E5%85%83/" class="pre">
+        <a href="https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/" class="pre pre-last" style="text-align: center;">
             <span class="pre-icon"><i class="fa fa-hand-o-left"></i></span>
             <div class="pre-title-root">
-                <span>【模板与泛型编程03】类模板和友元</span>
-            </div>
-        </a>
-        
-
-        
-        <a href="https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/" class="next">
-            <div class="next-title-root">
                 <span>【Linux Kernel】Linux debug 环境搭建：qemu&#43;vscode内核源码调试配置教程</span>
             </div>
-            <span class="next-icon"><i class="fa fa-hand-o-right"></i></span>
         </a>
         
-
     
     
 
@@ -449,26 +524,6 @@ ARM64/AArch64：ARM是精简指令集RISC下的处理器架构。ARMv3⾄ARMv7�
     </div>
     <div class="list">
         
-            <a href="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">
-                
-<a href="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">
-    <div class="list-item">
-        <div class="icon-other-root">
-            
-                <div class="icon-other" style="background-image: url( https://picsum.photos/2500/500 );"></div>
-            
-        </div>
-        <div class="list-right">
-            <div class="other-title">
-                【Linux Kernel 0.12】启动流程
-            </div>
-            <div class="other-summary">Linux0.12的启动流程</div>
-            <div class="other-date">2023-2-12</div>
-        </div>
-    </div>
-</a>
-            </a>
-        
             <a href="https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/">
                 
 <a href="https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/">
@@ -484,6 +539,26 @@ ARM64/AArch64：ARM是精简指令集RISC下的处理器架构。ARMv3⾄ARMv7�
             </div>
             <div class="other-summary">Linux debug 环境搭建</div>
             <div class="other-date">2023-2-1</div>
+        </div>
+    </div>
+</a>
+            </a>
+        
+            <a href="https://cnjslw.github.io/posts/%E6%8C%87%E4%BB%A4%E6%A6%82%E8%BF%B0/">
+                
+<a href="https://cnjslw.github.io/posts/%E6%8C%87%E4%BB%A4%E6%A6%82%E8%BF%B0/">
+    <div class="list-item">
+        <div class="icon-other-root">
+            
+                <div class="icon-other" style="background-image: url( https://picsum.photos/2500/500 );"></div>
+            
+        </div>
+        <div class="list-right">
+            <div class="other-title">
+                【计算机组成原理与体系架构01】指令系统设计
+            </div>
+            <div class="other-summary">指令系统设计</div>
+            <div class="other-date">2023-1-15</div>
         </div>
     </div>
 </a>
