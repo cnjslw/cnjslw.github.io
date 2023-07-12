@@ -1,0 +1,21 @@
+---
+参考课程:  
+参考书籍: 
+title: "【x86汇编语言03】通用指令集"
+date: 2022-01-24
+summary: "通用指令"
+draft: true
+tags: ['#汇编','#语法特性','#编程']
+categories: ["汇编语言"]
+series: ["汇编语言"]
+obsidianUIMode: preview
+---
+
+直接利用参考文献即可，指令的背后是计算机体系架构和硬件
+
+------
+[1] [Do Intel and AMD processor have the same assembler?](https://stackoverflow.com/questions/1109569/do-intel-and-amd-processor-have-the-same-assembler)
+
+[2] [x86-64](https://en.wikipedia.org/wiki/X86-64#Differences_between_AMD64_and_Intel_64)
+
+[3] [x86 instruction listings](https://en.wikipedia.org/wiki/X86_instruction_listings)
