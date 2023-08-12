@@ -3,20 +3,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>AWei’s Kernel Tour | #C&#43;&#43;内存管理</title>
+    <title>AWei’s Kernel Tour | 【Linux Document 01】Memory Manager : Concept</title>
     <meta name="description"
-        content=" ">
-    <link rel="canonical" href="https://cnjslw.github.io/tags/#c&#43;&#43;%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" />
+        content="Linux官方文档阅读笔记 ">
+    <link rel="canonical" href="https://cnjslw.github.io/posts/linuxdocument-00/" />
     <link rel="icon" type="image/x-icon" href="/images/linux_pic.ico">
-    <meta property="og:title" content="#C&#43;&#43;内存管理" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://cnjslw.github.io/tags/#c&#43;&#43;%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" />
+    <meta property="og:title" content="【Linux Document 01】Memory Manager : Concept" />
+<meta property="og:description" content="Linux官方文档阅读笔记" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://cnjslw.github.io/posts/linuxdocument-00/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-02-19T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-02-19T00:00:00+00:00" />
+<meta property="og:see_also" content="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/" />
 
 
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="#C&#43;&#43;内存管理"/>
-<meta name="twitter:description" content=""/>
+<meta name="twitter:title" content="【Linux Document 01】Memory Manager : Concept"/>
+<meta name="twitter:description" content="Linux官方文档阅读笔记"/>
 
     
     
@@ -194,29 +197,41 @@
 
 
         <div id="content">
-    
 
 
 
 
-
-
-    
-        
-    
 
 
 
 
     <div class="hero">
         
-            
-                <div class="hero-img">
-                    <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500" alt="">
-                </div>
-            
+            <div class="hero-img">
+                <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500" alt="">
+            </div>
+        
         <div class="hero-content">
-            <h1 class="hero-title">标签: #C&#43;&#43;内存管理</h1>
+            <div class="hero-title">【Linux Document 01】Memory Manager : Concept</div>
+            <div class="hero-subtitle"></div>
+            <div class="hero-date">
+                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-2-19 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-2-19 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-folder"></i>
+                        收录于:
+                        
+                            <a href='
+                                /categories/linux-kernel
+                            '>
+                                Linux Kernel
+                            </a>
+                    </span>    
+            </div>
+            <div class="timelong">
+                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 1039 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 5 分钟 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-eye"></i> 阅读量: <span id="busuanzi_value_page_pv"></span></span>
+            </div>
         </div>
     </div>
 
@@ -235,7 +250,7 @@
     
 
 
-<div class="terms-body">
+<div class="content-root">
     <div class="long">
         <button class="tosides-1 text-wbd">
             <i class="fa fa-arrow-right"></i>
@@ -248,127 +263,154 @@
         </button>
     </div>
     
-        <div class="terms-row">
-            
-            <div class="terms-root">
-                
-                
+        <div class="content">
+            <div class="content-self">
+                <p>本篇解读Linux Document 中Memory Manger部分</p>
+<p><a href="https://www.kernel.org/doc/html/next/admin-guide/mm/concepts.html">https://www.kernel.org/doc/html/next/admin-guide/mm/concepts.html</a></p>
+<h1 id="虚拟内存">虚拟内存</h1>
+<h2 id="物理内存的关键问题">物理内存的关键问题？</h2>
+<p>物理内存存在什么问题？</p>
+<ol>
+<li>内存资源紧俏</li>
+<li>内存的有的连续有的不连续</li>
+<li>不同架构或者相同架构的不同设计导致寻址范围不同</li>
+</ol>
+<p>上述原因导致直接管理物理内存的复杂性，因此诞生了虚拟内存的概念</p>
+<h2 id="虚拟内存为什么能解决物理内存的问题">虚拟内存为什么能解决物理内存的问题？</h2>
+<blockquote>
+<p><a href="https://www.kernel.org/doc/html/next/admin-guide/mm/concepts.html#id8#:~:text=The%20virtual%20memory%20abstracts%20the%20details%20of%20physical%20memory%20from%20the%20application%20software%2C%20allows%20to%20keep%20only%20needed%20information%20in%20the%20physical%20memory%20(demand%20paging)%20and%20provides%20a%20mechanism%20for%20the%20protection%20and%20controlled%20sharing%20of%20data%20between%20processes.">The virtual memory abstracts the details of physical memory from the application software, allows to keep only needed information in the physical memory (demand paging) and provides a mechanism for the protection and controlled sharing of data between processes.</a></p>
+</blockquote>
+<p>虚拟内存是物理内存提供如下功能：</p>
+<ol>
+<li>屏蔽物理内存细节，抽象物理内存，仅保存必要的信息，以供软件使用</li>
+<li>保护共享数据</li>
+</ol>
+<h2 id="如何管理虚拟内存与物理内存">如何管理虚拟内存与物理内存</h2>
+<p>只有当CPU执行的当前指令试图读写内存时，就需要翻译虚拟地址为物理地址。
+通过分页来管理内存，不同架构的设计允许定制化页面大小，每一个物理页面可以映射单个活多个虚拟地址，这种映射关系是由页表来管理的。页表是层级管理，高层次页表管理低层次页表，最低层次页表管理虚拟内存到物理内存的映射（也就是常说的多级页表）。顶级页表的地址存放在寄存器中。</p>
+<h1 id="大页">大页</h1>
+<blockquote>
+<p><a href="https://www.kernel.org/doc/html/next/admin-guide/mm/concepts.html#id8#:~:text=%20Usually%20TLB%20is%20pretty%20scarce%20resource%20and%20applications%20with%20large%20memory%20working%20set%20will%20experience%20performance%20hit%20because%20of%20TLB%20misses"> Usually TLB is pretty scarce resource and applications with large memory working set will experience performance hit because of TLB misses</a></p>
+</blockquote>
+<p>TLB来加速通过页表查询的速度，TLB是比内存更加紧俏的资源，每一次的TLB Miss都是对性能的严重打击。
+现代CPU架构允许高层次Page Table 直接映射物理页面，这样就少了几次页表的查询（因为页表是层级结构，原本只有最低层级的页表记录着最终的物理地址与虚拟地址的映射）。统称这些由非最低层级页表直接映射的页面为大页（为啥大？因为通常大于4KB）</p>
+<blockquote>
+<p><a href="https://www.kernel.org/doc/html/next/admin-guide/mm/concepts.html#id8#:~:text=Usage%20of%20huge%20pages%20significantly%20reduces%20pressure%20on%20TLB%2C%20improves%20TLB%20hit-rate%20and%20thus%20improves%20overall%20system%20performance.">Usage of huge pages significantly reduces pressure on TLB, improves TLB hit-rate and thus improves overall system performance.</a></p>
+</blockquote>
+<p>大页的设计减轻了TLB的压力。</p>
+<blockquote>
+<p><a href="https://www.kernel.org/doc/html/next/admin-guide/mm/concepts.html#id8#:~:text=There%20are%20two,THP.">There are two mechanisms in Linux that enable mapping of the physical memory with the huge pages. The first one is HugeTLB filesystem, or hugetlbfs. It is a pseudo filesystem that uses RAM as its backing store. For the files created in this filesystem the data resides in the memory and mapped using huge pages. The hugetlbfs is described at HugeTLB Pages.  Another, more recent, mechanism that enables use of the huge pages is called Transparent HugePages, or THP. Unlike the hugetlbfs that requires users and/or system administrators to configure what parts of the system memory should and can be mapped by the huge pages, THP manages such mappings transparently to the user and hence the name. See Transparent Hugepage Support for more details about THP.</a></p>
+</blockquote>
+<p>Linux对于这种机制的支持也是在不断改进的，Linux中实现映射物理内存到大页面的两种机制：HugeTLB文件系统和透明大页（THP）。HugeTLB文件系统需要用户或系统管理员进行配置以决定哪些内存部分应该使用大页面进行映射，而THP则通过自动管理实现了对大页面的透明映射</p>
+<h1 id="zone">Zone</h1>
+<blockquote>
+<p><a href="https://www.kernel.org/doc/html/next/admin-guide/mm/concepts.html#id8#:~:text=Often%20hardware%20poses,platforms.">Often hardware poses restrictions on how different physical memory ranges can be accessed. In some cases, devices cannot perform DMA to all the addressable memory. In other cases, the size of the physical memory exceeds the maximal addressable size of virtual memory and special actions are required to access portions of the memory. Linux groups memory pages into zones according to their possible usage. For example, ZONE_DMA will contain memory that can be used by devices for DMA, ZONE_HIGHMEM will contain memory that is not permanently mapped into kernel&rsquo;s address space and ZONE_NORMAL will contain normally addressed pages.  The actual layout of the memory zones is hardware dependent as not all architectures define all zones, and requirements for DMA are different for different platforms.</a></p>
+</blockquote>
+<p>简而言之，这段话指出硬件对内存访问有一些限制，例如某些设备无法进行完全的DMA操作，或者物理内存的大小超过了虚拟内存的寻址范围。为了满足不同的需求，Linux将内存划分为不同的区域，如ZONE_DMA、ZONE_HIGHMEM和ZONE_NORMAL，以便设备和内核能够根据需要访问适当的内存区域。具体的内存区域布局与硬件相关，并且根据不同的平台和DMA需求而有所不同。</p>
+<h1 id="nodes">Nodes</h1>
+<blockquote>
+<p><a href="https://www.kernel.org/doc/html/next/admin-guide/mm/concepts.html#id8#:~:text=Many%20multi-processor%20machines%20are%20NUMA%20-%20Non-Uniform%20Memory%20Access%20-%20systems.%20In%20such%20systems%20the%20memory%20is%20arranged%20into%20banks%20that%20have%20different%20access%20latency%20depending%20on%20the%20%22distance%22%20from%20the%20processor.%20Each%20bank%20is%20referred%20to%20as%20a%20node%20and%20for%20each%20node%20Linux%20constructs%20an%20independent%20memory%20management%20subsystem.%20A%20node%20has%20its%20own%20set%20of%20zones%2C%20lists%20of%20free%20and%20used%20pages%20and%20various%20statistics%20counters.">Many multi-processor machines are NUMA - Non-Uniform Memory Access - systems. In such systems the memory is arranged into banks that have different access latency depending on the &ldquo;distance&rdquo; from the processor. Each bank is referred to as a node and for each node Linux constructs an independent memory management subsystem. A node has its own set of zones, lists of free and used pages and various statistics counters.</a></p>
+</blockquote>
+<p>多核NUMA系统，其中内存被分成了不同的存储区域，每个区域被称为一个节点。对于每个节点，Linux构建了独立的内存管理子系统，包括区Zones集、Page链表（包括已使用和未使用）和统计计数器等。这样的设计可以根据节点之间的距离来调整内存访问的延迟，实现更高效的内存管理。</p>
+<h1 id="page-cache">Page cache</h1>
+<p>Page cache的存在是为了提高硬件和内存之间的访问速度，利用Page cache 将要读入的或者即将写入文件的内容暂存，写操作较为特殊，将要被写入（在内存中做出了修改，需要更新到辅助存储设备）的页面被标记为dirty，当再次使用该页面时，同步到辅助存储设备中。</p>
+<h1 id="anonymous-memory">Anonymous Memory</h1>
+<blockquote>
+<p><a href="https://www.kernel.org/doc/html/next/admin-guide/mm/concepts.html#id8#:~:text=The%20anonymous%20memory%20or%20anonymous%20mappings%20represent%20memory%20that%20is%20not%20backed%20by%20a%20filesystem.%20Such%20mappings%20are%20implicitly%20created%20for%20program's%20stack%20and%20heap%20or%20by%20explicit%20calls%20to%20mmap(2)%20system%20call.%20Usually%2C%20the%20anonymous%20mappings%20only%20define%20virtual%20memory%20areas%20that%20the%20program%20is%20allowed%20to%20access.%20The%20read%20accesses%20will%20result%20in%20creation%20of%20a%20page%20table%20entry%20that%20references%20a%20special%20physical%20page%20filled%20with%20zeroes.%20When%20the%20program%20performs%20a%20write%2C%20a%20regular%20physical%20page%20will%20be%20allocated%20to%20hold%20the%20written%20data.%20The%20page%20will%20be%20marked%20dirty%20and%20if%20the%20kernel%20decides%20to%20repurpose%20it%2C%20the%20dirty%20page%20will%20be%20swapped%20out">The anonymous memory or anonymous mappings represent memory that is not backed by a filesystem. Such mappings are implicitly created for program&rsquo;s stack and heap or by explicit calls to mmap(2) system call. Usually, the anonymous mappings only define virtual memory areas that the program is allowed to access. The read accesses will result in creation of a page table entry that references a special physical page filled with zeroes. When the program performs a write, a regular physical page will be allocated to hold the written data. The page will be marked dirty and if the kernel decides to repurpose it, the dirty page will be swapped out</a></p>
+</blockquote>
+<p>匿名内存或匿名映射是指不由文件系统支持的内存。程序的堆栈和堆通常隐式地创建匿名映射，也可以通过调用mmap(2)系统调用来显式创建。匿名映射仅定义了程序可以访问的虚拟内存区域。对于读访问，将使用一个特殊的物理页面来表示零值。而在写操作时，将分配一个普通的物理页面来保存写入的数据，并将其标记为脏页。如果内核决定重新利用该页面，则脏页将被交换出去。</p>
+<h1 id="reclaim">Reclaim</h1>
+<blockquote>
+<p><a href="https://www.kernel.org/doc/html/next/admin-guide/mm/concepts.html#id8#:~:text=Throughout%20the%20system,request.">Throughout the system lifetime, a physical page can be used for storing different types of data. It can be kernel internal data structures, DMA&rsquo;able buffers for device drivers use, data read from a filesystem, memory allocated by user space processes etc.  Depending on the page usage it is treated differently by the Linux memory management. The pages that can be freed at any time, either because they cache the data available elsewhere, for instance, on a hard disk, or because they can be swapped out, again, to the hard disk, are called reclaimable. The most notable categories of the reclaimable pages are page cache and anonymous memory.  In most cases, the pages holding internal kernel data and used as DMA buffers cannot be repurposed, and they remain pinned until freed by their user. Such pages are called unreclaimable. However, in certain circumstances, even pages occupied with kernel data structures can be reclaimed. For instance, in-memory caches of filesystem metadata can be re-read from the storage device and therefore it is possible to discard them from the main memory when system is under memory pressure.  The process of freeing the reclaimable physical memory pages and repurposing them is called (surprise!) reclaim. Linux can reclaim pages either asynchronously or synchronously, depending on the state of the system. When the system is not loaded, most of the memory is free and allocation requests will be satisfied immediately from the free pages supply. As the load increases, the amount of the free pages goes down and when it reaches a certain threshold (low watermark), an allocation request will awaken the kswapd daemon. It will asynchronously scan memory pages and either just free them if the data they contain is available elsewhere, or evict to the backing storage device (remember those dirty pages?). As memory usage increases even more and reaches another threshold - min watermark - an allocation will trigger direct reclaim. In this case allocation is stalled until enough memory pages are reclaimed to satisfy the request.</a></p>
+</blockquote>
+<p>全文翻译：
+在系统的整个生命周期中，物理页面可以用于存储不同类型的数据。它可以是内核内部数据结构、设备驱动程序使用的可进行DMA访问的缓冲区、从文件系统读取的数据，或者是由用户空间进程分配的内存等。</p>
+<p>根据页面的使用方式，Linux内存管理会对其进行不同的处理。那些可以随时释放的页面，可能是因为它们缓存了其他位置（例如硬盘）上可用的数据，或者因为它们可以被换出到硬盘上，被称为可回收页面。可回收页面中最重要的两个类别是页面缓存和匿名内存。</p>
+<p>大多数情况下，保存内核内部数据并用作DMA缓冲区的页面无法被重新利用，并且它们将保持固定状态，直到被它们的用户释放。这样的页面被称为不可回收页面。然而，在某些情况下，即使是占用着内核数据结构的页面也可以被回收利用。例如，文件系统元数据的内存缓存可以从存储设备重新读取，因此在系统压力下，可以将其从主内存中丢弃。</p>
+<p>释放可回收物理内存页面并重新利用它们的过程称为回收。Linux可以根据系统的状态异步或同步地回收页面。当系统负载较低时，大部分内存都是空闲的，分配请求将立即从空闲页中满足。随着负载的增加，空闲页的数量减少，当达到一定的阈值（低水位线）时，分配请求将唤醒kswapd守护进程。它会异步扫描内存页面，并根据数据是否可在其他位置获取来决定是仅释放这些页面，还是将其驱逐到后备存储设备（还记得那些脏页吗？）。随着内存使用的进一步增加并达到另一个阈值（最低水位线），分配请求将触发直接回收。在这种情况下，分配将被暂停，直到回收足够的内存页面以满足请求为止。</p>
+<p>总结：
+这段话主要解释了Linux内存管理中的页面回收机制。在系统运行过程中，物理页面可以用于存储各种类型的数据，包括内核数据、DMA缓冲区、文件系统数据等。根据页面的使用方式，可以将其分为可回收页面和不可回收页面。
+可回收页面包括页面缓存和匿名内存，它们可以在系统需要时被异步地释放或重新利用。当系统负载较低时，大部分内存是空闲的，分配请求可以立即满足。但随着负载增加，空闲页面减少，当达到一定阈值时，会唤醒kswapd守护进程进行异步扫描和释放页面，或将脏页写回到存储设备。当内存使用进一步增加并达到另一个阈值时，会触发直接回收，即暂停内存分配直到回收足够的页面来满足请求。
+需要注意的是，一些用于保存内核数据结构和DMA缓冲区的页面是不可回收的，它们会一直保持固定状态，直到它们的用户释放。但在某些情况下，即使是这些页面也可以被回收，例如重新读取文件系统元数据的内存缓存。
+总之，这个机制确保了系统在内存紧张的情况下能够回收和重新利用可回收页面，从而更高效地利用内存资源，并及时满足分配请求。</p>
+<h1 id="compaction">Compaction</h1>
+<blockquote>
+<p><a href="https://www.kernel.org/doc/html/next/admin-guide/mm/concepts.html#id8#:~:text=As%20the%20system,request.">As the system runs, tasks allocate and free the memory and it becomes fragmented. Although with virtual memory it is possible to present scattered physical pages as virtually contiguous range, sometimes it is necessary to allocate large physically contiguous memory areas. Such need may arise, for instance, when a device driver requires a large buffer for DMA, or when THP allocates a huge page. Memory compaction addresses the fragmentation issue. This mechanism moves occupied pages from the lower part of a memory zone to free pages in the upper part of the zone. When a compaction scan is finished free pages are grouped together at the beginning of the zone and allocations of large physically contiguous areas become possible.  Like reclaim, the compaction may happen asynchronously in the kcompactd daemon or synchronously as a result of a memory allocation request.</a></p>
+</blockquote>
+<p>碎片内存的压缩机制来解决需要分配连续物理内存的问题</p>
+<h1 id="oom-killer">OOM Killer</h1>
+<p>在负载高的机器上，内存有可能会耗尽，内核将无法回收足够的内存以继续运行。为了保护系统的其余部分，内核会触发OOM（Out of Memory）Killer。
+OOM杀手选择一个任务来牺牲，以维护整个系统的健康。选择的任务被终止，希望在其退出后释放足够的内存来恢复正常操作。</p>
 
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-        <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500"
-            alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/%E5%8A%A8%E6%80%81%E5%88%86%E9%85%8D/">【C&#43;&#43; Primer(edition 5) 11】动态内存</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2021-10-7 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2021-10-7 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                收录于:
-                
-                <a href='
-                                        /categories/cpp
-                                    '>
-                    Cpp
-                </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">动态内存</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/%E5%8A%A8%E6%80%81%E5%88%86%E9%85%8D/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-
-
-
-<div class="down-type">
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#cpp
-                        '>
-                <i class="fa fa-tag"></i> #Cpp
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
-                        '>
-                <i class="fa fa-tag"></i> #语法特性
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E7%BC%96%E7%A8%8B
-                        '>
-                <i class="fa fa-tag"></i> #编程
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/c&#43;&#43;%E6%A0%87%E5%87%86%E5%BA%93
-                        '>
-                <i class="fa fa-tag"></i> C&#43;&#43;标准库
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#c&#43;&#43;%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86
-                        '>
-                <i class="fa fa-tag"></i> #C&#43;&#43;内存管理
-            </a>
-        </div>
-    </span>
-    
-</div>
-
-<div class="dang"></div>
             </div>
             
+                <div class="tags">
+                    
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#linux-kernel
+                                    '>
+                                <i class="fa fa-tag"></i> #Linux Kernel
+                            </a>
+                        </div>
+                    </span>
+                    
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3
+                                    '>
+                                <i class="fa fa-tag"></i> #官方文档
+                            </a>
+                        </div>
+                    </span>
+                    
+                </div>
+            
         </div>
+        
+            
+                <div class="pre-next">
+                    
+    
+        
+        <a href="https://cnjslw.github.io/posts/03-%E9%80%9A%E7%94%A8%E6%8C%87%E4%BB%A4/" class="pre">
+            <span class="pre-icon"><i class="fa fa-hand-o-left"></i></span>
+            <div class="pre-title-root">
+                <span>【x86汇编语言03】通用指令集</span>
+            </div>
+        </a>
+        
+
+        
+        <a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/" class="next">
+            <div class="next-title-root">
+                <span>【模板与泛型编程01】函数模板</span>
+            </div>
+            <span class="next-icon"><i class="fa fa-hand-o-right"></i></span>
+        </a>
+        
+
+    
+    
+
+                </div>
+            
+        
     
 </div>
+
+    
+        <div class="content-last">
+            
+                <button class="aixin content-last-item efct-button">
+                    <i class="fa fa-heart"></i>
+                </button>
+            
+            
+        </div>
+    
 
 
             </div>
@@ -445,10 +487,13 @@
 
 
 
+    
+    
+
 
 <div class="other">
     <div class="other-up">
-        <div class="other-qita text-wbd">最新文章</div>
+        <div class="other-qita text-wbd">相关文章</div>
         <div class="xian"></div>
     </div>
     <div class="list">
@@ -488,26 +533,6 @@
             </div>
             <div class="other-summary">Linux debug 环境搭建</div>
             <div class="other-date">2023-2-1</div>
-        </div>
-    </div>
-</a>
-            </a>
-        
-            <a href="https://cnjslw.github.io/posts/%E6%8C%87%E4%BB%A4%E6%A6%82%E8%BF%B0/">
-                
-<a href="https://cnjslw.github.io/posts/%E6%8C%87%E4%BB%A4%E6%A6%82%E8%BF%B0/">
-    <div class="list-item">
-        <div class="icon-other-root">
-            
-                <div class="icon-other" style="background-image: url( https://picsum.photos/2500/500 );"></div>
-            
-        </div>
-        <div class="list-right">
-            <div class="other-title">
-                【计算机组成原理与体系架构01】指令系统设计
-            </div>
-            <div class="other-summary">指令系统设计</div>
-            <div class="other-date">2023-1-15</div>
         </div>
     </div>
 </a>
@@ -573,6 +598,26 @@
 </a>
             </a>
         
+            <a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/">
+                
+<a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/">
+    <div class="list-item">
+        <div class="icon-other-root">
+            
+                <div class="icon-other" style="background-image: url( https://picsum.photos/2500/500 );"></div>
+            
+        </div>
+        <div class="list-right">
+            <div class="other-title">
+                【模板与泛型编程01】函数模板
+            </div>
+            <div class="other-summary">函数模板</div>
+            <div class="other-date">2022-6-8</div>
+        </div>
+    </div>
+</a>
+            </a>
+        
     </div>
 </div>
         </div>
@@ -584,6 +629,46 @@
 
             </div>
         </div>
+    </div>
+</div>
+
+    
+
+<div class="sponsor">
+    <div class="sponsor-self">
+        <div class="sponsor-title">赞赏</div>
+        <div class="sponsor-btn">
+            
+                
+                    
+                        <div class="sponsor-btn-1 border-r">Wechat</div>
+                    
+                
+                
+            
+                
+                    
+                        <div class="sponsor-btn-2 border-l">Alipay</div>
+                    
+                
+                
+            
+        </div>
+        
+        <div class="sponsor-img">
+            
+                
+                    <img class="sponsor-img-1" src="/images/wechat.png" alt="">
+                
+                
+            
+                
+                    <img class="sponsor-img-2" src="/images/alipay.png" alt="" style="display: none;">
+                
+                
+            
+        </div>
+        <div class="cancel efct-button">取消</div>
     </div>
 </div>
 
