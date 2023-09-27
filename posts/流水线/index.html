@@ -3,20 +3,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>AWei’s Kernel Tour | #Linux Kernel</title>
+    <title>AWei’s Kernel Tour | 【计算机组成原理与体系架构02】流水线</title>
     <meta name="description"
-        content=" ">
-    <link rel="canonical" href="https://cnjslw.github.io/tags/#linux-kernel/" />
+        content="流水线 ">
+    <link rel="canonical" href="https://cnjslw.github.io/posts/%E6%B5%81%E6%B0%B4%E7%BA%BF/" />
     <link rel="icon" type="image/x-icon" href="/images/linux_pic.ico">
-    <meta property="og:title" content="#Linux Kernel" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://cnjslw.github.io/tags/#linux-kernel/" />
+    <meta property="og:title" content="【计算机组成原理与体系架构02】流水线" />
+<meta property="og:description" content="流水线" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://cnjslw.github.io/posts/%E6%B5%81%E6%B0%B4%E7%BA%BF/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-02-06T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-02-06T00:00:00+00:00" />
+
 
 
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="#Linux Kernel"/>
-<meta name="twitter:description" content=""/>
+<meta name="twitter:title" content="【计算机组成原理与体系架构02】流水线"/>
+<meta name="twitter:description" content="流水线"/>
 
     
     
@@ -194,29 +197,41 @@
 
 
         <div id="content">
-    
 
 
 
 
-
-
-    
-        
-    
 
 
 
 
     <div class="hero">
         
-            
-                <div class="hero-img">
-                    <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500" alt="">
-                </div>
-            
+            <div class="hero-img">
+                <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500" alt="">
+            </div>
+        
         <div class="hero-content">
-            <h1 class="hero-title">标签: #Linux Kernel</h1>
+            <div class="hero-title">【计算机组成原理与体系架构02】流水线</div>
+            <div class="hero-subtitle"></div>
+            <div class="hero-date">
+                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2023-2-6 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2023-2-6 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-folder"></i>
+                        收录于:
+                        
+                            <a href='
+                                /categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BD%93%E7%B3%BB%E6%9E%B6%E6%9E%84
+                            '>
+                                计算机组成原理与体系架构
+                            </a>
+                    </span>    
+            </div>
+            <div class="timelong">
+                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 75 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 1 分钟 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-eye"></i> 阅读量: <span id="busuanzi_value_page_pv"></span></span>
+            </div>
         </div>
     </div>
 
@@ -235,7 +250,7 @@
     
 
 
-<div class="terms-body">
+<div class="content-root">
     <div class="long">
         <button class="tosides-1 text-wbd">
             <i class="fa fa-arrow-right"></i>
@@ -248,242 +263,155 @@
         </button>
     </div>
     
-        <div class="terms-row">
-            
-            <div class="terms-root">
-                
-                
+        <div class="content">
+            <div class="content-self">
+                <p><em>注：本文为读书笔记，并非原创内容，主要对阅读材料进行摘抄整合与内容梳理，参考资料已经在文末注明</em></p>
+<h1 id="单周期到流水线">单周期到流水线</h1>
+<h2 id="单周期cpu的设计">单周期CPU的设计</h2>
+<p>下图是一个简单的CPU模型，</p>
+<ul>
+<li>程序计数器，又称PC，指示当前指令的地址；</li>
+<li>指令存储器，按照指令地址存储指令码，接收PC，读出指令；</li>
+<li>译码部件，用于分析指令，判定指令类别；</li>
+<li>通用寄存器堆，用于承载寄存器的值，绝大多数指令都需要读取及修改寄存器；</li>
+<li>运算器，用于执行指令所指示的运算操作；</li>
+<li>数据存储器，按照地址存储数据，主要用于访存指令。</li>
+</ul>
+<p><strong>数据通路上各组成要素间的具体连接规则如下：</strong>
+根据PC从指令存储器中取出指令，然后是译码部件解析出相关控制信号，并读取通用寄存器堆；运算器对通用寄存器堆读出的操作数进行计算，得到计算指令的结果写回通用寄存器堆，或者得到访存指令的地址，或者得到转移指令的跳转目标；load指令访问数据存储器后，需要将结果写回通用寄存器堆。通用寄存器堆写入数据在计算结果和访存结果之间二选一。由于有控制流指令的存在，因此新指令的PC既可能等于顺序下一条指令的PC（当前指令PC加4），也可能来自转移指令计算出的跳转目标。
+<img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309272203403.png" alt="Pasted image 20230927164655|800|800"></p>
+<p><strong>处理器的执行过程</strong></p>
+<ol>
+<li>复位信号将复位的PC装载到PC触发器内，之后的第一个时钟周期内，使用PC取指、译码、执行、读数据存储器、生成结果；</li>
+<li>当第二个时钟周期上升沿到来时，根据时序逻辑的特性，将新的PC锁存，将上一个时钟周期的结果写入寄存器堆，执行可能的数据存储器写操作；</li>
+<li>第二个时钟周期内，就可以执行第二条指令了，同样按照上面两步来执行。</li>
+</ol>
+<p>由一系列指令构成的程序就在处理器中执行了。由于每条指令的执行基本在一拍内完成，因此这个模型被称为单周期处理器</p>
+<h2 id="流水线处理器">流水线处理器</h2>
+<p>单周期处理器模型中，每个时钟周期必须完成取指、译码、读寄存器、执行、访存等很多组合逻辑工作，为了保证在下一个时钟上升沿到来之前准备好寄存器堆的写数据，需要将每个时钟周期的间隔拉长，导致处理器的主频无法提高。使用流水线技术可以提高处理器的主频。在引入流水线技术之前，先介绍一下多周期处理器的概念。</p>
+<h3 id="多周期处理器">多周期处理器</h3>
+<p>多周期处理器的思路就是：通过减少每个时钟周期的工作量，从而缩短每个是周期的时长，从而提高处理器的主频</p>
+<p>按照取指、译码并读寄存器、执行、访存和准备写回划分为5个阶段。如果我们在每段操作前后加上触发器，看起来就能减少每个时钟周期的工作量，提高处理器频率</p>
+<p>物理硬件上如何支持呢，多周期处理器通过使用分频时钟，可以确保在同一条指令的后面几个时钟周期执行时，控制逻辑因没有接收到下一个时钟上升沿所以不会发生变化</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309272203404.png" alt="Pasted image 20230927170537|800|800"></p>
+<ol>
+<li>在第1个时钟周期，通过PC取出指令，在第2个时钟上升沿锁存到指令码触发器R1；</li>
+<li>在第2个时钟周期，将R1译码并生成控制逻辑，读取通用寄存器，读出结果在第3个时钟上升沿锁存到触发器R2；</li>
+<li>在第3个时钟周期，使用控制逻辑和R2进行ALU运算。</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309272203406.png" alt="Pasted image 20230927171012|800"></p>
+<h3 id="从多周期的流水线">从多周期的流水线</h3>
+<p>多周期处理器设计可以提高运行频率，但是每条指令的执行时间并不能降低
+可以将各个执行阶段以流水方式组织起来，<strong>同一时刻不同指令的不同执行阶段重叠在一起</strong>，进一步提高CPU执行效率</p>
+<p>从多周期处理器演进到流水线处理器，<strong>核心在于控制逻辑和数据通路对应关系维护机制的变化</strong>。多周期处理器通过使用分频时钟，可以确保在同一条指令的后面几个时钟周期执行时，控制逻辑因没有接收到下一个时钟上升沿所以不会发生变化。流水线处理器则通过另一个方法来保证这一点，就是在每级流水的触发器旁边，再添加一批用于存储控制逻辑的触发器。指令的控制逻辑藉由这些触发器沿着流水线逐级传递下去，从而保证了各阶段执行时使用的控制逻辑都是属于该指令的</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309272203407.png" alt="Pasted image 20230927171315|800|800"></p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309272203408.png" alt="Pasted image 20230927171322|800|800"></p>
+<h1 id="指令相关和流水线冲突">指令相关和流水线冲突</h1>
+<p>流水线技术固然大幅度提高了CPU运行的效率，但是同样带来了更多挑战</p>
+<h2 id="问题的根源">问题的根源</h2>
+<p>先给出答案，<strong>指令相关性</strong>就是问题的根源</p>
+<p>指令相关分为数据相关，控制相关，与结构相关</p>
+<h2 id="数据相关性与解决方案">数据相关性与解决方案</h2>
+<p>数据相相关性分为
+写后读（Read After Write,简称RAW）：即后面指令要用到前面指令所写的数据，也称为真相关。在简单流水线会引起冲突；
+写后写（Write After Write,简称WAW）：两条指令写同一个单元，也称为输出相关。乱序执行中会引起流水线冲突；
+读后写（Write After Read,简称WAR）：后面的指令覆盖前面指令所读的单元，也称为反相关。乱序执行中会引起流水线冲突</p>
+<h3 id="一个会发生冲突的例子">一个会发生冲突的例子</h3>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309272203409.png" alt="Pasted image 20230927210328|800"></p>
+<h3 id="采用阻塞的方式解决流水线冲突的思路">采用阻塞的方式解决流水线冲突的思路</h3>
+<p>第1条指令的写回阶段指向第2条指令的译码阶段的箭头以及从第2条指令的写回阶段指向第3条指令的译码阶段的箭头都表示RAW相关会引起冲突。这是因为如果第2条指令要使用第1条指令写回到寄存器的结果，就必须保证第2条指令读取寄存器的时候第1条指令的结果已经写回到寄存器中了，而现有的5级流水线结构如果不加控制，第2条指令就会在第1条指令写回寄存器之前读取寄存器，从而引发数据错误。为了保证执行的正确，==一种最直接的解决方式是让第2条指令在译码阶段等待（阻塞）3拍，直到第1条指令将结果写入寄存器后才能读取寄存器==，进入后续的执行阶段。同样的方式亦适用于第2、3条指令之间和第3、4条指令之间</p>
+<p>解决方案: 采用阻塞解决数据相关的流水线</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309272203410.png" alt="Pasted image 20230927210501|800|800"></p>
+<h3 id="流水线前递出技术">流水线前递出技术</h3>
+<p>采用阻塞的方式虽然能够解决RAW相关所引发的流水线冲突，但是阻塞势必引起流水线执行效率的降低。</p>
+<p>流水线前递技术是通过直接将第一条指令的计算结果直接拿来用，而不等待它先存入寄存器。</p>
+<p>具体实现的方法是，在流水线中读取指令源操作数的地方通过多路选择器直接把前面指令的运算结果作为后面指令的输入。考虑到加法指令在执行级就完成了运算，因此能够设计一条通路，将这个结果前递至读寄存器的地方，即有一条从执行级到译码级的前递通路。除此之外，还可以依次添加从访存级、写回级到译码级的前递通路</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309272203411.png" alt="Pasted image 20230927211125|800|800"></p>
+<p>简而言之，别存了，拿来吧你( •̀ ω •́ )✧</p>
+<h2 id="控制相关引发冲突及解决方法">控制相关引发冲突及解决方法</h2>
+<p>控制相关引发的冲突本质上是对程序计数器PC的冲突访问引起的</p>
+<h3 id="一个发生控制冲突的例子">一个发生控制冲突的例子</h3>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309272203412.png" alt="Pasted image 20230927211516|800|800"></p>
+<h3 id="阻塞方法解决控制冲突">阻塞方法解决控制冲突</h3>
+<p>执行阶段R2触发器所存储的值经过计算之后才能给出转移指令的正确目标并在下一个时钟上升沿更新PC，但是图中转移指令尚未执行结束时，PC已经更新完毕并取指了，从而可能导致取回了错误的指令。为了解决这个问题，可以通过在取指阶段引入2拍的流水线阻塞来解决</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309272203413.png" alt="Pasted image 20230927214321|800"></p>
+<h3 id="转移指令的延迟槽技术">转移指令的延迟槽技术</h3>
+<p>在定义指令系统的时候就明确转移指令延迟槽指令的执行不依赖于转移指令的结果，这样转移指令后面的指令在取指阶段1拍也不用等。总之，在单发射5级静态流水线处理器中，通过在译码阶段对转移指令进行处理和利用转移指令延迟槽技术，就可以避免控制相关引起的流水线阻塞</p>
+<h2 id="结构相关引发冲突及解决方法">结构相关引发冲突及解决方法</h2>
+<p>结构相关引起冲突的原因是两条指令要同时访问流水线中的同一个功能部件</p>
+<p>解决方案: 阻塞流水线 + 增加资源</p>
+<hr>
+<p>[1] <a href="https://foxsen.github.io/archbase/%E6%8C%87%E4%BB%A4%E6%B5%81%E6%B0%B4%E7%BA%BF.html">《计算机体系结构基础》</a></p>
 
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-        <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500"
-            alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">【Linux Kernel 0.12】启动流程</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2023-2-12 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2023-2-12 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                收录于:
-                
-                <a href='
-                                        /categories/linux-kernel
-                                    '>
-                    Linux Kernel
-                </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">Linux0.12的启动流程</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-
-
-
-<div class="down-type">
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#linux-kernel
-                        '>
-                <i class="fa fa-tag"></i> #Linux Kernel
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83
-                        '>
-                <i class="fa fa-tag"></i> #开发环境
-            </a>
-        </div>
-    </span>
-    
-</div>
-
-<div class="dang"></div>
             </div>
             
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-        <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500"
-            alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/">【Linux Kernel】Linux debug 环境搭建：qemu&#43;vscode内核源码调试配置教程</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2023-2-1 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2023-2-1 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                收录于:
-                
-                <a href='
-                                        /categories/linux-kernel
+                <div class="tags">
+                    
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84
                                     '>
-                    Linux Kernel
-                </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">Linux debug 环境搭建</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-
-
-
-<div class="down-type">
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#linux-kernel
-                        '>
-                <i class="fa fa-tag"></i> #Linux Kernel
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83
-                        '>
-                <i class="fa fa-tag"></i> #开发环境
-            </a>
-        </div>
-    </span>
-    
-</div>
-
-<div class="dang"></div>
-            </div>
+                                <i class="fa fa-tag"></i> #计算机体系结构
+                            </a>
+                        </div>
+                    </span>
+                    
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86
+                                    '>
+                                <i class="fa fa-tag"></i> #底层原理
+                            </a>
+                        </div>
+                    </span>
+                    
+                </div>
             
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
+        </div>
         
-        <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500"
-            alt='图片加载失败'>
+            
+                <div class="pre-next">
+                    
+    
         
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/linuxdocument-00/">【Linux Document 01】Memory Manager : Concept</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-2-19 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-2-19 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                收录于:
-                
-                <a href='
-                                        /categories/linux-kernel
-                                    '>
-                    Linux Kernel
-                </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">Linux官方文档阅读笔记</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/linuxdocument-00/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-
-
-
-<div class="down-type">
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#linux-kernel
-                        '>
-                <i class="fa fa-tag"></i> #Linux Kernel
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3
-                        '>
-                <i class="fa fa-tag"></i> #官方文档
-            </a>
-        </div>
-    </span>
-    
-</div>
-
-<div class="dang"></div>
+        <a href="https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/" class="pre">
+            <span class="pre-icon"><i class="fa fa-hand-o-left"></i></span>
+            <div class="pre-title-root">
+                <span>【Linux Kernel】Linux debug 环境搭建：qemu&#43;vscode内核源码调试配置教程</span>
             </div>
+        </a>
+        
+
+        
+        <a href="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/" class="next">
+            <div class="next-title-root">
+                <span>【Linux Kernel 0.12】启动流程</span>
+            </div>
+            <span class="next-icon"><i class="fa fa-hand-o-right"></i></span>
+        </a>
+        
+
+    
+    
+
+                </div>
+            
+        
+    
+</div>
+
+    
+        <div class="content-last">
+            
+                <button class="aixin content-last-item efct-button">
+                    <i class="fa fa-heart"></i>
+                </button>
+            
             
         </div>
     
-</div>
 
 
             </div>
@@ -560,13 +488,36 @@
 
 
 
+    
+    
+
 
 <div class="other">
     <div class="other-up">
-        <div class="other-qita text-wbd">最新文章</div>
+        <div class="other-qita text-wbd">相关文章</div>
         <div class="xian"></div>
     </div>
     <div class="list">
+        
+            <a href="https://cnjslw.github.io/posts/%E6%8C%87%E4%BB%A4%E6%A6%82%E8%BF%B0/">
+                
+<a href="https://cnjslw.github.io/posts/%E6%8C%87%E4%BB%A4%E6%A6%82%E8%BF%B0/">
+    <div class="list-item">
+        <div class="icon-other-root">
+            
+                <div class="icon-other" style="background-image: url( https://picsum.photos/2500/500 );"></div>
+            
+        </div>
+        <div class="list-right">
+            <div class="other-title">
+                【计算机组成原理与体系架构01】指令系统设计
+            </div>
+            <div class="other-summary">指令系统设计</div>
+            <div class="other-date">2023-1-15</div>
+        </div>
+    </div>
+</a>
+            </a>
         
             <a href="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">
                 
@@ -583,26 +534,6 @@
             </div>
             <div class="other-summary">Linux0.12的启动流程</div>
             <div class="other-date">2023-2-12</div>
-        </div>
-    </div>
-</a>
-            </a>
-        
-            <a href="https://cnjslw.github.io/posts/%E6%B5%81%E6%B0%B4%E7%BA%BF/">
-                
-<a href="https://cnjslw.github.io/posts/%E6%B5%81%E6%B0%B4%E7%BA%BF/">
-    <div class="list-item">
-        <div class="icon-other-root">
-            
-                <div class="icon-other" style="background-image: url( https://picsum.photos/2500/500 );"></div>
-            
-        </div>
-        <div class="list-right">
-            <div class="other-title">
-                【计算机组成原理与体系架构02】流水线
-            </div>
-            <div class="other-summary">流水线</div>
-            <div class="other-date">2023-2-6</div>
         </div>
     </div>
 </a>
@@ -628,66 +559,6 @@
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E6%8C%87%E4%BB%A4%E6%A6%82%E8%BF%B0/">
-                
-<a href="https://cnjslw.github.io/posts/%E6%8C%87%E4%BB%A4%E6%A6%82%E8%BF%B0/">
-    <div class="list-item">
-        <div class="icon-other-root">
-            
-                <div class="icon-other" style="background-image: url( https://picsum.photos/2500/500 );"></div>
-            
-        </div>
-        <div class="list-right">
-            <div class="other-title">
-                【计算机组成原理与体系架构01】指令系统设计
-            </div>
-            <div class="other-summary">指令系统设计</div>
-            <div class="other-date">2023-1-15</div>
-        </div>
-    </div>
-</a>
-            </a>
-        
-            <a href="https://cnjslw.github.io/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C01-%E6%A6%82%E8%BF%B0/">
-                
-<a href="https://cnjslw.github.io/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C01-%E6%A6%82%E8%BF%B0/">
-    <div class="list-item">
-        <div class="icon-other-root">
-            
-                <div class="icon-other" style="background-image: url( https://picsum.photos/2500/500 );"></div>
-            
-        </div>
-        <div class="list-right">
-            <div class="other-title">
-                【计算机网络 01】概述
-            </div>
-            <div class="other-summary">计算机网络</div>
-            <div class="other-date">2022-7-17</div>
-        </div>
-    </div>
-</a>
-            </a>
-        
-            <a href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF%E4%B8%8E%E5%8F%8B%E5%85%83/">
-                
-<a href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF%E4%B8%8E%E5%8F%8B%E5%85%83/">
-    <div class="list-item">
-        <div class="icon-other-root">
-            
-                <div class="icon-other" style="background-image: url( https://picsum.photos/2500/500 );"></div>
-            
-        </div>
-        <div class="list-right">
-            <div class="other-title">
-                【模板与泛型编程03】类模板和友元
-            </div>
-            <div class="other-summary">类模板</div>
-            <div class="other-date">2022-6-22</div>
-        </div>
-    </div>
-</a>
-            </a>
-        
     </div>
 </div>
         </div>
@@ -699,6 +570,46 @@
 
             </div>
         </div>
+    </div>
+</div>
+
+    
+
+<div class="sponsor">
+    <div class="sponsor-self">
+        <div class="sponsor-title">赞赏</div>
+        <div class="sponsor-btn">
+            
+                
+                    
+                        <div class="sponsor-btn-1 border-r">Wechat</div>
+                    
+                
+                
+            
+                
+                    
+                        <div class="sponsor-btn-2 border-l">Alipay</div>
+                    
+                
+                
+            
+        </div>
+        
+        <div class="sponsor-img">
+            
+                
+                    <img class="sponsor-img-1" src="/images/wechat.png" alt="">
+                
+                
+            
+                
+                    <img class="sponsor-img-2" src="/images/alipay.png" alt="" style="display: none;">
+                
+                
+            
+        </div>
+        <div class="cancel efct-button">取消</div>
     </div>
 </div>
 

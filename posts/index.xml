@@ -17,6 +17,15 @@
     </item>
     
     <item>
+      <title>【计算机组成原理与体系架构02】流水线</title>
+      <link>https://cnjslw.github.io/posts/%E6%B5%81%E6%B0%B4%E7%BA%BF/</link>
+      <pubDate>Mon, 06 Feb 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://cnjslw.github.io/posts/%E6%B5%81%E6%B0%B4%E7%BA%BF/</guid>
+      <description>流水线</description>
+    </item>
+    
+    <item>
       <title>【Linux Kernel】Linux debug 环境搭建：qemu&#43;vscode内核源码调试配置教程</title>
       <link>https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/</link>
       <pubDate>Wed, 01 Feb 2023 00:00:00 +0000</pubDate>
