@@ -3,20 +3,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>AWei’s Kernel Tour | 汇编语言</title>
+    <title>AWei’s Kernel Tour | 【计算机组成原理与体系架构08】内存屏障</title>
     <meta name="description"
-        content=" ">
-    <link rel="canonical" href="https://cnjslw.github.io/series/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" />
+        content="内存屏障 ">
+    <link rel="canonical" href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B802-%E5%86%85%E5%AD%98%E5%B1%8F%E9%9A%9C/" />
     <link rel="icon" type="image/x-icon" href="/images/linux_pic.ico">
-    <meta property="og:title" content="汇编语言" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://cnjslw.github.io/series/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" />
+    <meta property="og:title" content="【计算机组成原理与体系架构08】内存屏障" />
+<meta property="og:description" content="内存屏障" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B802-%E5%86%85%E5%AD%98%E5%B1%8F%E9%9A%9C/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-05-07T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-05-07T00:00:00+00:00" />
+
 
 
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="汇编语言"/>
-<meta name="twitter:description" content=""/>
+<meta name="twitter:title" content="【计算机组成原理与体系架构08】内存屏障"/>
+<meta name="twitter:description" content="内存屏障"/>
 
     
     
@@ -194,29 +197,41 @@
 
 
         <div id="content">
-    
 
 
 
 
-
-
-    
-        
-    
 
 
 
 
     <div class="hero">
         
-            
-                <div class="hero-img">
-                    <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500" alt="">
-                </div>
-            
+            <div class="hero-img">
+                <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500" alt="">
+            </div>
+        
         <div class="hero-content">
-            <h1 class="hero-title">系列: 汇编语言</h1>
+            <div class="hero-title">【计算机组成原理与体系架构08】内存屏障</div>
+            <div class="hero-subtitle"></div>
+            <div class="hero-date">
+                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2023-5-7 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2023-5-7 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-folder"></i>
+                        收录于:
+                        
+                            <a href='
+                                /categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BD%93%E7%B3%BB%E6%9E%B6%E6%9E%84
+                            '>
+                                计算机组成原理与体系架构
+                            </a>
+                    </span>    
+            </div>
+            <div class="timelong">
+                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 412 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 2 分钟 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-eye"></i> 阅读量: <span id="busuanzi_value_page_pv"></span></span>
+            </div>
         </div>
     </div>
 
@@ -235,7 +250,7 @@
     
 
 
-<div class="terms-body">
+<div class="content-root">
     <div class="long">
         <button class="tosides-1 text-wbd">
             <i class="fa fa-arrow-right"></i>
@@ -248,281 +263,318 @@
         </button>
     </div>
     
-        <div class="terms-row">
-            
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-        <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500"
-            alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/03-%E9%80%9A%E7%94%A8%E6%8C%87%E4%BB%A4/">【x86汇编语言03】通用指令集</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-1-24 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-1-24 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                收录于:
-                
-                <a href='
-                                        /categories/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80
-                                    '>
-                    汇编语言
-                </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">通用指令</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/03-%E9%80%9A%E7%94%A8%E6%8C%87%E4%BB%A4/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
+        <div class="content">
+            <div class="content-self">
+                <h1 id="问题的来源">问题的来源</h1>
+<p>参考之前的文章,缓存一致性</p>
+<h2 id="写缓冲与写屏障">写缓冲与写屏障</h2>
+<p>当引入写缓冲时，下面的程序会出现问题</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//CPU0
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">foo</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">a</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span><span class="c1">//①
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">b</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span><span class="c1">//②
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//CPU1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">bar</span><span class="p">()</span> 
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">while</span><span class="p">(</span><span class="n">b</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span><span class="k">continue</span><span class="p">;</span><span class="c1">//③
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">assert</span><span class="p">(</span><span class="n">a</span><span class="o">==</span><span class="mi">1</span><span class="p">);</span><span class="c1">//④
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
-
-
-
-
-
-
-<div class="down-type">
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E6%B1%87%E7%BC%96
-                        '>
-                <i class="fa fa-tag"></i> #汇编
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
-                        '>
-                <i class="fa fa-tag"></i> #语法特性
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E7%BC%96%E7%A8%8B
-                        '>
-                <i class="fa fa-tag"></i> #编程
-            </a>
-        </div>
-    </span>
-    
+</div><p>在采用乱序执行的情况下，②（B的值写入StoreBuffer）-&gt;③（从StoreBuff中读到值为1）-&gt;④（本地缓存中a还是1）-&gt;assert失败</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//cpu0
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">foo</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">a</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">smp_mb</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="n">b</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//cpu1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">bar</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">while</span><span class="p">(</span><span class="n">b</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span><span class="k">continue</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">assert</span><span class="p">(</span><span class="n">a</span><span class="o">==</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
+</div><p>屏障的作用是前边的读写操作未完成的情况下，后面的读写操作不能发生，保证了a和b的写入缓存顺序</p>
+<h2 id="失效队列与读屏障">失效队列与读屏障</h2>
+<p>还是上面的程序，在引入失效队列后，会出现这样的情况，对a的修改，CPU1并没有立刻处理失效队列中请求（即没有立刻将CPU1中的a设置为失效）导致CPU1在读取a时，a还是0，最终assert失败</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// CPU0
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">smp_mb</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="n">b</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// CPU1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">bar</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">while</span> <span class="p">(</span><span class="n">b</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">smp_mb</span><span class="p">();</span> <span class="c1">//继续加内存屏障
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">assert</span><span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="更加细粒度的读写屏障">更加细粒度的读写屏障</h2>
+<p>分离的写屏障和读屏障的出现，是为了更加精细地控制 Store Buffer 和 Invalid Queue的顺序</p>
+<ul>
+<li>读屏障不允许其前后的读操作越过屏障</li>
+<li>写屏障不允许其前后的写操作越过屏障</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// CPU0
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">smp_wmb</span><span class="p">();</span><span class="c1">//写屏障
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">b</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// CPU1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">bar</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">while</span> <span class="p">(</span><span class="n">b</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">smp_rmb</span><span class="p">();</span> <span class="c1">//读屏障
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">assert</span><span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>总之, MESI的协议和StoreBuffer和invalidqueue的引入, 仍不能保证数据和顺序一致性</p>
+<h1 id="内存一致性模型">内存一致性模型</h1>
+<p>内存一致性模型（Memory Consistency Model，简称为内存模型）明确定义了不同核心对于共享内存操作需要遵循的顺序。读写操作之间共有四类先后顺序需要保证，即读操作与读操作的顺序、读操作与写操作的顺序、写操作与读操作的顺序、写操作与写操作的顺序
+针对同一地址或者有依赖关系4的访存操作，处理器可以保证其顺序。因此在不同的内存模型中，主要讨论的是针对不同地址以及无依赖关系的访存操作之间的顺序</p>
+<h2 id="严格一致性模型">严格一致性模型</h2>
+<p>在严格一致性模型中，<strong>所有访存操作都是严格按照程序编写的顺序可见</strong>。此外，其要求所有核心对一个地址的任意读操作都能读到这个地址最近一次写的数据。因此，所有的线程看到的访存操作顺序都与其发生的时间顺序完全一致</p>
+<h2 id="顺序一致性模型">顺序一致性模型</h2>
+<p>顺序一致性模型弱于严格一致性模型，其不要求操作按照其真实发生的时间顺序（即依据全局时钟定义的顺序）全局可见。顺序一致性模型提供了以下保证：首先，不同核心看到的访存操作顺序完全一致，这个顺序称为全局顺序；其次，在这个全局顺序中，每个核心自己的读写操作可见顺序必须与其程序顺序保持一致。<strong>不同于严格一致性模型，顺序一致性模型放松了对于时间顺序的要求，因此其中的读操作不一定能读到其他核上最新的修改。</strong></p>
+<h2 id="tso一致性模型">TSO一致性模型</h2>
+<p>为了达到更好的性能，TSO一致性模型进一步弱化了访存一致性保证。<strong>在TSO 一致性模型中，其保证对不同地址且无依赖的读读、读写、写写操作之间的全局可见顺序，只有写读的全局可见顺序不能得到保证</strong>。TSO 一致性模型通过加入一个写缓冲区达成优化性能的目的，该写缓冲区能够保证写操作按照顺序全局可见，TSO 一致性模型（Total Store Ordering）也因此得名。</p>
+<h2 id="弱序一致性模型">弱序一致性模型</h2>
+<p>弱序一致性模型（后文简称为弱序一致性模型）提供了较 TSO 更弱的一致性保证。在一个核心上，<strong>弱序一致性模型不保证任何不同地址且无依赖的访存操作之间的顺序</strong>，也即读读，读写，写读与写写操作之间都可以乱序全局可见。</p>
+<h1 id="内存屏障">内存屏障</h1>
+<h2 id="是什么">是什么</h2>
+<p>几乎所有的处理器都至少支持一个粗粒度的屏障指令（通常称为 Fence，也叫全屏障），它保证了严格的有序性：==在 Fence 之前的所有读操作（load）和写操作（store）先于在Fence 之后的所有读操作（load）和写操作（store）执行完==。对于任何的处理器来说，这通常都是最耗时的指令之一（它的开销通常接近甚至超过原子操作指令）。大多数处理器还支持更细粒度的屏障指令。</p>
+<p>不同于缓存一致性，内存模型对于上层软件不是透明的。在较弱的内存一致性模型中，为了保证特定访存操作的全局可见顺序，开发者必须手动添加硬件内存屏障（Barrier/Fence，简称内存屏障）。硬件内存屏障可以要求硬件保证访存操作之间的顺序。硬件往往提供多种不同的内存屏障指令来保证不同类型的访存操作的顺序。</p>
+<p>不同的架构会根据自身使用的内存模型，提供不同的内存屏障指令。软件通过调用对应指令告诉硬件来保证特定类型访存操作之间的顺序</p>
+<h2 id="不同类型的屏障">不同类型的屏障</h2>
+<h3 id="loadload-barrier-读读屏障">LoadLoad Barrier (读读屏障)</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">Load1</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">LoadLoad</span> <span class="p">;</span> 
+</span></span><span class="line"><span class="cl"><span class="n">Load2</span> <span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>保证了 Load1 先于 Load2 和后续所有的 load 指令加载数据。通常情况下，在执行预测读（speculative loads）或乱序处理（out-of-order processing）的处理器上需要显式的 LoadLoad Barrier。在始终保证读顺序（load ordering）的处理器上，这些屏障相当于无操作（no-ops）。</p>
+<h3 id="storestore-barrier写写屏障">StoreStore Barrier(写写屏障)</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">Store1</span> <span class="p">;</span> 
+</span></span><span class="line"><span class="cl"><span class="n">StoreStore</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">Store2</span> <span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>保证了 Store1 的数据先于 Store2 及后续store 指令的数据对其他处理器可见（刷新到内存）。通常情况下，在不保证严格按照顺序从写缓冲区（store buffers）或者 缓存（caches）刷新到其他处理器或内存的处理器上，需要使用 StoreStore Barrier。</p>
+<h3 id="loadstore-barrier读写屏障">LoadStore Barrier(读写屏障)</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">Load1</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">LoadStore</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">Store</span> <span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>保证了 Load1 的加载数据先于 Store2 及后续store 指令刷新数据到主内存。只有在乱序（out-of-order）处理器上，等待写指令（waiting store instructions）可以绕过读指令（loads）的情况下，才会需要使用LoadStore 屏障。</p>
+<h3 id="storeload-barrier写读屏障">StoreLoad Barrier(写读屏障)</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">Store1</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">StoreLoad</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">Load2</span> <span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>保证了 Store1 的数据对其他处理器可见（刷新数据到内存）先于 Load2 及后续的 load 指令加载数据。StoreLoad 屏障可以防止后续的读操作错误地使用了 Store1 写的数据，而不是使用来自另一个处理器的更近的对同一位置的写。因此只有需要将对同一个位置的写操作（stores）和随后的读操作（loads）分开时，才严格需要 StoreLoad 屏障。StoreLoad 屏障通常是开销最大的屏障，几乎所有的现代处理器都需要该屏障。之所以开销大，部分原因是它需要禁用绕过缓存（cache）从写缓冲区（Store Buffer）读取数据的机制。这可以通过让缓冲区完全刷新，外加暂停其他操作来实现，这就是 Fence 的效果。一般用 Fence 代替 StoreLoad Barrier ，所以事实上，执行 StoreLoad 指令同时也获得了其他三个屏障的效果，但是通过组合其他屏障通常不能获得与 StoreLoad Barrier 相同的效果。</p>
+<h1 id="不同架构的内存模型与内存屏障设计">不同架构的内存模型与内存屏障设计</h1>
+<p>严格的内存模型对开发者更加友好，处理器的行为更容易被开发者理解。但其会造成处理器设计复杂，导致制造成本高、处理器能效低。而较弱的内存模型硬件设计简单，能够挖掘更多的并行潜能。但开发者必须更加小心地添加硬件内存屏障来保证程序的正确性。除此之外，对于同步需求大的并行应用程序，在弱序一致性模型下频繁使用内存屏障会带来显著的性能开销。</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309290142709.png" alt="IEyHzbOcAetLdagE-e180c35d-0e7f-6f2f-76b3-13b0bc07313d|993|800"></p>
+<h2 id="x86">X86</h2>
+<p>Intel与AMD在X86架构下都使用了较强的TSO一致性模型 , 只有再写读操作会出现乱序, 因此在特性情况下添加内存屏障即可</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309290142710.png" alt="Pasted image 20230929001538|800|800"></p>
+<p>TSO的特点决定了X86的屏障相对简单</p>
+<ul>
+<li>StoreBuffer 被实现为FIFO队列，CPU务必优先读取本地StoreBuffer中的值，否则去缓存或内存中读取</li>
+<li>没有引入无效队列</li>
+<li>MFENCE指令用于缓存清空本地StoreBuffer，并将数据刷到缓存和内存中</li>
+<li>CPU执行lock前缀的指令时，会去争抢全局锁，拿到锁后其他线程的读取操作会被阻塞，锁释放之前，会清空该线程本地的StoreBuffer，类似MFENCE</li>
+</ul>
+<p>Linux中X86下的内存屏障定义</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309290142711.png" alt="Pasted image 20230929002539|800"></p>
+<h2 id="arm-单向屏障">ARM ：单向屏障</h2>
+<p>ARM使用了弱序一致性模型 , 必须注意所有的无依赖的访存之间是否需要添加内存屏障保证可见顺 , 但是在实际使用的场景中,只有涉及多核协作时, 才需要考虑访存操作的可见顺序</p>
+<p>ARM采用了单向屏障。单向屏障 (half-way barrier) 也是一种内存屏障，但它不是以读写来区分的，而是像单行道一样，只允许单向通行，例如 ARM 中的 stlr 和 ldar 指令就是这样。
+stlr 的全称是 store release register，包括 StoreStore barrier 和 LoadStorebarrier（场景少），通常使用 release 语义将寄存器的值写入内存；
+ldar 的全称是 load acquire register ，包括 LoadLoad barrier 和 LoadStorebarrier（对，你没看错，我没写错），通常使用 acquire 语义从内存中将值加载入寄存器；release 语义的内存屏障只不允许其前面的读写向后越过屏障，挡前不挡后；acquire 语义的内存屏障只不允许其后面的读写向前越过屏障，挡后不挡前;
+StoreLoad barrier 就只能使用 dmb（全屏障） 代替了。</p>
+<h1 id="总结">总结</h1>
+<p>为了保证多核并行中，Cache和内存的数据一致性问题，可以使用写回和写直达策略。
+但是再多核中，情况变得更加复杂了，就引入了缓存一致性协议，使得所有核心的私有缓存表现得和一个共享缓存的行为行为一致，缓存一致性协议主要处理两个核心问题，写传播和事务串行化问题，写传播就是每个CPU核心的写操作，要传播到其他核心，事务串行化使得所有的写入操作再所有CPU看来是一致的，但是无论是MSI，还是MESI协议都对CPU的性能产生了一定程度的负面作用，为此引入写缓冲区和失效队列，使得在写操作时，不需要等待其他核心的确认，直接放入到写缓冲区，等到其他核心确认后使其本地的Cache失效后，再写到Cache中，失效队列则是当其他核心发送RFO请求时，直接回复ACK，但是不需要立刻将缓存行失效，将请求放到失效队列，等有空再处理
+但是，写缓冲和失效队列的引入同样带来了问题，</p>
+<hr>
+<p>[1] <a href="https://mp.weixin.qq.com/s/Sz7QXx1h4sS7xWRUSP4ZCw">CPU缓存一致性：从理论到实战</a></p>
+<p>[2] <a href="https://zhuanlan.zhihu.com/p/125737864">内存屏障（Memory Barrier）究竟是个什么鬼？</a></p>
 
-<div class="dang"></div>
             </div>
             
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-        <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500"
-            alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/02-%E5%8F%98%E9%87%8F%E4%B8%8E%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/">【x86汇编语言02】变量与基本类型</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-1-20 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-1-20 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                收录于:
-                
-                <a href='
-                                        /categories/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80
+                <div class="tags">
+                    
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84
                                     '>
-                    汇编语言
-                </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">汇编语言</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/02-%E5%8F%98%E9%87%8F%E4%B8%8E%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-
-
-
-<div class="down-type">
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E6%B1%87%E7%BC%96
-                        '>
-                <i class="fa fa-tag"></i> #汇编
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
-                        '>
-                <i class="fa fa-tag"></i> #语法特性
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E7%BC%96%E7%A8%8B
-                        '>
-                <i class="fa fa-tag"></i> #编程
-            </a>
-        </div>
-    </span>
-    
-</div>
-
-<div class="dang"></div>
-            </div>
+                                <i class="fa fa-tag"></i> #计算机体系结构
+                            </a>
+                        </div>
+                    </span>
+                    
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86
+                                    '>
+                                <i class="fa fa-tag"></i> #底层原理
+                            </a>
+                        </div>
+                    </span>
+                    
+                </div>
             
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
+        </div>
         
-        <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500"
-            alt='图片加载失败'>
+            
+                <div class="pre-next">
+                    
+    
         
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/01-8086%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">【x86汇编语言01】 8086体系结构与汇编基础</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-1-13 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-1-13 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                收录于:
-                
-                <a href='
-                                        /categories/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80
-                                    '>
-                    汇编语言
-                </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">汇编语言</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/01-8086%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-
-
-
-<div class="down-type">
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E6%B1%87%E7%BC%96
-                        '>
-                <i class="fa fa-tag"></i> #汇编
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
-                        '>
-                <i class="fa fa-tag"></i> #语法特性
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E7%BC%96%E7%A8%8B
-                        '>
-                <i class="fa fa-tag"></i> #编程
-            </a>
-        </div>
-    </span>
-    
-</div>
-
-<div class="dang"></div>
+        <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B801-%E5%A4%9A%E6%A0%B8%E8%AE%BF%E5%AD%98/" class="pre pre-last" style="text-align: center;">
+            <span class="pre-icon"><i class="fa fa-hand-o-left"></i></span>
+            <div class="pre-title-root">
+                <span>【计算机组成原理与体系架构07】多核访存架构</span>
             </div>
+        </a>
+        
+    
+    
+
+                </div>
+            
+        
+    
+</div>
+
+    
+        <div class="content-last">
+            
+                <button class="aixin content-last-item efct-button">
+                    <i class="fa fa-heart"></i>
+                </button>
+            
             
         </div>
     
-</div>
 
 
             </div>
@@ -599,33 +651,16 @@
 
 
 
+    
+    
+
 
 <div class="other">
     <div class="other-up">
-        <div class="other-qita text-wbd">最新文章</div>
+        <div class="other-qita text-wbd">相关文章</div>
         <div class="xian"></div>
     </div>
     <div class="list">
-        
-            <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B802-%E5%86%85%E5%AD%98%E5%B1%8F%E9%9A%9C/">
-                
-<a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B802-%E5%86%85%E5%AD%98%E5%B1%8F%E9%9A%9C/">
-    <div class="list-item">
-        <div class="icon-other-root">
-            
-                <div class="icon-other" style="background-image: url( https://picsum.photos/2500/500 );"></div>
-            
-        </div>
-        <div class="list-right">
-            <div class="other-title">
-                【计算机组成原理与体系架构08】内存屏障
-            </div>
-            <div class="other-summary">内存屏障</div>
-            <div class="other-date">2023-5-7</div>
-        </div>
-    </div>
-</a>
-            </a>
         
             <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B801-%E5%A4%9A%E6%A0%B8%E8%AE%BF%E5%AD%98/">
                 
@@ -727,6 +762,26 @@
 </a>
             </a>
         
+            <a href="https://cnjslw.github.io/posts/%E6%B5%81%E6%B0%B4%E7%BA%BF/">
+                
+<a href="https://cnjslw.github.io/posts/%E6%B5%81%E6%B0%B4%E7%BA%BF/">
+    <div class="list-item">
+        <div class="icon-other-root">
+            
+                <div class="icon-other" style="background-image: url( https://picsum.photos/2500/500 );"></div>
+            
+        </div>
+        <div class="list-right">
+            <div class="other-title">
+                【计算机组成原理与体系架构02】流水线
+            </div>
+            <div class="other-summary">流水线</div>
+            <div class="other-date">2023-2-6</div>
+        </div>
+    </div>
+</a>
+            </a>
+        
     </div>
 </div>
         </div>
@@ -738,6 +793,46 @@
 
             </div>
         </div>
+    </div>
+</div>
+
+    
+
+<div class="sponsor">
+    <div class="sponsor-self">
+        <div class="sponsor-title">赞赏</div>
+        <div class="sponsor-btn">
+            
+                
+                    
+                        <div class="sponsor-btn-1 border-r">Wechat</div>
+                    
+                
+                
+            
+                
+                    
+                        <div class="sponsor-btn-2 border-l">Alipay</div>
+                    
+                
+                
+            
+        </div>
+        
+        <div class="sponsor-img">
+            
+                
+                    <img class="sponsor-img-1" src="/images/wechat.png" alt="">
+                
+                
+            
+                
+                    <img class="sponsor-img-2" src="/images/alipay.png" alt="" style="display: none;">
+                
+                
+            
+        </div>
+        <div class="cancel efct-button">取消</div>
     </div>
 </div>
 

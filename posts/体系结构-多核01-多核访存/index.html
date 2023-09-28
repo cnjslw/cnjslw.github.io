@@ -3,20 +3,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>AWei’s Kernel Tour | 汇编语言</title>
+    <title>AWei’s Kernel Tour | 【计算机组成原理与体系架构07】多核访存架构</title>
     <meta name="description"
-        content=" ">
-    <link rel="canonical" href="https://cnjslw.github.io/series/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" />
+        content="多核访存架构 ">
+    <link rel="canonical" href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B801-%E5%A4%9A%E6%A0%B8%E8%AE%BF%E5%AD%98/" />
     <link rel="icon" type="image/x-icon" href="/images/linux_pic.ico">
-    <meta property="og:title" content="汇编语言" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://cnjslw.github.io/series/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" />
+    <meta property="og:title" content="【计算机组成原理与体系架构07】多核访存架构" />
+<meta property="og:description" content="多核访存架构" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B801-%E5%A4%9A%E6%A0%B8%E8%AE%BF%E5%AD%98/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-04-20T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-04-20T00:00:00+00:00" />
+
 
 
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="汇编语言"/>
-<meta name="twitter:description" content=""/>
+<meta name="twitter:title" content="【计算机组成原理与体系架构07】多核访存架构"/>
+<meta name="twitter:description" content="多核访存架构"/>
 
     
     
@@ -194,29 +197,41 @@
 
 
         <div id="content">
-    
 
 
 
 
-
-
-    
-        
-    
 
 
 
 
     <div class="hero">
         
-            
-                <div class="hero-img">
-                    <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500" alt="">
-                </div>
-            
+            <div class="hero-img">
+                <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500" alt="">
+            </div>
+        
         <div class="hero-content">
-            <h1 class="hero-title">系列: 汇编语言</h1>
+            <div class="hero-title">【计算机组成原理与体系架构07】多核访存架构</div>
+            <div class="hero-subtitle"></div>
+            <div class="hero-date">
+                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2023-4-20 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2023-4-20 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-folder"></i>
+                        收录于:
+                        
+                            <a href='
+                                /categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BD%93%E7%B3%BB%E6%9E%B6%E6%9E%84
+                            '>
+                                计算机组成原理与体系架构
+                            </a>
+                    </span>    
+            </div>
+            <div class="timelong">
+                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 123 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 1 分钟 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-eye"></i> 阅读量: <span id="busuanzi_value_page_pv"></span></span>
+            </div>
         </div>
     </div>
 
@@ -235,7 +250,7 @@
     
 
 
-<div class="terms-body">
+<div class="content-root">
     <div class="long">
         <button class="tosides-1 text-wbd">
             <i class="fa fa-arrow-right"></i>
@@ -248,281 +263,98 @@
         </button>
     </div>
     
-        <div class="terms-row">
-            
-            <div class="terms-root">
-                
-                
+        <div class="content">
+            <div class="content-self">
+                <h1 id="通用多核处理器的片上cache结构">通用多核处理器的片上Cache结构</h1>
+<p>片上Cache的种类主要有：私有Cache、片上共享Cache、片间共享Cache
+私有Cache结构具有较快的访问速度，但是具有较高的失效率。共享Cache结构的访问速度稍慢，但具有失效率低的优点。多处理器芯片间共享Cache结构的访问速度慢，且失效率高，因此并不常用。</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309290140407.png" alt="Pasted image 20230928002851|800|800"></p>
+<h1 id="多核主存结构cc-numa为例">多核主存结构（CC-NUMA为例）</h1>
+<p>目前 x86 NUMA 具体实现是 ccNUMA(Cache Coherent NUMA)，在 NUMA 架构之上引入了缓存一致性协议，以确保不同节点之间的数据一致性，降低内核编写难度</p>
+<p>NUMA（Non-Uniform Memory Access）非均匀内存访问架构。内存划分为多个块，每个 CPU 到不同内存块距离有远近之分，距离一个 CPU 近的内存块称为该 CPU的本地内存；距离相对远的内存块称为该 CPU 的非本地内存（也叫远端内存）。NUMA 内存架构把 CPU 和本地内存封装在一个 Node 节点里，并且将内存控制器芯片被集成到 CPU 内部，CPU 间通过 QPI（QuickPath Interconnect）链路相连。每个 CPU 访问本地内存非常快，没有了总线，相当于直接访问。但是有时例如本地内存空间不足等情况，一个 CPU 可以通过 QPI 访问另一个 CPU 所在 Node 节点内的本地内存，也就是一个 CPU 可以访问非本地内存。有的架构将PCI-E总线资源
+（IOH）也集成到了 CPU 内部。</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309290140409.png" alt="PPkHEsBkVQVbLDdL-fd14e1af-8d26-6ea5-4c98-4c1bc180d4dc|800|800"></p>
+<p>一个 Node 节点由一个物理 CPU、本地内存和本地 IO 资源组成。一个物理 CPU 由多个 CPU Core（核心）和一个 UnCore 部分组成。</p>
+<ul>
+<li>每个 CPU Core 一般有 2 个 CPU Thread，也称逻辑 CPU Core（核心），top 命令里可见，每个逻辑核心独立运行，共享 Core 内部的逻辑运算单元(ALU)、浮点运算单元(FPU)、L1 和 L2 缓存；</li>
+<li>Uncore 集成了内存控制器 iMC(Integrated Memory Controller)、PCIe RootComplex、QPI 控制器、L3 缓存和 CBox(负责缓存一致性)，及其它外设控制器</li>
+</ul>
+<p>CPU 通过 Uncore 里的 iMC 直接访问本地内存，所以速度很快。但是访问非本地内存，则需要通过 QPI 链路到目标 Node 节点再通过 iMC 间接访问目标节点的本地内存，所以速度较慢。由此，应用和系统应尽量访问当前 CPU 的本地内存，来降低延时和提升性能</p>
+<p>对于 PCI-E 等外设，通过 DMA 访问的内存，最好和外设在一个节点内，这样访问速度最快，要不然也和 CPU 一样，需要经过 QPI 链路访问远端内存。外设访问完 DMA 内存后，触发的硬中断和下半部的软中断会在同一个 CPU 上，那么这个 DMA 内存最好是该 CPU 的本地内存，这样速度才能快，也就是说要把同一个节点内外设的硬中断绑定到该节点内的 CPU 上。</p>
+<hr>
+<p>[1]《操作系统：原理与设计》陈海波</p>
+<p>[2] <a href="https://zhuanlan.zhihu.com/p/45808885">当我们在谈论CPU指令乱序的时候，究竟在谈论什么</a></p>
+<p>[3] <a href="https://mp.weixin.qq.com/s/Sz7QXx1h4sS7xWRUSP4ZCw">CPU缓存一致性：从理论到实战</a></p>
 
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-        <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500"
-            alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/03-%E9%80%9A%E7%94%A8%E6%8C%87%E4%BB%A4/">【x86汇编语言03】通用指令集</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-1-24 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-1-24 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                收录于:
-                
-                <a href='
-                                        /categories/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80
-                                    '>
-                    汇编语言
-                </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">通用指令</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/03-%E9%80%9A%E7%94%A8%E6%8C%87%E4%BB%A4/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-
-
-
-<div class="down-type">
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E6%B1%87%E7%BC%96
-                        '>
-                <i class="fa fa-tag"></i> #汇编
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
-                        '>
-                <i class="fa fa-tag"></i> #语法特性
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E7%BC%96%E7%A8%8B
-                        '>
-                <i class="fa fa-tag"></i> #编程
-            </a>
-        </div>
-    </span>
-    
-</div>
-
-<div class="dang"></div>
             </div>
             
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-        <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500"
-            alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/02-%E5%8F%98%E9%87%8F%E4%B8%8E%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/">【x86汇编语言02】变量与基本类型</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-1-20 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-1-20 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                收录于:
-                
-                <a href='
-                                        /categories/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80
+                <div class="tags">
+                    
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84
                                     '>
-                    汇编语言
-                </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">汇编语言</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/02-%E5%8F%98%E9%87%8F%E4%B8%8E%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-
-
-
-<div class="down-type">
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E6%B1%87%E7%BC%96
-                        '>
-                <i class="fa fa-tag"></i> #汇编
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
-                        '>
-                <i class="fa fa-tag"></i> #语法特性
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E7%BC%96%E7%A8%8B
-                        '>
-                <i class="fa fa-tag"></i> #编程
-            </a>
-        </div>
-    </span>
-    
-</div>
-
-<div class="dang"></div>
-            </div>
+                                <i class="fa fa-tag"></i> #计算机体系结构
+                            </a>
+                        </div>
+                    </span>
+                    
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86
+                                    '>
+                                <i class="fa fa-tag"></i> #底层原理
+                            </a>
+                        </div>
+                    </span>
+                    
+                </div>
             
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
+        </div>
         
-        <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500"
-            alt='图片加载失败'>
+            
+                <div class="pre-next">
+                    
+    
         
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/01-8086%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">【x86汇编语言01】 8086体系结构与汇编基础</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-1-13 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-1-13 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                收录于:
-                
-                <a href='
-                                        /categories/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80
-                                    '>
-                    汇编语言
-                </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">汇编语言</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/01-8086%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-
-
-
-<div class="down-type">
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E6%B1%87%E7%BC%96
-                        '>
-                <i class="fa fa-tag"></i> #汇编
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
-                        '>
-                <i class="fa fa-tag"></i> #语法特性
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E7%BC%96%E7%A8%8B
-                        '>
-                <i class="fa fa-tag"></i> #编程
-            </a>
-        </div>
-    </span>
-    
-</div>
-
-<div class="dang"></div>
+        <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B602-%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/" class="pre">
+            <span class="pre-icon"><i class="fa fa-hand-o-left"></i></span>
+            <div class="pre-title-root">
+                <span>【计算机组成原理与体系架构06】缓存一致性</span>
             </div>
+        </a>
+        
+
+        
+        <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B802-%E5%86%85%E5%AD%98%E5%B1%8F%E9%9A%9C/" class="next">
+            <div class="next-title-root">
+                <span>【计算机组成原理与体系架构08】内存屏障</span>
+            </div>
+            <span class="next-icon"><i class="fa fa-hand-o-right"></i></span>
+        </a>
+        
+
+    
+    
+
+                </div>
+            
+        
+    
+</div>
+
+    
+        <div class="content-last">
+            
+                <button class="aixin content-last-item efct-button">
+                    <i class="fa fa-heart"></i>
+                </button>
+            
             
         </div>
     
-</div>
 
 
             </div>
@@ -599,10 +431,13 @@
 
 
 
+    
+    
+
 
 <div class="other">
     <div class="other-up">
-        <div class="other-qita text-wbd">最新文章</div>
+        <div class="other-qita text-wbd">相关文章</div>
         <div class="xian"></div>
     </div>
     <div class="list">
@@ -622,26 +457,6 @@
             </div>
             <div class="other-summary">内存屏障</div>
             <div class="other-date">2023-5-7</div>
-        </div>
-    </div>
-</a>
-            </a>
-        
-            <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B801-%E5%A4%9A%E6%A0%B8%E8%AE%BF%E5%AD%98/">
-                
-<a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B801-%E5%A4%9A%E6%A0%B8%E8%AE%BF%E5%AD%98/">
-    <div class="list-item">
-        <div class="icon-other-root">
-            
-                <div class="icon-other" style="background-image: url( https://picsum.photos/2500/500 );"></div>
-            
-        </div>
-        <div class="list-right">
-            <div class="other-title">
-                【计算机组成原理与体系架构07】多核访存架构
-            </div>
-            <div class="other-summary">多核访存架构</div>
-            <div class="other-date">2023-4-20</div>
         </div>
     </div>
 </a>
@@ -727,6 +542,26 @@
 </a>
             </a>
         
+            <a href="https://cnjslw.github.io/posts/%E6%B5%81%E6%B0%B4%E7%BA%BF/">
+                
+<a href="https://cnjslw.github.io/posts/%E6%B5%81%E6%B0%B4%E7%BA%BF/">
+    <div class="list-item">
+        <div class="icon-other-root">
+            
+                <div class="icon-other" style="background-image: url( https://picsum.photos/2500/500 );"></div>
+            
+        </div>
+        <div class="list-right">
+            <div class="other-title">
+                【计算机组成原理与体系架构02】流水线
+            </div>
+            <div class="other-summary">流水线</div>
+            <div class="other-date">2023-2-6</div>
+        </div>
+    </div>
+</a>
+            </a>
+        
     </div>
 </div>
         </div>
@@ -738,6 +573,46 @@
 
             </div>
         </div>
+    </div>
+</div>
+
+    
+
+<div class="sponsor">
+    <div class="sponsor-self">
+        <div class="sponsor-title">赞赏</div>
+        <div class="sponsor-btn">
+            
+                
+                    
+                        <div class="sponsor-btn-1 border-r">Wechat</div>
+                    
+                
+                
+            
+                
+                    
+                        <div class="sponsor-btn-2 border-l">Alipay</div>
+                    
+                
+                
+            
+        </div>
+        
+        <div class="sponsor-img">
+            
+                
+                    <img class="sponsor-img-1" src="/images/wechat.png" alt="">
+                
+                
+            
+                
+                    <img class="sponsor-img-2" src="/images/alipay.png" alt="" style="display: none;">
+                
+                
+            
+        </div>
+        <div class="cancel efct-button">取消</div>
     </div>
 </div>
 
