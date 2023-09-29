@@ -3,20 +3,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>AWei’s Kernel Tour | #开发环境</title>
+    <title>AWei’s Kernel Tour | 【计算机组成原理与体系架构09】内存对齐与伪共享</title>
     <meta name="description"
-        content=" ">
-    <link rel="canonical" href="https://cnjslw.github.io/tags/#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" />
+        content="内存对齐与伪共享 ">
+    <link rel="canonical" href="https://cnjslw.github.io/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B603-%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90%E5%92%8C%E4%BC%AA%E5%85%B1%E4%BA%AB/" />
     <link rel="icon" type="image/x-icon" href="/images/linux_pic.ico">
-    <meta property="og:title" content="#开发环境" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://cnjslw.github.io/tags/#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" />
+    <meta property="og:title" content="【计算机组成原理与体系架构09】内存对齐与伪共享" />
+<meta property="og:description" content="内存对齐与伪共享" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://cnjslw.github.io/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B603-%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90%E5%92%8C%E4%BC%AA%E5%85%B1%E4%BA%AB/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-05-21T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-05-21T00:00:00+00:00" />
+
 
 
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="#开发环境"/>
-<meta name="twitter:description" content=""/>
+<meta name="twitter:title" content="【计算机组成原理与体系架构09】内存对齐与伪共享"/>
+<meta name="twitter:description" content="内存对齐与伪共享"/>
 
     
     
@@ -194,29 +197,41 @@
 
 
         <div id="content">
-    
 
 
 
 
-
-
-    
-        
-    
 
 
 
 
     <div class="hero">
         
-            
-                <div class="hero-img">
-                    <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500" alt="">
-                </div>
-            
+            <div class="hero-img">
+                <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500" alt="">
+            </div>
+        
         <div class="hero-content">
-            <h1 class="hero-title">标签: #开发环境</h1>
+            <div class="hero-title">【计算机组成原理与体系架构09】内存对齐与伪共享</div>
+            <div class="hero-subtitle"></div>
+            <div class="hero-date">
+                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2023-5-21 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2023-5-21 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-folder"></i>
+                        收录于:
+                        
+                            <a href='
+                                /categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BD%93%E7%B3%BB%E6%9E%B6%E6%9E%84
+                            '>
+                                计算机组成原理与体系架构
+                            </a>
+                    </span>    
+            </div>
+            <div class="timelong">
+                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 148 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 1 分钟 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-eye"></i> 阅读量: <span id="busuanzi_value_page_pv"></span></span>
+            </div>
         </div>
     </div>
 
@@ -235,7 +250,7 @@
     
 
 
-<div class="terms-body">
+<div class="content-root">
     <div class="long">
         <button class="tosides-1 text-wbd">
             <i class="fa fa-arrow-right"></i>
@@ -248,165 +263,171 @@
         </button>
     </div>
     
-        <div class="terms-row">
-            
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-        <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500"
-            alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">【Linux Kernel 0.12】启动流程</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2023-2-12 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2023-2-12 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                收录于:
-                
-                <a href='
-                                        /categories/linux-kernel
-                                    '>
-                    Linux Kernel
-                </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">Linux0.12的启动流程</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
+        <div class="content">
+            <div class="content-self">
+                <p><em>重要说明，这篇博文是一位大神的微信公众号：bin的技术小屋 中的一篇推文的阅读笔记，因为写的太好了，基本上就是摘抄，已经将文章的链接放在参考文献中，仅仅作为本人的阅读笔记使用，感谢大神的分享精神，共勉。</em></p>
+<h1 id="对齐填充问题">对齐填充问题</h1>
+<h2 id="逻辑核心与物理核心">逻辑核心与物理核心</h2>
+<p>一个CPU里面包含多个核心，我们在购买电脑的时候经常会看到这样的处理器配置，比如4核8线程。意思是这个CPU包含4个物理核心8个逻辑核心。4个物理核心表示在同一时间可以允许4个线程并行执行，8个逻辑核心表示处理器利用超线程的技术将一个物理核心模拟出了两个逻辑核心，一个物理核心在同一时间只会执行一个线程，而超线程芯片可以做到线程之间快速切换，当一个线程在访问内存的空隙，超线程芯片可以马上切换去执行另外一个线程。因为切换速度非常快，所以在效果上看到是8个线程在同时执行。</p>
+<h2 id="cpu缓存行">CPU缓存行</h2>
+<p>CPU高速缓存中存取数据的基本单位叫做缓存行cache line。缓存行存取字节的大小为2的倍数，在不同的机器上，缓存行的大小范围在32字节到128字节之间。目前所有主流的处理器中缓存行的大小均为64字节（注意：这里的单位是字节）。</p>
+<p>每次CPU从内存中获取数据或者写入数据的大小为64个字节，即使你只读一个bit，CPU也会从内存中加载64字节数据进来。同样的道理，CPU从高速缓存中同步数据到内存也是按照64字节的单位来进行。  比如你访问一个long型数组，当CPU去加载数组中第一个元素时也会同时将后边的7个元素一起加载进缓存中。这样一来就加快了遍历数组的效率</p>
+<p>事实上，你可以非常快速的遍历在连续的内存块中分配的任意数据结构，如果你的数据结构中的项在内存中不是彼此相邻的（比如：链表），这样就无法利用CPU缓存的优势。由于数据在内存中不是连续存放的，所以在这些数据结构中的每一个项都可能会出现缓存行未命中（程序局部性原理）的情况</p>
+<h1 id="false-sharing-伪共享">False Sharing (伪共享)</h1>
+<h2 id="volatile-关键字">volatile 关键字</h2>
+<p>我们知道声明了volatile关键字的变量可以在多线程处理环境下，确保内存的可见性。计算机硬件层会保证对被volatile关键字修饰的共享变量进行写操作后的内存可见性，而这种内存可见性是由Lock前缀指令以及缓存一致性协议（MESI控制协议）共同保证的。</p>
+<p>Lock前缀指令可以使修改线程所在的处理器中的相应缓存行数据被修改后立马刷新回内存中，并同时锁定所有处理器核心中缓存了该修改变量的缓存行，防止多个处理器核心并发修改同一缓存行。</p>
+<p>缓存一致性协议主要是用来维护多个处理器核心之间的CPU缓存一致性以及与内存数据的一致性。每个处理器会在总线上嗅探其他处理器准备写入的内存地址，如果这个内存地址在自己的处理器中被缓存的话，就会将自己处理器中对应的缓存行置为无效，下次需要读取的该缓存行中的数据的时候，就需要访问内存获取。</p>
+<h2 id="一个程序分析伪共享的产生">一个程序分析伪共享的产生</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">volatile</span>  <span class="kt">long</span> <span class="n">a</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">volatile</span>  <span class="kt">long</span> <span class="n">b</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="p">......</span>	
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
+</div><p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309292348952.png" alt="Pasted image 20230902161702|800"></p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309292348954.png" alt="Pasted image 20230902161712|800"></p>
+<p>从以上两种影响我们看到字段a与字段b实际上并不存在共享，它们之间也没有相互关联关系，理论上线程a对字段a的任何操作，都不应该影响线程b对字段b的读取或者写入。  但事实上线程a对字段a的修改导致了字段b在core1中的缓存行被锁定（Lock前缀指令），进而使得线程b无法读取字段b。  线程a所在处理器core0将字段a所在缓存行同步刷新回内存后，导致字段b在core1中的缓存行被置为失效（缓存一致性协议），进而导致线程b需要重新回到内存读取字段b的值无法利用CPU缓存的优势。  由于字段a和字段b在同一个缓存行中，导致了字段a和字段b事实上的共享（原本是不应该被共享的）。这种现象就叫做False Sharing（伪共享）。  在高并发的场景下，这种伪共享的问题，会对程序性能造成非常大的影响。  如果线程a对字段a进行修改，与此同时线程b对字段b也进行修改，这种情况对性能的影响更大，因为这会导致core0和core1中相应的缓存行相互失效。</p>
+<h2 id="伪共享的解决方案">伪共享的解决方案</h2>
+<p>字节填充,将一个变量填充到和缓存行大小一致</p>
+<blockquote>
+<p>CPU Adjacent Sector Prefetch是Intel处理器特有的BIOS功能特性，默认是enabled。主要作用就是利用程序局部性原理，当CPU从内存中请求数据，并读取当前请求数据所在缓存行时，会进一步预取与当前缓存行相邻的下一个缓存行，这样当我们的程序在顺序处理数据时，会提高CPU处理效率。这一点也体现了程序局部性原理中的空间局部性特征。</p>
+</blockquote>
+<h1 id="内存对齐">内存对齐</h1>
+<h2 id="dram的访问过程">DRAM的访问过程</h2>
+<p>存储控制器会将内存地址转换为DRAM芯片中supercell在二维矩阵中的坐标地址(<code>RAS</code>，<code>CAS</code>)。并将这个坐标地址发送给对应的存储器模块。随后存储器模块会将<code>RAS</code>和<code>CAS</code>广播到存储器模块中的所有<code>DRAM芯片</code>。依次通过(<code>RAS</code>，<code>CAS</code>)从DRAM0到DRAM7读取到相应的supercell。</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309292348955.png" alt="Pasted image 20230902162609|800"></p>
+<ol>
+<li>首先存储控制器将行地址<code>RAS = 2</code>通过地址引脚发送给<code>DRAM芯片</code>。</li>
+<li>DRAM芯片根据<code>RAS = 2</code>将二维矩阵中的第二行的全部内容拷贝到<code>内部行缓冲区</code>中。</li>
+<li>接下来存储控制器会通过地址引脚发送<code>CAS = 2</code>到DRAM芯片中。</li>
+<li>DRAM芯片从内部行缓冲区中根据<code>CAS = 2</code>拷贝出第二列的supercell并通过数据引脚发送给存储控制器。
+我们知道一个supercell存储了<code>8 bit</code>数据，这里我们从DRAM0到DRAM7 依次读取到了8个supercell也就是<code>8个字节</code>，然后将这8个字节返回给存储控制器，由存储控制器将数据放到存储总线上。</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309292348956.png" alt="Pasted image 20230902164053|800"></p>
+<h2 id="cpu读内存">CPU读内存</h2>
+<p>假设CPU现在要将内存地址为<code>A</code>的内容加载到寄存器中进行运算。
+<img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309292348958.png" alt="Pasted image 20230902163041|800"></p>
+<ol>
+<li>CPU将内存地址A放到系统总线上。随后<code>IO bridge</code>将信号传递到存储总线上。</li>
+<li>主存感受到存储总线上的<code>地址信号</code>并通过存储控制器将存储总线上的内存地址A读取出来。</li>
+<li>存储控制器通过内存地址A定位到具体的存储器模块，从<code>DRAM芯片</code>中取出内存地址A对应的<code>数据X</code>。</li>
+<li>存储控制器将读取到的<code>数据X</code>放到存储总线上，随后IO bridge将<code>存储总线</code>上的数据信号转换为<code>系统总线</code>上的数据信号，然后继续沿着系统总线传递。</li>
+<li>CPU芯片感受到系统总线上的数据信号，将数据从系统总线上读取出来并拷贝到寄存器中。</li>
+</ol>
+<blockquote>
+<p>总线结构CPU与内存之间的数据交互是通过总线（bus）完成的，而数据在总线上的传送是通过一系列的步骤完成的，这些步骤称为总线事务（bus transaction）。
+其中数据从内存传送到CPU称之为<code>读事务（read transaction）</code>，数据从CPU传送到内存称之为<code>写事务（write transaction）</code>。
+总线上传输的信号包括：地址信号，数据信号，控制信号。其中控制总线上传输的控制信号可以同步事务，并能够标识出当前正在被执行的事务信息：</p>
+<ul>
+<li>当前这个事务是到内存的？还是到磁盘的？或者是到其他IO设备的？</li>
+<li>这个事务是读还是写？</li>
+<li>总线上传输的地址信号（<code>内存地址</code>），还是数据信号（<code>数据</code>）？。
+还记得我们前边讲到的MESI缓存一致性协议吗？当core0修改字段a的值时，其他CPU核心会在总线上<code>嗅探</code>字段a的内存地址，如果嗅探到总线上出现字段a的内存地址，说明有人在修改字段a，这样其他CPU核心就会<code>失效</code>自己缓存字段a所在的<code>cache line</code>。
+如上图所示，其中系统总线是连接CPU与IO bridge的，存储总线是来连接IO bridge和主存的。
+<code>IO bridge</code>负责将系统总线上的电子信号转换成存储总线上的电子信号。IO bridge也会将系统总线和存储总线连接到IO总线（磁盘等IO设备）上。这里我们看到IO bridge其实起的作用就是转换不同总线上的电子信号。</li>
+</ul>
+</blockquote>
+<h2 id="cpu写内存">CPU写内存</h2>
+<ol>
+<li>CPU将要写入的内存地址A放入系统总线上。</li>
+<li>通过<code>IO bridge</code>的信号转换，将内存地址A传递到存储总线上。</li>
+<li>存储控制器感受到存储总线上的地址信号，将内存地址A从存储总线上读取出来，并等待数据的到达。</li>
+<li>CPU将寄存器中的数据拷贝到系统总线上，通过<code>IO bridge</code>的信号转换，将数据传递到存储总线上。</li>
+<li>存储控制器感受到存储总线上的数据信号，将数据从存储总线上读取出来。</li>
+<li>存储控制器通过内存地址A定位到具体的存储器模块，最后将数据写入存储器模块中的8个DRAM芯片中。</li>
+</ol>
+<h2 id="为什么要内存对齐">为什么要内存对齐</h2>
+<h3 id="速度">速度</h3>
+<p>CPU读取数据的单位是根据<code>word size</code>来的，在64位处理器中<code>word size = 8字节</code>，所以CPU向内存读写数据的单位为<code>8字节</code>。
+在64位内存中，内存IO单位为<code>8个字节</code>，我们前边也提到内存结构中的存储器模块通常以64位为单位（8个字节）传输数据到存储控制器上或者从存储控制器传出数据。因为每次内存IO读取数据都是从数据所在具体的存储器模块中包含的这8个DRAM芯片中以相同的(<code>RAM</code>,<code>CAS</code>)依次读取一个字节，然后在存储控制器中聚合成<code>8个字节</code>返回给CPU。</p>
+<p>假设读取0x0000 - 0x0007
+由于内存读取是按照<code>8个字节</code>为单位依次顺序读取的，<strong>而我们要读取的这段内存地址的起始地址是0（8的倍数）</strong>，所以0x0000 - 0x0007中每个地址的坐标都是相同的（<code>RAS</code>,<code>CAS</code>）。所以他可以在8个DRAM芯片中通过相同的（<code>RAS</code>,<code>CAS</code>）一次性读取出来。</p>
+<p>但如果我们现在读取<code>0x0007 - 0x0014</code>这段连续内存上的8个字节情况就不一样了
+由于起始地址<code>0x0007</code>在DRAM芯片中的（RAS,CAS）与后边地址<code>0x0008 - 0x0014</code>的（RAS,CAS）不相同，所以CPU只能先从<code>0x0000 - 0x0007</code>读取8个字节出来先放入<code>结果寄存器</code>中并左移7个字节（目的是只获取<code>0x0007</code>），然后CPU在从<code>0x0008 - 0x0015</code>读取8个字节出来放入临时寄存器中并右移1个字节（目的是获取<code>0x0008 - 0x0014</code>）最后与结果寄存器<code>或运算</code>。最终得到<code>0x0007 - 0x0014</code>地址段上的8个字节。</p>
+<p>两次访问内存自然在速度上就有差距了!</p>
+<h3 id="原子性">原子性</h3>
+<p>CPU可以原子地操作一个对齐的word size memory</p>
+<h3 id="缓存友好">缓存友好</h3>
+<p>处理器中的<code>cache line</code>大小为<code>64字节</code>，堆中对象的起始地址通过内存对齐至<code>8的倍数</code>，可以让对象尽可能的分配到一个缓存行中。<strong>一个内存起始地址未对齐的对象可能会跨缓存行存储，这样会导致CPU的执行效率慢2倍</strong>。</p>
+<hr>
+<p>[1] <a href="https://mp.weixin.qq.com/s?__biz=Mzg2MzU3Mjc3Ng==&amp;mid=2247484304&amp;idx=1&amp;sn=54bf0d07e69c5621c145afaece8f50d6&amp;chksm=ce77c5d7f9004cc1249a03dfd0fb12b7d75171f1b87acea1fa44bbb11ca374b6f42a66fa274d&amp;token=1771824430&amp;lang=zh_CN&amp;scene=21#wechat_redirect">重磅硬核 | 一文聊透对象在JVM中的内存布局，以及内存对齐和压缩指针的原理及应用</a></p>
 
-
-
-
-
-
-<div class="down-type">
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#linux-kernel
-                        '>
-                <i class="fa fa-tag"></i> #Linux Kernel
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83
-                        '>
-                <i class="fa fa-tag"></i> #开发环境
-            </a>
-        </div>
-    </span>
-    
-</div>
-
-<div class="dang"></div>
             </div>
             
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-        <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500"
-            alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/">【Linux Kernel】Linux debug 环境搭建：qemu&#43;vscode内核源码调试配置教程</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2023-2-1 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2023-2-1 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                收录于:
-                
-                <a href='
-                                        /categories/linux-kernel
+                <div class="tags">
+                    
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84
                                     '>
-                    Linux Kernel
-                </a>
-                
-            </span>
+                                <i class="fa fa-tag"></i> #计算机体系结构
+                            </a>
+                        </div>
+                    </span>
+                    
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86
+                                    '>
+                                <i class="fa fa-tag"></i> #底层原理
+                            </a>
+                        </div>
+                    </span>
+                    
+                </div>
+            
         </div>
-        <div class="down-summary">Linux debug 环境搭建</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-
-
-
-<div class="down-type">
+        
+            
+                <div class="pre-next">
+                    
     
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#linux-kernel
-                        '>
-                <i class="fa fa-tag"></i> #Linux Kernel
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83
-                        '>
-                <i class="fa fa-tag"></i> #开发环境
-            </a>
-        </div>
-    </span>
-    
-</div>
-
-<div class="dang"></div>
+        
+        <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B802-%E5%86%85%E5%AD%98%E5%B1%8F%E9%9A%9C/" class="pre pre-last" style="text-align: center;">
+            <span class="pre-icon"><i class="fa fa-hand-o-left"></i></span>
+            <div class="pre-title-root">
+                <span>【计算机组成原理与体系架构08】内存屏障</span>
             </div>
+        </a>
+        
+    
+    
+
+                </div>
+            
+        
+    
+</div>
+
+    
+        <div class="content-last">
+            
+                <button class="aixin content-last-item efct-button">
+                    <i class="fa fa-heart"></i>
+                </button>
+            
             
         </div>
     
-</div>
 
 
             </div>
@@ -483,33 +504,16 @@
 
 
 
+    
+    
+
 
 <div class="other">
     <div class="other-up">
-        <div class="other-qita text-wbd">最新文章</div>
+        <div class="other-qita text-wbd">相关文章</div>
         <div class="xian"></div>
     </div>
     <div class="list">
-        
-            <a href="https://cnjslw.github.io/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B603-%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90%E5%92%8C%E4%BC%AA%E5%85%B1%E4%BA%AB/">
-                
-<a href="https://cnjslw.github.io/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B603-%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90%E5%92%8C%E4%BC%AA%E5%85%B1%E4%BA%AB/">
-    <div class="list-item">
-        <div class="icon-other-root">
-            
-                <div class="icon-other" style="background-image: url( https://picsum.photos/2500/500 );"></div>
-            
-        </div>
-        <div class="list-right">
-            <div class="other-title">
-                【计算机组成原理与体系架构09】内存对齐与伪共享
-            </div>
-            <div class="other-summary">内存对齐与伪共享</div>
-            <div class="other-date">2023-5-21</div>
-        </div>
-    </div>
-</a>
-            </a>
         
             <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B802-%E5%86%85%E5%AD%98%E5%B1%8F%E9%9A%9C/">
                 
@@ -611,6 +615,26 @@
 </a>
             </a>
         
+            <a href="https://cnjslw.github.io/posts/%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%8D%87%E7%BA%A7/">
+                
+<a href="https://cnjslw.github.io/posts/%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%8D%87%E7%BA%A7/">
+    <div class="list-item">
+        <div class="icon-other-root">
+            
+                <div class="icon-other" style="background-image: url( https://picsum.photos/2500/500 );"></div>
+            
+        </div>
+        <div class="list-right">
+            <div class="other-title">
+                【计算机组成原理与体系架构03】流水线升级
+            </div>
+            <div class="other-summary">流水线升级</div>
+            <div class="other-date">2023-3-9</div>
+        </div>
+    </div>
+</a>
+            </a>
+        
     </div>
 </div>
         </div>
@@ -622,6 +646,46 @@
 
             </div>
         </div>
+    </div>
+</div>
+
+    
+
+<div class="sponsor">
+    <div class="sponsor-self">
+        <div class="sponsor-title">赞赏</div>
+        <div class="sponsor-btn">
+            
+                
+                    
+                        <div class="sponsor-btn-1 border-r">Wechat</div>
+                    
+                
+                
+            
+                
+                    
+                        <div class="sponsor-btn-2 border-l">Alipay</div>
+                    
+                
+                
+            
+        </div>
+        
+        <div class="sponsor-img">
+            
+                
+                    <img class="sponsor-img-1" src="/images/wechat.png" alt="">
+                
+                
+            
+                
+                    <img class="sponsor-img-2" src="/images/alipay.png" alt="" style="display: none;">
+                
+                
+            
+        </div>
+        <div class="cancel efct-button">取消</div>
     </div>
 </div>
 
