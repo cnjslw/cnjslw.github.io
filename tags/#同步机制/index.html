@@ -3,23 +3,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>AWei’s Kernel Tour | 【x86汇编语言02】变量与基本类型</title>
+    <title>AWei’s Kernel Tour | #同步机制</title>
     <meta name="description"
-        content="汇编语言 ">
-    <link rel="canonical" href="https://cnjslw.github.io/posts/02-%E5%8F%98%E9%87%8F%E4%B8%8E%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/" />
+        content=" ">
+    <link rel="canonical" href="https://cnjslw.github.io/tags/#%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6/" />
     <link rel="icon" type="image/x-icon" href="/images/linux_pic.ico">
-    <meta property="og:title" content="【x86汇编语言02】变量与基本类型" />
-<meta property="og:description" content="汇编语言" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://cnjslw.github.io/posts/02-%E5%8F%98%E9%87%8F%E4%B8%8E%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2022-01-20T00:00:00+00:00" />
-<meta property="article:modified_time" content="2022-01-20T00:00:00+00:00" />
-
+    <meta property="og:title" content="#同步机制" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://cnjslw.github.io/tags/#%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6/" />
 
 
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="【x86汇编语言02】变量与基本类型"/>
-<meta name="twitter:description" content="汇编语言"/>
+<meta name="twitter:title" content="#同步机制"/>
+<meta name="twitter:description" content=""/>
 
     
     
@@ -197,41 +194,29 @@
 
 
         <div id="content">
+    
 
 
 
 
+
+
+    
+        
+    
 
 
 
 
     <div class="hero">
         
-            <div class="hero-img">
-                <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500" alt="">
-            </div>
-        
+            
+                <div class="hero-img">
+                    <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500" alt="">
+                </div>
+            
         <div class="hero-content">
-            <div class="hero-title">【x86汇编语言02】变量与基本类型</div>
-            <div class="hero-subtitle"></div>
-            <div class="hero-date">
-                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-1-20 &nbsp;</span>
-                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-1-20 &nbsp;</span>
-                    <span class="no-wrap"><i class="fa fa-folder"></i>
-                        收录于:
-                        
-                            <a href='
-                                /categories/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80
-                            '>
-                                汇编语言
-                            </a>
-                    </span>    
-            </div>
-            <div class="timelong">
-                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 454 &nbsp;</span>
-                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 3 分钟 &nbsp;</span>
-                <span class="no-wrap"><i class="fa fa-eye"></i> 阅读量: <span id="busuanzi_value_page_pv"></span></span>
-            </div>
+            <h1 class="hero-title">标签: #同步机制</h1>
         </div>
     </div>
 
@@ -250,7 +235,7 @@
     
 
 
-<div class="content-root">
+<div class="terms-body">
     <div class="long">
         <button class="tosides-1 text-wbd">
             <i class="fa fa-arrow-right"></i>
@@ -263,442 +248,88 @@
         </button>
     </div>
     
-        <div class="content">
-            <div class="content-self">
-                <p>⚠默认基于Nasm汇编器和x86架构下的汇编 , 仅MASM支持会特殊标注</p>
-<h1 id="一数值编码">一、数值编码</h1>
-<ol>
-<li>
-<p>无符号整数（Unsigned Integer）：</p>
-<ul>
-<li>使用二进制<strong>补码</strong>（Binary Unsigned Integer）表示。</li>
-<li>所有位都可用于表示数值，没有符号位。</li>
-<li>最高位为数值的最高位，没有特殊含义。</li>
-<li>能表示的范围：0 到 (2^n - 1)，其中 n 是该整数类型的位数。</li>
-</ul>
-</li>
-<li>
-<p>有符号整数（Signed Integer）：</p>
-<ul>
-<li>使用二进制<strong>补码</strong>（Binary Two&rsquo;s Complement）表示。</li>
-<li>最高位（最左侧的位）作为符号位，0 表示正数，1 表示负数。</li>
-<li>其余位表示数值部分，使用正数的二进制补码表示。</li>
-<li>能表示的范围：-(2^(n-1)) 到 (2^(n-1) - 1)，其中 n 是该整数类型的位数。</li>
-</ul>
-</li>
-<li>
-<p>小数（Floating-point Number）：</p>
-<ul>
-<li>使用<strong>浮点表示法</strong>，例如IEEE 754标准。</li>
-<li>一般分为单精度（32位）和双精度（64位）两种格式。</li>
-<li>包括符号位、指数位和尾数位，用于表示带有小数部分的实数。</li>
-<li>能表示的范围和精度取决于具体的浮点表示格式。</li>
-</ul>
-</li>
-<li>
-<p>字符（Character）：</p>
-<ul>
-<li>使用<strong>字符编码</strong>表来表示，最常见的是<strong>ASCII编码或Unicode编码</strong>。</li>
-<li>通常每个字符占用一个固定大小的字节（如ASCII编码中的一个字节），或者使用多字节表示（如某些Unicode编码）。</li>
-<li>每个编码表将字符映射到一个二进制值，以便在计算机中表示。</li>
-</ul>
-</li>
-<li>
-<p>字符串（String）：</p>
-<ul>
-<li>字符串是由多个字符构成的序列。</li>
-<li>在计算机中，字符串通常被表示为字符数组或字符指针，其中每个字符使用字符的表示方式进行存储。</li>
-<li>字符串的具体表示方式可以根据编程语言和字符串库的不同而有所区别，但基本原理是相同的。</li>
-</ul>
-</li>
-</ol>
-<p>需要注意的是，每种数据类型在计算机中的具体表示方式可能会因编程语言、编译器、操作系统或硬件平台而有所差异。这些表示方式是通过约定和标准来定义的，以确保数据在计算机内部的正确解释和操作。</p>
-<h1 id="二变量">二、变量</h1>
-<h2 id="1masm中的变量">1、MASM中的变量</h2>
-<h3 id="11-定义变量">1.1 定义变量</h3>
-<p>变量名即汇编语句名字部分，是用户自定义的标识符，表示初值表首个数据的逻辑地址。汇编语言使用这个符号表示地址，故有时被称为符号地址。变量名可以没有，这种情况，汇编程序将直接为初值表分配空间，无符号地址。设置变量名是为了方便存取它指示的存储单元。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="err">变量名</span> <span class="err">变量定义伪指令</span> <span class="err">初值表</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h4 id="111-初值表">1.1.1 初值表</h4>
-<p>初值表是用逗号分隔的参数，由各种形式的常量和特殊的符号“?”、“DUP”组成。其中“？”表示初值不确定，即未赋初值。多个存储单元如果初值相同，可以用复制操作符DUP进行说明。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="err">重复次数</span> <span class="nf">dup</span><span class="p">(</span><span class="err">重复参数</span><span class="p">)</span> <span class="c1">;
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><h4 id="112-变量定义伪指令">1.1.2 变量定义伪指令</h4>
-<p>变量定义伪指令有DB、DW、DD、DF、DQ和DT（NASM和MASM使用了相同的伪指令 , MASM 6.0开始还对应支持BYTE、WORD、DWORD、FWORD、QWORD和TBYTE，两者功能相同），它们根据申请的主存空间单位分类</p>
-<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202307120007108.png" alt="Pasted image 20230627224603|800"></p>
-<p>除了 DB、DW、DD 等定义的简单变量，汇编语言还支持复杂的数据变量，例如结构（Structure）、记录（Record）、联合（Union）等。</p>
-<h3 id="12-变量定位">1.2 变量定位</h3>
-<p>变量定义的存储空间是按照书写的先后顺序一个接一个分配的。而定位伪指令可以控制其存放的偏移地址。</p>
-<h4 id="121-org伪指令">1.2.1 ORG伪指令</h4>
-<p>ORG伪指令将参数表达的偏移地址作为当前偏移地址，格式是：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nf">org</span> <span class="err">参数</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>例如，从偏移地址100H处安排数据或程序，可以使用语句：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nf">org</span> <span class="mi">100</span><span class="no">h</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h4 id="122-align与even伪指令">1.2.2 ALIGN与Even伪指令</h4>
-<p>在汇编语言中，&ldquo;Align&quot;和&quot;Even&quot;是两个常用的伪指令，它们的作用是调整代码或数据的对齐方式。</p>
-<ol>
-<li>
-<p>Align（对齐）伪指令：</p>
-<ul>
-<li>Align伪指令用于将代码或数据对齐到指定的边界。</li>
-<li>对齐是指将数据或指令的起始地址设置为特定的边界地址，通常是内存地址的倍数。</li>
-<li>对齐可以提高程序执行效率和访问速度，尤其在一些体系结构中，要求某些特定类型的数据必须以特定的对齐方式存储。</li>
-<li>使用Align伪指令，程序员可以指定对齐的边界，如字节、字（2字节）、双字（4字节）等。</li>
-</ul>
-</li>
-<li>
-<p>Even（偶数）伪指令：</p>
-<ul>
-<li>Even伪指令用于将代码或数据的起始地址对齐到偶数地址。</li>
-<li>在某些体系结构中，要求32位数据的起始地址必须为偶数，即内存地址的最低位必须为0。</li>
-<li>使用Even伪指令，程序员可以确保代码或数据的起始地址为偶数地址，从而满足特定体系结构的要求。</li>
-</ul>
-</li>
-</ol>
-<p>这些对齐伪指令可以在编写汇编代码时使用，以确保数据的正确对齐和访问。对齐方式的选择通常受到特定体系结构或编译器的要求和限制。通过使用Align和Even伪指令，程序员可以以最佳的方式进行数据对齐，以提高代码执行效率和访问速度。</p>
-<h4 id="123-变量属性">1.2.3 变量属性</h4>
-<p>变量定义除分配存储空间和赋初值外，还可以创建变量名。
-这个变量名一经定义便具有两类属性：
-（1）地址属性——指首个变量所在存储单元的逻辑地址，含有段基地址和偏移地址。
-（2）类型属性——指变量定义的数据单位，有字节量、字量、双字量、3 字量、4 字量和10字节量，依次用类型名BYTE、WORD、DWORD、FWORD、QWORD和TBYTE表示。</p>
-<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202307120007109.png" alt="Pasted image 20230627225937|800"></p>
-<p>TYPE返回该类型变量一个数据项所占的字节数，例如对字节、字和双字变量依次返回1、2和4
-对变量，还可以用LENGTHOF操作符获知某变量名指向多少个数据项，用SIZEOF操作符获知它共占用多少字节空间，即 SIZEOF 值=TYPE 值×LENGHOF 值</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="nf">mov</span> <span class="no">ax</span><span class="p">,</span><span class="no">word</span> <span class="no">ptr</span> <span class="no">bvar</span> <span class="c1">; 
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nf">mov</span> <span class="no">bx</span><span class="p">,</span><span class="no">type</span> <span class="no">bvar</span> <span class="c1">; 
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nf">mov</span> <span class="no">cx</span><span class="p">,</span><span class="no">type</span> <span class="no">wvar</span> 
-</span></span><span class="line"><span class="cl"><span class="no">mov</span> <span class="no">dx</span><span class="p">,</span><span class="no">type</span> <span class="no">array</span> 
-</span></span><span class="line"><span class="cl"><span class="no">mov</span> <span class="no">si</span><span class="p">,</span><span class="no">lengthof</span> <span class="no">array</span> 
-</span></span><span class="line"><span class="cl"><span class="no">mov</span> <span class="no">di</span><span class="p">,</span><span class="no">sizeof</span> <span class="no">array</span> 
-</span></span><span class="line"><span class="cl"><span class="no">mov</span> <span class="no">bp</span><span class="p">,</span><span class="no">arr_size</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="2nasm中的变量">2、NASM中的变量</h2>
-<p>在NASM中，可以使用<code>%define</code>、<code>equ</code>和<code>resb</code>等指令来创建变量。</p>
-<ol>
-<li>使用 <code>%define</code> 定义符号常量：</li>
-</ol>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-nasm" data-lang="nasm"><span class="line"><span class="cl"><span class="cp">%define 变量名 值
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>这种方式创建的变量是一个符号常量，它们在汇编时会被替换为具体的值。例如：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-nasm" data-lang="nasm"><span class="line"><span class="cl"><span class="cp">%define SIZE 10
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>这样就定义了一个名为 <code>SIZE</code> 的变量，它的值为 10。在后续的代码中，可以直接使用 <code>SIZE</code> 来代表 10。</p>
-<ol start="2">
-<li>使用 <code>equ</code> 定义符号常量：</li>
-</ol>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-nasm" data-lang="nasm"><span class="line"><span class="cl"><span class="err">变量名</span> <span class="nf">equ</span> <span class="err">值</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>这种方式与 <code>%define</code> 类似，也是用于定义符号常量。例如：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-nasm" data-lang="nasm"><span class="line"><span class="cl"><span class="no">SIZE</span><span class="kd"> equ</span> <span class="mi">10</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>这样就定义了一个名为 <code>SIZE</code> 的变量，它的值为 10。在后续的代码中，同样可以直接使用 <code>SIZE</code> 来代表 10。</p>
-<ol start="3">
-<li>使用 <code>resb</code> 分配内存空间：</li>
-</ol>
-<pre tabindex="0"><code>变量名 resb 长度
-</code></pre><p>这种方式用于在内存中分配一定长度的字节空间，即创建一个字节长度的变量。例如：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-nasm" data-lang="nasm"><span class="line"><span class="cl"><span class="nf">array</span> <span class="nv">resb</span> <span class="mi">10</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>这样就创建了一个名为 <code>array</code> 的变量，它占用了 10 个字节的空间。</p>
-<p>除了 <code>resb</code>，NASM还提供了其他类似的分配内存空间的指令，如 <code>resw</code>（分配字）和 <code>resd</code>（分配双字）。可以根据具体需要选择适当的指令。</p>
-<h1 id="三寻址方式">三、寻址方式</h1>
-<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202307120007106.png" alt="|800"></p>
-<h2 id="1立即寻址">1、立即寻址</h2>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-nasm" data-lang="nasm"><span class="line"><span class="cl"><span class="nf">add</span> <span class="nb">bx</span> <span class="p">,</span> <span class="mh">0xf000</span>  <span class="c1">;0xf000 直接给出的数值是立即在指令中给出的,最终参加法运算的就是它,不需要通过其他方式寻址,故称为立即数,也是一种寻址方式,称为立即寻址</span>
-</span></span><span class="line"><span class="cl"><span class="nf">mov</span> <span class="nb">dx</span> <span class="p">,</span> <span class="nv">label_a</span> <span class="c1">;label_a 同上,也会转化为一个立即数</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="2寄存器寻址">2、寄存器寻址</h2>
-<p>指令执行时,操作的数位于寄存器中,可以从寄存器里取得</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-nasm" data-lang="nasm"><span class="line"><span class="cl"><span class="nf">mov</span> <span class="nb">ax</span> <span class="p">,</span> <span class="nb">cx</span>
-</span></span><span class="line"><span class="cl"><span class="nf">add</span> <span class="nb">bx</span> <span class="p">,</span> <span class="mh">0xf000</span>
-</span></span><span class="line"><span class="cl"><span class="nf">inc</span> <span class="nb">dx</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="3内存寻址">3、内存寻址</h2>
-<p>所谓的内存寻址,就是如何在指令中指定操作数的偏移地址,供处理器访问内存时使用,这个偏移地址就叫做有效地址(EA,Effective Address)</p>
-<h3 id="31-直接寻址">3.1 直接寻址</h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-nasm" data-lang="nasm"><span class="line"><span class="cl"><span class="nf">mov</span> <span class="nb">ax</span> <span class="p">,</span> <span class="p">[</span><span class="mh">0x5c0f</span><span class="p">]</span> <span class="c1">; ds左移动4位,加上0x5c0f形成20位物理地址,从这个物理地址中取得一个字,保存在ax中</span>
-</span></span><span class="line"><span class="cl"><span class="nf">add</span> <span class="kt">word</span> <span class="p">[</span><span class="mh">0x0230</span><span class="p">]</span> <span class="p">,</span> <span class="mh">0x5000</span> <span class="c1">; </span>
-</span></span><span class="line"><span class="cl"><span class="nf">xor</span> <span class="kt">byte</span> <span class="p">[</span><span class="nb">es</span><span class="p">:</span><span class="nv">label_b</span><span class="p">]</span> <span class="p">,</span> <span class="mh">0x50</span> <span class="c1">; [es:label_b]使用了标号和段超越前缀,但属于直接寻址方式,因为标号是数值的等价形式,在指令编译阶段,会被转换成数值,段超越前缀改变了默认的数据段</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="32-基址寻址">3.2 基址寻址</h3>
-<p>所谓基址寻址,就是先指定一个基准位置,数据的偏移数据(有效地址)取决于它到基准位置的位移或者说距离,要使用基地寻址,需要在指定的地址部分使用基址寄存器BX或者BP来提供一个基准地址(默认情况下, BX默认寄存器DS, BP默认寄存器SS) , 可以在BX和BP的基础上加上位移</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-nasm" data-lang="nasm"><span class="line"><span class="cl"><span class="nf">mov</span> <span class="p">[</span><span class="nb">bx</span><span class="p">]</span> <span class="p">,</span> <span class="nb">dx</span> <span class="c1">; DS&lt;&lt;4+BX = EA</span>
-</span></span><span class="line"><span class="cl"><span class="nf">add</span> <span class="kt">byte</span> <span class="p">[</span><span class="nb">bx</span><span class="p">]</span> <span class="p">,</span><span class="mh">0x55</span> <span class="c1">; DS&lt;&lt;4+BX = EA </span>
-</span></span><span class="line"><span class="cl"><span class="nf">mov</span> <span class="nb">ax</span> <span class="p">,</span> <span class="p">[</span><span class="nb">bp</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="c1">; ; SS&lt;&lt;4+(BP-2) = EA ,常用作访问栈</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>一个小例子</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-nasm" data-lang="nasm"><span class="line"><span class="cl"><span class="c1">;将每一个数字+1</span>
-</span></span><span class="line"><span class="cl"><span class="nf">buffer</span> <span class="nv">dw</span> <span class="mh">0xf0</span> <span class="p">,</span> <span class="mh">0xff00</span> <span class="p">,</span> <span class="mh">0x300</span>
-</span></span><span class="line"><span class="cl">	<span class="nf">mov</span> <span class="nb">bx</span> <span class="nv">buffer</span>
-</span></span><span class="line"><span class="cl">	<span class="nf">mov</span> <span class="nb">cx</span> <span class="mi">3</span>
-</span></span><span class="line"><span class="cl"><span class="nl">lpinc:</span>
-</span></span><span class="line"><span class="cl">	<span class="nf">inc</span> <span class="kt">word</span> <span class="p">[</span><span class="nb">bx</span><span class="p">]</span>
-</span></span><span class="line"><span class="cl">	<span class="nf">add</span> <span class="nb">bx</span> <span class="mi">2</span>
-</span></span><span class="line"><span class="cl">	<span class="nf">loop</span> <span class="nv">lpinc</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="33-变址寻址">3.3 变址寻址</h3>
-<p>变址寻址类似于基址寻址,唯一不同之处在于这种寻址方式使用的是变址寄存器(或称索引寄存器)SI和DI , 除非使用了段超越前缀,默认使用DS作为段寄存器,同样可以增加位移</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-nasm" data-lang="nasm"><span class="line"><span class="cl"><span class="nf">mov</span> <span class="p">[</span><span class="nb">si</span><span class="p">]</span> <span class="nb">dx</span> <span class="c1">; DS&lt;&lt;4+SI = EA</span>
-</span></span><span class="line"><span class="cl"><span class="nf">add</span> <span class="nb">ax</span> <span class="p">[</span><span class="nb">di</span><span class="o">+</span><span class="mh">0x100</span><span class="p">]</span>
-</span></span><span class="line"><span class="cl"><span class="nf">xor</span> <span class="kt">word</span> <span class="p">[</span><span class="nb">si</span><span class="p">]</span> <span class="p">,</span> <span class="mh">0x8000</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="34-基址变址寻址">3.4 基址变址寻址</h3>
-<p>可以使用一个基址寄存器(BX或者BP) + 变址寄存器(SI和DI) = 基址变址</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-nasm" data-lang="nasm"><span class="line"><span class="cl"><span class="nf">mov</span> <span class="nb">ax</span><span class="p">,[</span><span class="nb">bx</span><span class="o">+</span><span class="nb">si</span><span class="p">]</span> <span class="c1">;DS&lt;&lt;4+bx+si</span>
-</span></span><span class="line"><span class="cl"><span class="nf">add</span> <span class="kt">word</span> <span class="p">[</span><span class="nb">bx</span><span class="o">+</span><span class="nb">di</span><span class="p">]</span> <span class="p">,</span> <span class="mh">0x3000</span> <span class="c1">; DS&lt;&lt;4+bx+di</span>
-</span></span><span class="line"><span class="cl"><span class="nf">mov</span> <span class="p">[</span><span class="nb">bx</span><span class="o">+</span><span class="nb">si</span><span class="o">+</span><span class="mh">0x100</span><span class="p">],</span><span class="nb">al</span> <span class="c1">; DS&lt;&lt;4+bx+si+0x100</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>一个例子</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-nasm" data-lang="nasm"><span class="line"><span class="cl"><span class="c1">;反转字符串</span>
-</span></span><span class="line"><span class="cl"><span class="nf">string</span> <span class="nv">db</span> <span class="s">&#39;abcdefg&#39;</span>
-</span></span><span class="line"><span class="cl"><span class="nf">mov</span> <span class="nb">bx</span> <span class="p">,</span><span class="nv">string</span>
-</span></span><span class="line"><span class="cl"><span class="nf">mov</span> <span class="nb">si</span><span class="p">,</span><span class="mi">0</span>
-</span></span><span class="line"><span class="cl"><span class="nf">mov</span> <span class="nb">di</span><span class="p">,</span><span class="mi">6</span>
-</span></span><span class="line"><span class="cl"><span class="nl">reverse:</span>
-</span></span><span class="line"><span class="cl">	<span class="nf">mov</span> <span class="nb">ah</span><span class="p">,[</span><span class="nb">bx</span><span class="o">+</span><span class="nb">si</span><span class="p">]</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">mov</span> <span class="nb">al</span><span class="p">,[</span><span class="nb">bx</span><span class="o">+</span><span class="nb">di</span><span class="p">]</span>
-</span></span><span class="line"><span class="cl">	<span class="nf">mov</span> <span class="p">[</span><span class="nb">bx</span><span class="o">+</span><span class="nb">si</span><span class="p">],</span><span class="nb">al</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">mov</span> <span class="p">[</span><span class="nb">bx</span><span class="o">+</span><span class="nb">di</span><span class="p">],</span><span class="nb">ah</span> <span class="c1">;首尾字符互换</span>
-</span></span><span class="line"><span class="cl">	<span class="nf">inc</span> <span class="nb">si</span>
-</span></span><span class="line"><span class="cl">	<span class="nf">dec</span> <span class="nb">di</span>
-</span></span><span class="line"><span class="cl">    <span class="nf">cmp</span> <span class="nb">si</span><span class="p">,</span><span class="nb">di</span>
-</span></span><span class="line"><span class="cl">	<span class="nf">jl</span> <span class="nv">order</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><hr>
-<p>[1] 《汇编语言》王爽</p>
-<p>[2] 《x86汇编语言：从实模式到保护模式（第二版）》李忠、王晓波、余洁</p>
-<p>[3] 《Intel® 64 and IA-32 Architectures  Software Developer’s Manual  Volume 3A:  System Programming Guide, Part 1》</p>
-<p>[4] 《汇编语言简明教程》钱晓捷</p>
-<p>[5]  <a href="https://blog.csdn.net/weixin_45590473/article/details/122975718">8086CPU中14个寄存器的详解_基址寄存器</a></p>
-<p>[6] 《NASM中文手册》</p>
-<p>[7] 《MASM61 Pro Guide》</p>
+        <div class="terms-row">
+            
+            <div class="terms-root">
+                
+                
 
-            </div>
-            
-                <div class="tags">
-                    
-                    <span class="down-type-item">
-                        <div class="type-text">
-                            <a href='
-                                        /tags/#%E6%B1%87%E7%BC%96
+
+<div class="card-large">
+    <div class="card-large-img">
+
+        
+        <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500"
+            alt='图片加载失败'>
+        
+    </div>
+    <div class="card-large-content">
+        <div class="up-title"><a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/">【同步机制】原子操作</a></div>
+        <div class="up-date">
+            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-3-3 &nbsp;</span>
+            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-3-3 &nbsp;</span>
+            <span class="no-wrap"><i class="fa fa-folder"></i>
+                
+                收录于:
+                
+                <a href='
+                                        /categories/linux-kernel
                                     '>
-                                <i class="fa fa-tag"></i> #汇编
-                            </a>
-                        </div>
-                    </span>
-                    
-                    <span class="down-type-item">
-                        <div class="type-text">
-                            <a href='
-                                        /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
-                                    '>
-                                <i class="fa fa-tag"></i> #语法特性
-                            </a>
-                        </div>
-                    </span>
-                    
-                    <span class="down-type-item">
-                        <div class="type-text">
-                            <a href='
-                                        /tags/#%E7%BC%96%E7%A8%8B
-                                    '>
-                                <i class="fa fa-tag"></i> #编程
-                            </a>
-                        </div>
-                    </span>
-                    
-                </div>
-            
+                    Linux Kernel
+                </a>
+                
+            </span>
         </div>
-        
-            
-                <div class="pre-next">
-                    
-    
-        
-        <a href="https://cnjslw.github.io/posts/01-8086%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/" class="pre">
-            <span class="pre-icon"><i class="fa fa-hand-o-left"></i></span>
-            <div class="pre-title-root">
-                <span>【x86汇编语言01】 8086体系结构与汇编基础</span>
-            </div>
+        <div class="down-summary">原子操作</div>
+    </div>
+    <div class="card-readmore">
+        <a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/">
+            <span><i class="fa fa-arrow-right"></i></span>
         </a>
-        
+    </div>
+</div>
 
-        
-        <a href="https://cnjslw.github.io/posts/03-%E9%80%9A%E7%94%A8%E6%8C%87%E4%BB%A4/" class="next">
-            <div class="next-title-root">
-                <span>【x86汇编语言03】通用指令集</span>
-            </div>
-            <span class="next-icon"><i class="fa fa-hand-o-right"></i></span>
-        </a>
-        
 
+
+
+
+
+<div class="down-type">
     
+    <span class="down-type-item">
+        <div class="shuxian-root">
+            <div class="shuxian"></div>
+        </div>
+        <div class="type-text">
+            <a href='
+                            /tags/#linux-kernel
+                        '>
+                <i class="fa fa-tag"></i> #Linux Kernel
+            </a>
+        </div>
+    </span>
     
-
-                </div>
-            
-        
+    <span class="down-type-item">
+        <div class="shuxian-root">
+            <div class="shuxian"></div>
+        </div>
+        <div class="type-text">
+            <a href='
+                            /tags/#%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6
+                        '>
+                <i class="fa fa-tag"></i> #同步机制
+            </a>
+        </div>
+    </span>
     
 </div>
 
-    
-        <div class="content-last">
-            
-                <button class="aixin content-last-item efct-button">
-                    <i class="fa fa-heart"></i>
-                </button>
-            
+<div class="dang"></div>
+            </div>
             
         </div>
     
+</div>
 
 
             </div>
@@ -775,20 +406,17 @@
 
 
 
-    
-    
-
 
 <div class="other">
     <div class="other-up">
-        <div class="other-qita text-wbd">相关文章</div>
+        <div class="other-qita text-wbd">最新文章</div>
         <div class="xian"></div>
     </div>
     <div class="list">
         
-            <a href="https://cnjslw.github.io/posts/03-%E9%80%9A%E7%94%A8%E6%8C%87%E4%BB%A4/">
+            <a href="https://cnjslw.github.io/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B603-%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90%E5%92%8C%E4%BC%AA%E5%85%B1%E4%BA%AB/">
                 
-<a href="https://cnjslw.github.io/posts/03-%E9%80%9A%E7%94%A8%E6%8C%87%E4%BB%A4/">
+<a href="https://cnjslw.github.io/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B603-%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90%E5%92%8C%E4%BC%AA%E5%85%B1%E4%BA%AB/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -797,18 +425,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【x86汇编语言03】通用指令集
+                【计算机组成原理与体系架构09】内存对齐与伪共享
             </div>
-            <div class="other-summary">通用指令</div>
-            <div class="other-date">2022-1-24</div>
+            <div class="other-summary">内存对齐与伪共享</div>
+            <div class="other-date">2023-5-21</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/01-8086%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">
+            <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B802-%E5%86%85%E5%AD%98%E5%B1%8F%E9%9A%9C/">
                 
-<a href="https://cnjslw.github.io/posts/01-8086%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">
+<a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B802-%E5%86%85%E5%AD%98%E5%B1%8F%E9%9A%9C/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -817,18 +445,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【x86汇编语言01】 8086体系结构与汇编基础
+                【计算机组成原理与体系架构08】内存屏障
             </div>
-            <div class="other-summary">汇编语言</div>
-            <div class="other-date">2022-1-13</div>
+            <div class="other-summary">内存屏障</div>
+            <div class="other-date">2023-5-7</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">
+            <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B801-%E5%A4%9A%E6%A0%B8%E8%AE%BF%E5%AD%98/">
                 
-<a href="https://cnjslw.github.io/posts/%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">
+<a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B801-%E5%A4%9A%E6%A0%B8%E8%AE%BF%E5%AD%98/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -837,18 +465,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【从汇编的视角重学C&#43;&#43; 01】基本数据类型的表现形式
+                【计算机组成原理与体系架构07】多核访存架构
             </div>
-            <div class="other-summary">基本数据类型的表现形式</div>
-            <div class="other-date">2021-11-1</div>
+            <div class="other-summary">多核访存架构</div>
+            <div class="other-date">2023-4-20</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF%E4%B8%8E%E5%8F%8B%E5%85%83/">
+            <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B602-%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/">
                 
-<a href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF%E4%B8%8E%E5%8F%8B%E5%85%83/">
+<a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B602-%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -857,18 +485,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【模板与泛型编程03】类模板和友元
+                【计算机组成原理与体系架构06】缓存一致性
             </div>
-            <div class="other-summary">类模板</div>
-            <div class="other-date">2022-6-22</div>
+            <div class="other-summary">缓存一致性</div>
+            <div class="other-date">2023-4-15</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF/">
+            <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B601-cache/">
                 
-<a href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF/">
+<a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B601-cache/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -877,18 +505,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【模板与泛型编程02】类模板
+                【计算机组成原理与体系架构05】Cache原理与设计
             </div>
-            <div class="other-summary">类模板</div>
-            <div class="other-date">2022-6-20</div>
+            <div class="other-summary">Cache</div>
+            <div class="other-date">2023-3-30</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/">
+            <a href="https://cnjslw.github.io/posts/%E5%A4%9A%E6%A0%B8%E6%9E%B6%E6%9E%84%E7%AE%80%E4%BB%8B/">
                 
-<a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/">
+<a href="https://cnjslw.github.io/posts/%E5%A4%9A%E6%A0%B8%E6%9E%B6%E6%9E%84%E7%AE%80%E4%BB%8B/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -897,10 +525,10 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【模板与泛型编程01】函数模板
+                【计算机组成原理与体系架构04】常见并行架构
             </div>
-            <div class="other-summary">函数模板</div>
-            <div class="other-date">2022-6-8</div>
+            <div class="other-summary">常见并行架构</div>
+            <div class="other-date">2023-3-21</div>
         </div>
     </div>
 </a>
@@ -917,46 +545,6 @@
 
             </div>
         </div>
-    </div>
-</div>
-
-    
-
-<div class="sponsor">
-    <div class="sponsor-self">
-        <div class="sponsor-title">赞赏</div>
-        <div class="sponsor-btn">
-            
-                
-                    
-                        <div class="sponsor-btn-1 border-r">Wechat</div>
-                    
-                
-                
-            
-                
-                    
-                        <div class="sponsor-btn-2 border-l">Alipay</div>
-                    
-                
-                
-            
-        </div>
-        
-        <div class="sponsor-img">
-            
-                
-                    <img class="sponsor-img-1" src="/images/wechat.png" alt="">
-                
-                
-            
-                
-                    <img class="sponsor-img-2" src="/images/alipay.png" alt="" style="display: none;">
-                
-                
-            
-        </div>
-        <div class="cancel efct-button">取消</div>
     </div>
 </div>
 
