@@ -3,20 +3,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>AWei’s Kernel Tour | #同步机制</title>
+    <title>AWei’s Kernel Tour | 【同步机制】rwlock和seqlock</title>
     <meta name="description"
-        content=" ">
-    <link rel="canonical" href="https://cnjslw.github.io/tags/#%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6/" />
+        content="rwlock和seqlock ">
+    <link rel="canonical" href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-rwlock%E5%92%8Cseqlock/" />
     <link rel="icon" type="image/x-icon" href="/images/linux_pic.ico">
-    <meta property="og:title" content="#同步机制" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://cnjslw.github.io/tags/#%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6/" />
+    <meta property="og:title" content="【同步机制】rwlock和seqlock" />
+<meta property="og:description" content="rwlock和seqlock" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-rwlock%E5%92%8Cseqlock/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-22T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-03-22T00:00:00+00:00" />
+<meta property="og:see_also" content="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-spinlock/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/linuxdocument-00/" />
 
 
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="#同步机制"/>
-<meta name="twitter:description" content=""/>
+<meta name="twitter:title" content="【同步机制】rwlock和seqlock"/>
+<meta name="twitter:description" content="rwlock和seqlock"/>
 
     
     
@@ -194,29 +197,41 @@
 
 
         <div id="content">
-    
 
 
 
 
-
-
-    
-        
-    
 
 
 
 
     <div class="hero">
         
-            
-                <div class="hero-img">
-                    <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500" alt="">
-                </div>
-            
+            <div class="hero-img">
+                <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500" alt="">
+            </div>
+        
         <div class="hero-content">
-            <h1 class="hero-title">标签: #同步机制</h1>
+            <div class="hero-title">【同步机制】rwlock和seqlock</div>
+            <div class="hero-subtitle"></div>
+            <div class="hero-date">
+                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-3-22 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-3-22 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-folder"></i>
+                        收录于:
+                        
+                            <a href='
+                                /categories/linux-kernel
+                            '>
+                                Linux Kernel
+                            </a>
+                    </span>    
+            </div>
+            <div class="timelong">
+                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 65 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 1 分钟 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-eye"></i> 阅读量: <span id="busuanzi_value_page_pv"></span></span>
+            </div>
         </div>
     </div>
 
@@ -235,7 +250,7 @@
     
 
 
-<div class="terms-body">
+<div class="content-root">
     <div class="long">
         <button class="tosides-1 text-wbd">
             <i class="fa fa-arrow-right"></i>
@@ -248,242 +263,138 @@
         </button>
     </div>
     
-        <div class="terms-row">
-            
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-        <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500"
-            alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-rwlock%E5%92%8Cseqlock/">【同步机制】rwlock和seqlock</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-3-22 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-3-22 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                收录于:
-                
-                <a href='
-                                        /categories/linux-kernel
-                                    '>
-                    Linux Kernel
-                </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">rwlock和seqlock</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-rwlock%E5%92%8Cseqlock/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
+        <div class="content">
+            <div class="content-self">
+                <h1 id="被淘汰的rwlock">被淘汰的rwlock</h1>
+<p>rwlock和普通的spinlock区分了read和write，如果当前没有write，那么多个reader可以同时获取，如果当前没有reader，那么一个write可以获取这个rwlock</p>
+<p>那为什么会被淘汰呢？原因在于如果多个reader在使用某个rwlock时，那么writer需要等待所有的reader都释放了rwlock，才可以获取，这会造成writer被饿死</p>
+<h1 id="seqlock">seqlock</h1>
+<p>比起rwlock，seqlock解除了reader和writer之间的互斥。只保留了writer之间的互斥。
+那么显而易见的问题，如果保证在reader读取期间，如果writer对变量进行了修改，如果保证读取数据的一致性呢？</p>
+<p>seqlock基于spinlock添加了seqcount来保证一致性</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">struct</span> <span class="n">seqcount</span> <span class="n">seqcount</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">spinlock_t</span> <span class="n">lock</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span><span class="n">seqlock_t</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
 </div>
-
-
-
-
-
-
-<div class="down-type">
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#linux-kernel
-                        '>
-                <i class="fa fa-tag"></i> #Linux Kernel
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6
-                        '>
-                <i class="fa fa-tag"></i> #同步机制
-            </a>
-        </div>
-    </span>
-    
+</div><h2 id="写入操作">写入操作</h2>
+<p>每当writer持有seqlock时，sequence number加1</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span> <span class="nf">write_seqlock</span><span class="p">(</span><span class="n">seqlock_t</span> <span class="o">*</span><span class="n">sl</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>    
+</span></span><span class="line"><span class="cl">	<span class="n">spin_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sl</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span>    
+</span></span><span class="line"><span class="cl">	<span class="n">s</span><span class="o">-&gt;</span><span class="n">sequence</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
+</div><p>写入之后，准备释放锁之前 ，sequence number会再次加1</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span> <span class="nf">write_sequnlock</span><span class="p">(</span><span class="n">seqlock_t</span> <span class="o">*</span><span class="n">sl</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>    
+</span></span><span class="line"><span class="cl">	<span class="n">s</span><span class="o">-&gt;</span><span class="n">sequence</span><span class="o">++</span><span class="p">;</span>    
+</span></span><span class="line"><span class="cl">	<span class="n">spin_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sl</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>sequence number的初始值是一个偶数(even)，因而当writer持有spinlock时，sequence number的值将是一个奇数(odd)，释放后则又变成偶数。</p>
+<h2 id="读取操作">读取操作</h2>
+<p>reader在读取一个共享变量之前，需要先读取一下sequence number的值，如果为奇数，说明现在有writer正在修改这个变量，需要等待，直到sequence number变为偶数，才可以开始读取变量。</p>
+<p>读取变量之后，reader需要再次读取一下sequence number的值，并和读取之前的sequence number的值进行比较，看是否相等，相等则说明在此期间没有writer的操作。</p>
 
-<div class="dang"></div>
             </div>
             
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-        <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500"
-            alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-spinlock/">【同步机制】SpinLock</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-3-19 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-3-19 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                收录于:
-                
-                <a href='
-                                        /categories/linux-kernel
+                <div class="tags">
+                    
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#linux-kernel
                                     '>
-                    Linux Kernel
-                </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">SpinLock</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-spinlock/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-
-
-
-<div class="down-type">
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#linux-kernel
-                        '>
-                <i class="fa fa-tag"></i> #Linux Kernel
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6
-                        '>
-                <i class="fa fa-tag"></i> #同步机制
-            </a>
-        </div>
-    </span>
-    
-</div>
-
-<div class="dang"></div>
-            </div>
+                                <i class="fa fa-tag"></i> #Linux Kernel
+                            </a>
+                        </div>
+                    </span>
+                    
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6
+                                    '>
+                                <i class="fa fa-tag"></i> #同步机制
+                            </a>
+                        </div>
+                    </span>
+                    
+                </div>
             
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
+        </div>
         
-        <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500"
-            alt='图片加载失败'>
+            
+                <div class="pre-next">
+                    
+    
         
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/">【同步机制】原子操作</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-3-3 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-3-3 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                收录于:
-                
-                <a href='
-                                        /categories/linux-kernel
-                                    '>
-                    Linux Kernel
-                </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">原子操作</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-
-
-
-<div class="down-type">
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#linux-kernel
-                        '>
-                <i class="fa fa-tag"></i> #Linux Kernel
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6
-                        '>
-                <i class="fa fa-tag"></i> #同步机制
-            </a>
-        </div>
-    </span>
-    
-</div>
-
-<div class="dang"></div>
+        <a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-spinlock/" class="pre">
+            <span class="pre-icon"><i class="fa fa-hand-o-left"></i></span>
+            <div class="pre-title-root">
+                <span>【同步机制】SpinLock</span>
             </div>
+        </a>
+        
+
+        
+        <a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/" class="next">
+            <div class="next-title-root">
+                <span>【模板与泛型编程01】函数模板</span>
+            </div>
+            <span class="next-icon"><i class="fa fa-hand-o-right"></i></span>
+        </a>
+        
+
+    
+    
+
+                </div>
+            
+        
+    
+</div>
+
+    
+        <div class="content-last">
+            
+                <button class="aixin content-last-item efct-button">
+                    <i class="fa fa-heart"></i>
+                </button>
+            
             
         </div>
     
-</div>
 
 
             </div>
@@ -560,17 +471,20 @@
 
 
 
+    
+    
+
 
 <div class="other">
     <div class="other-up">
-        <div class="other-qita text-wbd">最新文章</div>
+        <div class="other-qita text-wbd">相关文章</div>
         <div class="xian"></div>
     </div>
     <div class="list">
         
-            <a href="https://cnjslw.github.io/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B603-%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90%E5%92%8C%E4%BC%AA%E5%85%B1%E4%BA%AB/">
+            <a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-spinlock/">
                 
-<a href="https://cnjslw.github.io/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B603-%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90%E5%92%8C%E4%BC%AA%E5%85%B1%E4%BA%AB/">
+<a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-spinlock/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -579,18 +493,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【计算机组成原理与体系架构09】内存对齐与伪共享
+                【同步机制】SpinLock
             </div>
-            <div class="other-summary">内存对齐与伪共享</div>
-            <div class="other-date">2023-5-21</div>
+            <div class="other-summary">SpinLock</div>
+            <div class="other-date">2022-3-19</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B802-%E5%86%85%E5%AD%98%E5%B1%8F%E9%9A%9C/">
+            <a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/">
                 
-<a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B802-%E5%86%85%E5%AD%98%E5%B1%8F%E9%9A%9C/">
+<a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -599,18 +513,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【计算机组成原理与体系架构08】内存屏障
+                【同步机制】原子操作
             </div>
-            <div class="other-summary">内存屏障</div>
-            <div class="other-date">2023-5-7</div>
+            <div class="other-summary">原子操作</div>
+            <div class="other-date">2022-3-3</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B801-%E5%A4%9A%E6%A0%B8%E8%AE%BF%E5%AD%98/">
+            <a href="https://cnjslw.github.io/posts/linuxdocument-00/">
                 
-<a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B801-%E5%A4%9A%E6%A0%B8%E8%AE%BF%E5%AD%98/">
+<a href="https://cnjslw.github.io/posts/linuxdocument-00/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -619,18 +533,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【计算机组成原理与体系架构07】多核访存架构
+                【Linux Document】Memory Manager : Concept
             </div>
-            <div class="other-summary">多核访存架构</div>
-            <div class="other-date">2023-4-20</div>
+            <div class="other-summary">Linux官方文档阅读笔记</div>
+            <div class="other-date">2022-2-19</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B602-%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/">
+            <a href="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">
                 
-<a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B602-%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/">
+<a href="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -639,18 +553,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【计算机组成原理与体系架构06】缓存一致性
+                【Linux Kernel 0.12】启动流程
             </div>
-            <div class="other-summary">缓存一致性</div>
-            <div class="other-date">2023-4-15</div>
+            <div class="other-summary">Linux0.12的启动流程</div>
+            <div class="other-date">2023-2-12</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B601-cache/">
+            <a href="https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/">
                 
-<a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B601-cache/">
+<a href="https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -659,18 +573,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【计算机组成原理与体系架构05】Cache原理与设计
+                【Linux Kernel】Linux debug 环境搭建：qemu&#43;vscode内核源码调试配置教程
             </div>
-            <div class="other-summary">Cache</div>
-            <div class="other-date">2023-3-30</div>
+            <div class="other-summary">Linux debug 环境搭建</div>
+            <div class="other-date">2023-2-1</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E5%A4%9A%E6%A0%B8%E6%9E%B6%E6%9E%84%E7%AE%80%E4%BB%8B/">
+            <a href="https://cnjslw.github.io/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C01-%E6%A6%82%E8%BF%B0/">
                 
-<a href="https://cnjslw.github.io/posts/%E5%A4%9A%E6%A0%B8%E6%9E%B6%E6%9E%84%E7%AE%80%E4%BB%8B/">
+<a href="https://cnjslw.github.io/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C01-%E6%A6%82%E8%BF%B0/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -679,10 +593,10 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【计算机组成原理与体系架构04】常见并行架构
+                【计算机网络 01】概述
             </div>
-            <div class="other-summary">常见并行架构</div>
-            <div class="other-date">2023-3-21</div>
+            <div class="other-summary">计算机网络</div>
+            <div class="other-date">2022-7-17</div>
         </div>
     </div>
 </a>
@@ -699,6 +613,46 @@
 
             </div>
         </div>
+    </div>
+</div>
+
+    
+
+<div class="sponsor">
+    <div class="sponsor-self">
+        <div class="sponsor-title">赞赏</div>
+        <div class="sponsor-btn">
+            
+                
+                    
+                        <div class="sponsor-btn-1 border-r">Wechat</div>
+                    
+                
+                
+            
+                
+                    
+                        <div class="sponsor-btn-2 border-l">Alipay</div>
+                    
+                
+                
+            
+        </div>
+        
+        <div class="sponsor-img">
+            
+                
+                    <img class="sponsor-img-1" src="/images/wechat.png" alt="">
+                
+                
+            
+                
+                    <img class="sponsor-img-2" src="/images/alipay.png" alt="" style="display: none;">
+                
+                
+            
+        </div>
+        <div class="cancel efct-button">取消</div>
     </div>
 </div>
 
