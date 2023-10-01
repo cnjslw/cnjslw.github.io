@@ -3,20 +3,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>AWei’s Kernel Tour | Linux Kernel</title>
+    <title>AWei’s Kernel Tour | 【同步机制】SpinLock</title>
     <meta name="description"
-        content=" ">
-    <link rel="canonical" href="https://cnjslw.github.io/categories/linux-kernel/" />
+        content="SpinLock ">
+    <link rel="canonical" href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-spinlock/" />
     <link rel="icon" type="image/x-icon" href="/images/linux_pic.ico">
-    <meta property="og:title" content="Linux Kernel" />
-<meta property="og:description" content="" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://cnjslw.github.io/categories/linux-kernel/" />
+    <meta property="og:title" content="【同步机制】SpinLock" />
+<meta property="og:description" content="SpinLock" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-spinlock/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-19T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-03-19T00:00:00+00:00" />
+<meta property="og:see_also" content="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/" /><meta property="og:see_also" content="https://cnjslw.github.io/posts/linuxdocument-00/" />
 
 
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Linux Kernel"/>
-<meta name="twitter:description" content=""/>
+<meta name="twitter:title" content="【同步机制】SpinLock"/>
+<meta name="twitter:description" content="SpinLock"/>
 
     
     
@@ -194,29 +197,41 @@
 
 
         <div id="content">
-    
 
 
 
 
-
-
-    
-        
-    
 
 
 
 
     <div class="hero">
         
-            
-                <div class="hero-img">
-                    <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500" alt="">
-                </div>
-            
+            <div class="hero-img">
+                <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500" alt="">
+            </div>
+        
         <div class="hero-content">
-            <h1 class="hero-title">分类: Linux Kernel</h1>
+            <div class="hero-title">【同步机制】SpinLock</div>
+            <div class="hero-subtitle"></div>
+            <div class="hero-date">
+                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-3-19 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-3-19 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-folder"></i>
+                        收录于:
+                        
+                            <a href='
+                                /categories/linux-kernel
+                            '>
+                                Linux Kernel
+                            </a>
+                    </span>    
+            </div>
+            <div class="timelong">
+                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 860 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 5 分钟 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-eye"></i> 阅读量: <span id="busuanzi_value_page_pv"></span></span>
+            </div>
         </div>
     </div>
 
@@ -235,7 +250,7 @@
     
 
 
-<div class="terms-body">
+<div class="content-root">
     <div class="long">
         <button class="tosides-1 text-wbd">
             <i class="fa fa-arrow-right"></i>
@@ -248,396 +263,600 @@
         </button>
     </div>
     
-        <div class="terms-row">
-            
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-        <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500"
-            alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">【Linux Kernel 0.12】启动流程</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2023-2-12 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2023-2-12 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                收录于:
-                
-                <a href='
-                                        /categories/linux-kernel
-                                    '>
-                    Linux Kernel
-                </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">Linux0.12的启动流程</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
+        <div class="content">
+            <div class="content-self">
+                <h1 id="spinlock是什么">spinlock是什么</h1>
+<p>Linux kernel中的spinlock是一种用于同步访问共享资源的机制。它是一种轻量级自旋锁，用于在多核系统中实现互斥。<strong>自旋锁不会引起调用者睡眠</strong>，而是通过在循环中不断地检查锁状态来等待锁释放。</p>
+<p>当一个线程或进程需要访问被spinlock保护的共享资源时，它会尝试获取该自旋锁。如果自旋锁当前没有被任何其他线程持有，则该线程可以立即获得锁并继续执行。如果自旋锁已经被其他线程持有，那么请求锁的线程将进入一个忙等待的循环，不断检查锁状态，直到锁被释放为止。</p>
+<p><strong>使用spinlock的好处是它避免了线程切换的开销，因为自旋锁不会导致调用者阻塞或睡眠。这对于需要快速互斥访问的临界区域非常有用，特别是在短时间内锁被释放的情况下。</strong></p>
+<p>然而，自旋锁也存在一些缺点。如果一个线程长时间持有自旋锁而不释放，那些等待获取锁的线程将会长时间忙等待，浪费CPU资源。因此，自旋锁适用于临界区域的保护时间较短的情况，而长时间持有锁的情况可能会导致性能下降。</p>
+<p>总之，spinlock是Linux kernel中一种用于同步访问共享资源的机制，通过自旋等待来确保互斥性，避免了线程切换的开销。</p>
+<p>Linux 中的spinlock有三种实现方式</p>
+<h1 id="cas">CAS</h1>
+<h2 id="基本思想">基本思想</h2>
+<p>在spinlock的实现中，常用的一种机制是使用CAS（Compare-and-Swap）指令来确保原子操作。CAS指令允许我们比较某个内存位置的值与期望值，并且只有在匹配时才会更新该内存位置的值。
+一般步骤 ：</p>
+<ol>
+<li>定义一个整数变量作为spinlock，初始值为0表示未锁定状态。</li>
+<li>当一个线程希望获取spinlock时，它会通过CAS指令尝试将spinlock的值从0修改为1。如果成功修改，则表示该线程获得了spinlock，可以继续执行。如果修改失败，说明其他线程已经持有了spinlock，当前线程需要继续循环等待，直到成功获取为止。</li>
+<li>当一个线程完成对共享资源的操作后，它会释放spinlock，将其值修改回0，表示解锁状态。</li>
+</ol>
+<p>需要注意的是，CAS操作需要保证原子性，因此通常需要借助底层的原子指令或者使用特定的库函数来实现。在不同的体系架构和编程语言中，CAS的具体实现方式可能会有所不同，但其核心思想是相似的。</p>
+<h2 id="实现">实现</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span> <span class="nf">arch_spin_lock</span><span class="p">(</span><span class="n">arch_spinlock_t</span> <span class="o">*</span><span class="n">lock</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">__sl_cas</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lock</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">@param *p 指向spinlock变量所在的内存位置
+</span></span></span><span class="line"><span class="cl"><span class="cm">@param old 存储的试图获取spinlock的本地cpu期望的值
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kr">inline</span> <span class="kt">unsigned</span> <span class="nf">__sl_cas</span><span class="p">(</span><span class="k">volatile</span> <span class="kt">unsigned</span> <span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">old</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">new</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">__asm__</span> <span class="n">__volatile__</span><span class="p">(</span><span class="s">&#34;cas.l %1,%0,@r0&#34;</span>   <span class="c1">// CAS指令，尝试将值%0（new）与@r0（p指向的内存位置）进行比较和交换
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	        <span class="o">:</span> <span class="s">&#34;+r&#34;</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>                   <span class="c1">// 输出操作数：&#34;+r&#34;(new)表示将new作为一个输入输出操作数，并且在操作后更新它的值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	        <span class="o">:</span> <span class="s">&#34;r&#34;</span><span class="p">(</span><span class="n">old</span><span class="p">),</span> <span class="s">&#34;z&#34;</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>            <span class="c1">// 输入操作数：&#34;r&#34;(old)表示将old作为只读操作数，&#34;z&#34;(p)表示将p作为只读操作数，并使用零寄存器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	        <span class="o">:</span> <span class="s">&#34;t&#34;</span><span class="p">,</span> <span class="s">&#34;memory&#34;</span> <span class="p">);</span>            <span class="c1">// clobber列表（影响因素）：&#34;t&#34;表示寄存器t被修改，&#34;memory&#34;表示内存可能被修改
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	
+</span></span><span class="line"><span class="cl">	<span class="c1">// 解释：
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 该代码段使用了嵌入汇编语言来执行CAS操作。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// cas.l是一个特定体系结构上的CAS指令（compare-and-swap）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 它会将new的值与p指向的内存位置进行比较，如果相等则用new的值替换该内存位置的值。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 这个CAS操作是原子的，意味着在执行期间不会被其他线程干扰。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 通过使用&#34;+r&#34;约束符号，将new作为输入输出操作数，可以在操作后更新new的值。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// old和p都被认为是只读操作数，不会被修改。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// &#34;t&#34;和&#34;memory&#34;被列在clobber列表中，表示CAS操作可能会修改寄存器t的内容，并且可能会影响内存。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="n">new</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
-
-
-
-
-
-
-<div class="down-type">
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#linux-kernel
-                        '>
-                <i class="fa fa-tag"></i> #Linux Kernel
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83
-                        '>
-                <i class="fa fa-tag"></i> #开发环境
-            </a>
-        </div>
-    </span>
-    
+</div><h2 id="缺点---不公平">缺点 - 不公平</h2>
+<p>一旦spinlock被释放，第一个能够成功执行CAS操作的CPU将成为新的owner，没有办法确保在该spinlock上等待时间最长的那个CPU优先获得锁，这将带来延迟不能确定的问题。</p>
+<h1 id="ticket-spinlock">Ticket Spinlock</h1>
+<h2 id="基本思想-1">基本思想</h2>
+<p>采用一种排队的形式，解决序竞争导致的不公平现象</p>
+<blockquote>
+<p>一个形象的比喻，就像银行取号办业务，叫到那号了，再去窗口办理 (来自一位大神的博客中的比喻，非常形象)</p>
+</blockquote>
+<h2 id="实现-1">实现</h2>
+<p>表示一个spinlock的数据结构由&quot;head&quot;和&quot;tail&quot;两个队列的索引组成。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">_spinlock</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">uint32_t</span> <span class="n">head</span><span class="p">;</span><span class="c1">//指向等锁的链表头部
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kt">uint32_t</span> <span class="n">tail</span><span class="p">;</span><span class="c1">//指向等锁的链表尾部
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span> <span class="n">spinlock_t</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
 </div>
+</div><h3 id="解锁">解锁</h3>
+<p>spinlock 被 拥有者释放时，会将head中的值加一（inc ：原子操作）。类比银行办理业务，就是叫号操作。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">asm</span> <span class="nf">volatile</span> <span class="p">(</span><span class="s">&#34;   lock incl %[head]</span><span class="se">\n</span><span class="s">&#34;</span>   <span class="c1">// 使用lock前缀进行原子操作，将lock-&gt;head的值加1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="o">:</span>
+</span></span><span class="line"><span class="cl">      <span class="o">:</span> <span class="p">[</span><span class="n">head</span><span class="p">]</span> <span class="s">&#34;m&#34;</span> <span class="p">(</span><span class="n">lock</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">)</span>       <span class="c1">// 输入输出操作数，[head]表示对应的占位符，&#34;m&#34;表示使用内存约束，将lock-&gt;head作为输入输出操作数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="o">:</span> <span class="s">&#34;cc&#34;</span><span class="p">,</span> <span class="s">&#34;memory&#34;</span><span class="p">);</span>              <span class="c1">// clobber列表，&#34;cc&#34;表示影响条件码寄存器，&#34;memory&#34;表示可能会修改内存
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 解释：
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 这段代码使用了嵌入汇编语言来执行原子操作。
+</span></span></span><span class="line"><span class="cl"><span class="c1">// lock incl是一个特殊的指令序列，结合了lock前缀和inc指令，用于将指定的内存位置的值增加1，并且保证该操作是原子的。
+</span></span></span><span class="line"><span class="cl"><span class="c1">// %[head]是占位符，表示将在后面的冒号中定义输入输出操作数的具体值。
+</span></span></span><span class="line"><span class="cl"><span class="c1">// [head] &#34;m&#34; (lock-&gt;head)表示将lock-&gt;head作为输入输出操作数，并使用内存约束，确保对应的内存位置被正确访问。
+</span></span></span><span class="line"><span class="cl"><span class="c1">// &#34;cc&#34;和&#34;memory&#34;被列在clobber列表中，表示该指令可能会影响条件码寄存器和内存。
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>这里的lock可以参考之前关于原子操作的文章</p>
+<h3 id="加锁">加锁</h3>
+<p>其他CPU在试图获取这个spinlock时，会通过&quot;add&quot;指令将该spinlock的&quot;tail&quot;值加1，然而将加1后的&quot;tail&quot;值保存在自己的eax寄存器中。类比银行叫号，就是取号操作。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span> <span class="nf">spinlock_obtain</span><span class="p">(</span><span class="n">spinlock_t</span> <span class="o">*</span><span class="n">lock</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>   
+</span></span><span class="line"><span class="cl">    <span class="k">asm</span> <span class="k">volatile</span> <span class="p">(</span><span class="s">&#34;   movl $0x1,%%eax</span><span class="se">\n</span><span class="s">&#34;</span>  <span class="c1">// 将立即数1赋值给寄存器eax
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                  <span class="s">&#34;   lock xaddl %%eax,%[tail]</span><span class="se">\n</span><span class="s">&#34;</span>  <span class="c1">// 使用lock前缀执行xadd指令，将tail的值加1，同时将结果保存到eax中
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                  <span class="s">&#34;   cmpl %%eax,%[head]</span><span class="se">\n</span><span class="s">&#34;</span>  <span class="c1">// 比较eax和head的值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                  <span class="s">&#34;   jz 1f</span><span class="se">\n</span><span class="s">&#34;</span>  <span class="c1">// 如果相等，跳转到标号1处，表示获得了锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                  <span class="s">&#34;2: pause</span><span class="se">\n</span><span class="s">&#34;</span>  <span class="c1">// 如果不相等，执行暂停指令pause，继续比较
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                  <span class="s">&#34;   cmpl %%eax,%[head]</span><span class="se">\n</span><span class="s">&#34;</span>  <span class="c1">// 再次比较eax和head的值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                  <span class="s">&#34;   jnz 2b</span><span class="se">\n</span><span class="s">&#34;</span>  <span class="c1">// 如果不相等，跳转到标号2处，继续进行比较
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                  <span class="s">&#34;1:</span><span class="se">\n</span><span class="s">&#34;</span>  <span class="c1">// 标号1，表示成功获得锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                  <span class="o">:</span>
+</span></span><span class="line"><span class="cl">                  <span class="o">:</span>
+</span></span><span class="line"><span class="cl">                  <span class="p">[</span><span class="n">head</span><span class="p">]</span> <span class="s">&#34;m&#34;</span><span class="p">(</span><span class="n">lock</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">),</span>  <span class="c1">// 输入输出操作数，[head]表示对应的占位符，&#34;m&#34;表示使用内存约束，将lock-&gt;head作为输入输出操作数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                  <span class="p">[</span><span class="n">tail</span><span class="p">]</span> <span class="s">&#34;m&#34;</span><span class="p">(</span><span class="n">lock</span><span class="o">-&gt;</span><span class="n">tail</span><span class="p">)</span>  <span class="c1">// 同上，将lock-&gt;tail作为输入输出操作数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                  <span class="o">:</span> <span class="s">&#34;cc&#34;</span><span class="p">,</span> <span class="s">&#34;memory&#34;</span><span class="p">,</span> <span class="s">&#34;eax&#34;</span><span class="p">);</span>  <span class="c1">// clobber列表，&#34;cc&#34;表示影响条件码寄存器，&#34;memory&#34;表示可能会修改内存，&#34;eax&#34;表示寄存器eax可能被修改
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 解释：
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 这段代码使用了嵌入汇编语言来实现自旋锁的获取操作。
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 自旋锁是一种同步机制，在多线程环境中用于控制对共享资源的访问。
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 该代码通过嵌入汇编的方式实现了自旋锁的获取过程。
+</span></span></span><span class="line"><span class="cl"><span class="c1">// movl指令将立即数1赋值给寄存器eax；
+</span></span></span><span class="line"><span class="cl"><span class="c1">// lock xaddl指令使用lock前缀执行xadd指令，将tail的值加1，并将结果保存到eax中；
+</span></span></span><span class="line"><span class="cl"><span class="c1">// cmpl指令比较eax和head的值；
+</span></span></span><span class="line"><span class="cl"><span class="c1">// jz指令根据比较结果进行跳转，如果相等则跳转到标号1处，表示获得了锁，否则继续执行；
+</span></span></span><span class="line"><span class="cl"><span class="c1">// pause指令是一个空操作，用于在自旋时减少功耗；
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 最后两条cmpl指令和jnz指令组成一个循环，用于不断地进行比较，直到成功获得锁为止。
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 输入输出操作数使用了内存约束，并将lock-&gt;head和lock-&gt;tail作为输入输出操作数。
+</span></span></span><span class="line"><span class="cl"><span class="c1">// clobber列表中声明了影响的因素，包括条件码寄存器、内存和寄存器eax。
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>接下来就是不断的循环比较，判断该spinlock当前的&quot;head&quot;值，是否和自己存储在eax寄存器中的&quot;tail&quot;值相等，相等时则获得该spinlock，成为新的owner。</p>
+<h2 id="优缺点">优缺点</h2>
+<p>优点：先到先得，有序竞争，避免不公平竞争</p>
+<p>缺点：根据硬件维护的cache一致性协议，如果spinlock的值没有更改，那么在busy wait时，试图获取spinlock的CPU，只需要不断地读取自己包含这个spinlock变量的cache line上的值就可以了，不需要从spinlock变量所在的内存位置读取。
+但是，当spinlock的值被更改时，所有试图获取spinlock的CPU对应的cache line都会被invalidate，因为这些CPU会不停地读取这个spinlock的值，所以&quot;invalidate&quot;状态意味着此时，它们必须重新从内存读取新的spinlock的值到自己的cache line中。
+而事实上，其中只会有一个CPU，也就是队列中最先达到的那个CPU，接下来可以获得spinlock，也只有它的cache line被invalidate才是有意义的，对于其他的CPU来说，这就是做无用功。内存比cache慢那么多，开销可不小。</p>
+<h1 id="mcs">MCS</h1>
+<h2 id="基本思想-2">基本思想</h2>
+<p>在ticket spinlock 的基础上，想要实现不让所有等待的任务无效等待解锁，MCS Lock 将mcs_spinlock设计为per-CPU的变量，那么只需要查询自己对应的这个变量所在的cache line ，仅在这个变量发生变化的时候，才需要读取内存和刷新这条cache line。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">mcs_spinlock</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">struct</span> <span class="n">mcs_spinlock</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="n">locked</span> <span class="p">;</span> 
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310012049708.png" alt="Pasted image 20231001162555|800"></p>
+<h2 id="实现-2">实现</h2>
+<h3 id="加锁-1">加锁</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">mcs_spin_lock</span><span class="p">(</span><span class="k">struct</span> <span class="n">mcs_spinlock</span> <span class="o">**</span><span class="n">lock</span><span class="p">,</span> <span class="k">struct</span> <span class="n">mcs_spinlock</span> <span class="o">*</span><span class="n">node</span><span class="p">){</span>  
+</span></span><span class="line"><span class="cl">	<span class="c1">// 初始化node  
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">node</span><span class="o">-&gt;</span><span class="n">locked</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>  
+</span></span><span class="line"><span class="cl">	<span class="n">node</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>  
+</span></span><span class="line"><span class="cl">	  
+</span></span><span class="line"><span class="cl">	<span class="c1">// 找队列末尾的那个mcs lock  
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">struct</span> <span class="n">mcs_spinlock</span> <span class="o">*</span><span class="n">prev</span> <span class="o">=</span> <span class="n">xchg</span><span class="p">(</span><span class="n">lock</span><span class="p">,</span> <span class="n">node</span><span class="p">);</span><span class="c1">//*prev = lock , *lock = node ;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 队列为空，立即获得锁  
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span> <span class="p">(</span><span class="n">likely</span><span class="p">(</span><span class="n">prev</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">))</span> <span class="p">{</span>  
+</span></span><span class="line"><span class="cl">		<span class="k">return</span><span class="p">;</span>  <span class="c1">//没有将locked赋值为1是因为此时队列为空,无论值是什么都无所谓
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="p">}</span>  
+</span></span><span class="line"><span class="cl">	  
+</span></span><span class="line"><span class="cl">	<span class="c1">// 队列不为空，把自己加到队列的末尾  
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">WRITE_ONCE</span><span class="p">(</span><span class="n">prev</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">,</span> <span class="n">node</span><span class="p">);</span>  
+</span></span><span class="line"><span class="cl">	  
+</span></span><span class="line"><span class="cl">	<span class="c1">// 等待lock的持有者把lock传给自己  
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">arch_mcs_spin_lock_contended</span><span class="p">(</span><span class="o">&amp;</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">locked</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cp">#define arch_mcs_spin_lock_contended(l)
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="k">do</span> <span class="p">{</span>  
+</span></span><span class="line"><span class="cl"><span class="n">smp_cond_load_acquire</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">VAL</span><span class="p">);</span>  <span class="c1">//一直等待
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="解锁-1">解锁</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">mcs_spin_unlock</span><span class="p">(</span><span class="k">struct</span> <span class="n">mcs_spinlock</span> <span class="o">**</span><span class="n">lock</span><span class="p">,</span> <span class="k">struct</span> <span class="n">mcs_spinlock</span> <span class="o">*</span><span class="n">node</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>  
+</span></span><span class="line"><span class="cl">	<span class="c1">// 找到等待队列中的下一个节点  
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">struct</span> <span class="n">mcs_spinlock</span> <span class="o">*</span><span class="n">next</span> <span class="o">=</span> <span class="n">READ_ONCE</span><span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">);</span>  
+</span></span><span class="line"><span class="cl">	  
+</span></span><span class="line"><span class="cl">	<span class="c1">// 当前没有其他CPU试图获得锁  
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span> <span class="p">(</span><span class="n">likely</span><span class="p">(</span><span class="o">!</span><span class="n">next</span><span class="p">))</span> <span class="p">{</span>  
+</span></span><span class="line"><span class="cl">		<span class="c1">// 直接释放锁  
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="k">if</span> <span class="p">(</span><span class="n">likely</span><span class="p">(</span><span class="n">cmpxchg_release</span><span class="p">(</span><span class="n">lock</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">)</span> <span class="o">==</span> <span class="n">node</span><span class="p">))</span>  
+</span></span><span class="line"><span class="cl">			<span class="k">return</span><span class="p">;</span>  
+</span></span><span class="line"><span class="cl">		<span class="c1">// 等待新的node添加成功while (!(next = READ_ONCE(node-&gt;next)))  
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="n">cpu_relax</span><span class="p">();</span>  
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>  
+</span></span><span class="line"><span class="cl">	  
+</span></span><span class="line"><span class="cl">	<span class="c1">// 将锁传给等待队列中的下一个node  
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">arch_mcs_spin_unlock_contended</span><span class="p">(</span><span class="o">&amp;</span><span class="n">next</span><span class="o">-&gt;</span><span class="n">locked</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="优缺点-1">优缺点</h2>
+<p>优点：每一次释放锁时，只有等待队列的下一个node去获取锁，在实现公平的基础上，减少了对内存的无效访问
+缺点：占用空间，<a href="obsidian://bookmaster?type=open-book&amp;bid=jdQSOHJQIALGGXxg&amp;aid=20ed4699-16ce-96d7-fd88-fe843fe5dfb2&amp;page=8">因为相比起Linux中只占4个字节的ticket spinlock，MCS lock多了一个指针，要多占4（或者8）个字节，消耗的存储空间是原来的2-3倍。</a></p>
+<h1 id="qspinlock">qspinlock</h1>
+<h2 id="基本思想-3">基本思想</h2>
+<h2 id="实现-3">实现</h2>
+<p>等待队列由一个qspinlock和若干mcs lock 节点组成，mcs lock 的实现方法不变</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310012049710.png" alt="Pasted image 20231001192443|800"></p>
+<p>qspinlock的结构如下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">qspinlock</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">union</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">atomic_t</span> <span class="n">val</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#ifdef __LITTLE_ENDIAN
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>        <span class="k">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">u8</span>	<span class="n">locked</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">u8</span>	<span class="n">pending</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">};</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">u16</span>	<span class="n">locked_pending</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">u16</span>	<span class="n">tail</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#else
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>    <span class="p">...</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>以little endian为例，整个qspinlock结构体如下：</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310012049711.png" alt="Pasted image 20231001193544|800"></p>
+<ul>
+<li><code>locked byte</code>（1字节） ：替代 MCS Lock 结构体中 <code>locker</code> （int 类型，占4字节）</li>
+<li><code>tail cpu</code>（14bit）：qspinlock使用的是一个per-CPU的数组来表示每个MCS node（用qnode结构体表示），通过CPU编号作为数组的index，就可以获得对应 MCS node的内存位置，因而qspinlock使用的是末尾 MCS node的CPU编号加1，即&quot;tail cpu&quot;，来记录等待队列tail的位置</li>
+<li><code>tail index</code> （2bit）： Linux中一共有4种context，分别是task, softirq, hardirq和nmi，而一个CPU在一种context下，至多持有一个spinlock，因而一个CPU至多同时持有4个spinlock，&ldquo;tail index&quot;就是用来标识context的编号的</li>
+<li><code>pending</code>（1bit）：第一顺位标志，当前锁的拥有者释放锁之后，该位被置位的任务第一个获得锁</li>
+</ul>
+<h3 id="加锁-2">加锁</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#define _Q_LOCKED_OFFSET	0#define _Q_LOCKED_VAL		(1U &lt;&lt; _Q_LOCKED_OFFSET)  
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">void</span> <span class="nf">queued_spin_lock</span><span class="p">(</span><span class="k">struct</span> <span class="n">qspinlock</span> <span class="o">*</span><span class="n">lock</span><span class="p">){</span>    
+</span></span><span class="line"><span class="cl">	<span class="c1">//和当前lock的&#34;val&#34;值进行比较，看是否为0，如果为0，那么获得spinlock，同时将lock的值设为1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">u32</span> <span class="n">val</span> <span class="o">=</span> <span class="n">atomic_cmpxchg_acquire</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lock</span><span class="o">-&gt;</span><span class="n">val</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">_Q_LOCKED_VAL</span><span class="p">);</span>    
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">likely</span><span class="p">(</span><span class="n">val</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))</span>        
+</span></span><span class="line"><span class="cl">		<span class="k">return</span><span class="p">;</span>    
+</span></span><span class="line"><span class="cl">	<span class="n">queued_spin_lock_slowpath</span><span class="p">(</span><span class="n">lock</span><span class="p">,</span> <span class="n">val</span><span class="p">);</span><span class="c1">//没有成功获取锁，进入这个流程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>进入slowpath流程</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#define _Q_LOCKED_OFFSET     0
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define _Q_LOCKED_BITS	     8
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define _Q_LOCKED_MASK       ((1U &lt;&lt; _Q_LOCKED_BITS) - 1) &lt;&lt; _Q_LOCKED__OFFSET </span><span class="c1">// (*,*,1)// &#34;val&#34;是在queued_spin_lock中获取的当前lock的值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">queued_spin_lock_slowpath</span><span class="p">(</span><span class="k">struct</span> <span class="n">qspinlock</span> <span class="o">*</span><span class="n">lock</span><span class="p">,</span> <span class="n">u32</span> <span class="n">val</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span> 
+</span></span><span class="line"><span class="cl">	<span class="c1">// ......
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">//尝试获取pengding位
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">val</span> <span class="o">=</span> <span class="n">queued_fetch_set_pending_acquire</span><span class="p">(</span><span class="n">lock</span><span class="p">);</span>  
+</span></span><span class="line"><span class="cl">	<span class="c1">// 等待第一个CPU移交  
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span> <span class="p">(</span><span class="n">val</span> <span class="o">&amp;</span> <span class="n">_Q_LOCKED_MASK</span><span class="p">)</span>  
+</span></span><span class="line"><span class="cl">	<span class="n">atomic_cond_read_acquire</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lock</span><span class="o">-&gt;</span><span class="n">val</span><span class="p">,</span> <span class="o">!</span><span class="p">(</span><span class="n">VAL</span> <span class="o">&amp;</span> <span class="n">_Q_LOCKED_MASK</span><span class="p">));</span>  
+</span></span><span class="line"><span class="cl">	  
+</span></span><span class="line"><span class="cl">	<span class="n">clear_pending_set_locked</span><span class="p">(</span><span class="n">lock</span><span class="p">);</span>  
+</span></span><span class="line"><span class="cl">	<span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// ......
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>如果第二个任务还未执行，但是第三个任务已经来了 ，有两种情况，①locked标志位已经为0，但是pending标志为1，此时为锁拥有者已经释放锁，但是第一顺位者还没有成功获取锁的一个中间态，②pending位为1，locked也是1，大部分情况是这样的，此时旧进入queue流程</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#define _Q_PENDING_OFFSET    8
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define _Q_PENDING_VAL       (1U &lt;&lt; _Q_PENDING_OFFSET) </span><span class="c1">// (0,1,0)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">queued_spin_lock_slowpath</span><span class="p">(</span><span class="k">struct</span> <span class="n">qspinlock</span> <span class="o">*</span><span class="n">lock</span><span class="p">,</span> <span class="n">u32</span> <span class="n">val</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span> 
+</span></span><span class="line"><span class="cl">    <span class="c1">//移交的过渡状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">val</span> <span class="o">==</span> <span class="n">_Q_PENDING_VAL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 等待移交完成
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kt">int</span> <span class="n">cnt</span> <span class="o">=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">        <span class="n">val</span> <span class="o">=</span> <span class="n">atomic_cond_read_relaxed</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lock</span><span class="o">-&gt;</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="n">VAL</span> <span class="o">!=</span> <span class="n">_Q_PENDING_VAL</span><span class="p">)</span><span class="o">||</span> <span class="o">!</span><span class="n">cnt</span><span class="o">--</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 已经有2个及以上的CPU持有或试图获取spinlock
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">val</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">_Q_LOCKED_MASK</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">goto</span> <span class="n">queue</span><span class="p">;</span>  <span class="c1">// 进入MCS node队列
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//....
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">struct</span> <span class="n">mcs_spinlock</span> <span class="o">*</span><span class="n">node</span> <span class="o">=</span> <span class="n">this_cpu_ptr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">qnodes</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">mcs</span><span class="p">);</span>  
+</span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="n">idx</span> <span class="o">=</span> <span class="n">node</span><span class="o">-&gt;</span><span class="n">count</span><span class="o">++</span><span class="p">;</span><span class="n">node</span> <span class="o">+=</span> <span class="n">idx</span><span class="p">;</span>  
+</span></span><span class="line"><span class="cl">	<span class="n">node</span><span class="o">-&gt;</span><span class="n">locked</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>  
+</span></span><span class="line"><span class="cl">	<span class="n">node</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">u32</span> <span class="n">tail</span> <span class="o">=</span> <span class="n">encode_tail</span><span class="p">(</span><span class="n">smp_processor_id</span><span class="p">(),</span> <span class="n">idx</span><span class="p">);</span><span class="c1">//更新自旋锁的尾部指针
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">u32</span> <span class="n">old</span> <span class="o">=</span> <span class="n">xchg_tail</span><span class="p">(</span><span class="n">lock</span><span class="p">,</span> <span class="n">tail</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//....
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="解锁-2">解锁</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">queued_spin_unlock</span><span class="p">(</span><span class="k">struct</span> <span class="n">qspinlock</span> <span class="o">*</span><span class="n">lock</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">smp_store_release</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lock</span><span class="o">-&gt;</span><span class="n">locked</span> <span class="p">,</span> <span class="mi">0</span> <span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>只要将qspinlock中的“locked byte”设置为0就可以了</p>
+<h2 id="优点">优点</h2>
+<p>如果只有1个或2个CPU试图获取锁，那么只需要一个4字节的qspinlock就可以了，其所占内存的大小和ticket spinlock一样。当第二个CPU试图获取锁的时候，直接将pending位置1即可，不需要创建MCS node 。 这样的设计已经足够应对很多情况了。
+当有3个以上的CPU试图获取锁，需要一个qspinlock加上(N-2)个MCS node。
+试图加锁的CPU数目超过3个是小概率事件，但一旦发生，使用ticket spinlock机制就会造成多个CPU的cache line无谓刷新的问题，而qspinlock可以利用MCS node队列来解决这个问题。
+所以在Linux中，如果某个处理器架构没有明确定义，qspinlock将是默认的spinlock的实现方式。</p>
+<hr>
+<p>[1] <a href="https://zhuanlan.zhihu.com/p/80727111">Linux 中的 spinlock 机制 [一] - CAS 和 ticket spinlock</a></p>
+<p>[2] <a href="https://zhuanlan.zhihu.com/p/89058726">Linux 中的 spinlock 机制 [二] - MCS Lock</a></p>
+<p>[3] <a href="https://zhuanlan.zhihu.com/p/100546935">Linux 中的 spinlock 机制 [三] - qspinlock</a></p>
+<p>[4] <a href="https://zhuanlan.zhihu.com/p/90634198">Linux 中的 spinlock 机制 [四] - API 的使用</a></p>
+<p>[5] <a href="https://zhuanlan.zhihu.com/p/103971328">Linux 中的 spinlock 机制 [五] - 死锁问题</a></p>
+<p>[6] <a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/">AWei’s Kernel Tour | 【同步机制】原子操作 (cnjslw.github.io)</a></p>
 
-<div class="dang"></div>
             </div>
             
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
-        
-        <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500"
-            alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/">【Linux Kernel】Linux debug 环境搭建：qemu&#43;vscode内核源码调试配置教程</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2023-2-1 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2023-2-1 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                收录于:
-                
-                <a href='
-                                        /categories/linux-kernel
+                <div class="tags">
+                    
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#linux-kernel
                                     '>
-                    Linux Kernel
-                </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">Linux debug 环境搭建</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-
-
-
-<div class="down-type">
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#linux-kernel
-                        '>
-                <i class="fa fa-tag"></i> #Linux Kernel
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83
-                        '>
-                <i class="fa fa-tag"></i> #开发环境
-            </a>
-        </div>
-    </span>
-    
-</div>
-
-<div class="dang"></div>
-            </div>
+                                <i class="fa fa-tag"></i> #Linux Kernel
+                            </a>
+                        </div>
+                    </span>
+                    
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6
+                                    '>
+                                <i class="fa fa-tag"></i> #同步机制
+                            </a>
+                        </div>
+                    </span>
+                    
+                </div>
             
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
+        </div>
         
-        <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500"
-            alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-spinlock/">【同步机制】SpinLock</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-3-19 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-3-19 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                收录于:
-                
-                <a href='
-                                        /categories/linux-kernel
-                                    '>
-                    Linux Kernel
-                </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">SpinLock</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-spinlock/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-
-
-
-<div class="down-type">
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#linux-kernel
-                        '>
-                <i class="fa fa-tag"></i> #Linux Kernel
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6
-                        '>
-                <i class="fa fa-tag"></i> #同步机制
-            </a>
-        </div>
-    </span>
-    
-</div>
-
-<div class="dang"></div>
-            </div>
             
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
+                <div class="pre-next">
+                    
+    
         
-        <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500"
-            alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/">【同步机制】原子操作</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-3-3 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-3-3 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                收录于:
-                
-                <a href='
-                                        /categories/linux-kernel
-                                    '>
-                    Linux Kernel
-                </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">原子操作</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-
-
-
-<div class="down-type">
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#linux-kernel
-                        '>
-                <i class="fa fa-tag"></i> #Linux Kernel
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6
-                        '>
-                <i class="fa fa-tag"></i> #同步机制
-            </a>
-        </div>
-    </span>
-    
-</div>
-
-<div class="dang"></div>
+        <a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/" class="pre">
+            <span class="pre-icon"><i class="fa fa-hand-o-left"></i></span>
+            <div class="pre-title-root">
+                <span>【同步机制】原子操作</span>
             </div>
+        </a>
+        
+
+        
+        <a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/" class="next">
+            <div class="next-title-root">
+                <span>【模板与泛型编程01】函数模板</span>
+            </div>
+            <span class="next-icon"><i class="fa fa-hand-o-right"></i></span>
+        </a>
+        
+
+    
+    
+
+                </div>
             
-            <div class="terms-root">
-                
-                
-
-
-<div class="card-large">
-    <div class="card-large-img">
-
         
-        <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500"
-            alt='图片加载失败'>
-        
-    </div>
-    <div class="card-large-content">
-        <div class="up-title"><a href="https://cnjslw.github.io/posts/linuxdocument-00/">【Linux Document】Memory Manager : Concept</a></div>
-        <div class="up-date">
-            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-2-19 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-2-19 &nbsp;</span>
-            <span class="no-wrap"><i class="fa fa-folder"></i>
-                
-                收录于:
-                
-                <a href='
-                                        /categories/linux-kernel
-                                    '>
-                    Linux Kernel
-                </a>
-                
-            </span>
-        </div>
-        <div class="down-summary">Linux官方文档阅读笔记</div>
-    </div>
-    <div class="card-readmore">
-        <a href="https://cnjslw.github.io/posts/linuxdocument-00/">
-            <span><i class="fa fa-arrow-right"></i></span>
-        </a>
-    </div>
-</div>
-
-
-
-
-
-
-<div class="down-type">
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#linux-kernel
-                        '>
-                <i class="fa fa-tag"></i> #Linux Kernel
-            </a>
-        </div>
-    </span>
-    
-    <span class="down-type-item">
-        <div class="shuxian-root">
-            <div class="shuxian"></div>
-        </div>
-        <div class="type-text">
-            <a href='
-                            /tags/#%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3
-                        '>
-                <i class="fa fa-tag"></i> #官方文档
-            </a>
-        </div>
-    </span>
     
 </div>
 
-<div class="dang"></div>
-            </div>
+    
+        <div class="content-last">
+            
+                <button class="aixin content-last-item efct-button">
+                    <i class="fa fa-heart"></i>
+                </button>
+            
             
         </div>
     
-</div>
 
 
             </div>
@@ -714,17 +933,20 @@
 
 
 
+    
+    
+
 
 <div class="other">
     <div class="other-up">
-        <div class="other-qita text-wbd">最新文章</div>
+        <div class="other-qita text-wbd">相关文章</div>
         <div class="xian"></div>
     </div>
     <div class="list">
         
-            <a href="https://cnjslw.github.io/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B603-%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90%E5%92%8C%E4%BC%AA%E5%85%B1%E4%BA%AB/">
+            <a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/">
                 
-<a href="https://cnjslw.github.io/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B603-%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90%E5%92%8C%E4%BC%AA%E5%85%B1%E4%BA%AB/">
+<a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -733,18 +955,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【计算机组成原理与体系架构09】内存对齐与伪共享
+                【同步机制】原子操作
             </div>
-            <div class="other-summary">内存对齐与伪共享</div>
-            <div class="other-date">2023-5-21</div>
+            <div class="other-summary">原子操作</div>
+            <div class="other-date">2022-3-3</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B802-%E5%86%85%E5%AD%98%E5%B1%8F%E9%9A%9C/">
+            <a href="https://cnjslw.github.io/posts/linuxdocument-00/">
                 
-<a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B802-%E5%86%85%E5%AD%98%E5%B1%8F%E9%9A%9C/">
+<a href="https://cnjslw.github.io/posts/linuxdocument-00/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -753,18 +975,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【计算机组成原理与体系架构08】内存屏障
+                【Linux Document】Memory Manager : Concept
             </div>
-            <div class="other-summary">内存屏障</div>
-            <div class="other-date">2023-5-7</div>
+            <div class="other-summary">Linux官方文档阅读笔记</div>
+            <div class="other-date">2022-2-19</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B801-%E5%A4%9A%E6%A0%B8%E8%AE%BF%E5%AD%98/">
+            <a href="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">
                 
-<a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B801-%E5%A4%9A%E6%A0%B8%E8%AE%BF%E5%AD%98/">
+<a href="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -773,18 +995,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【计算机组成原理与体系架构07】多核访存架构
+                【Linux Kernel 0.12】启动流程
             </div>
-            <div class="other-summary">多核访存架构</div>
-            <div class="other-date">2023-4-20</div>
+            <div class="other-summary">Linux0.12的启动流程</div>
+            <div class="other-date">2023-2-12</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B602-%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/">
+            <a href="https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/">
                 
-<a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B602-%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/">
+<a href="https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -793,18 +1015,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【计算机组成原理与体系架构06】缓存一致性
+                【Linux Kernel】Linux debug 环境搭建：qemu&#43;vscode内核源码调试配置教程
             </div>
-            <div class="other-summary">缓存一致性</div>
-            <div class="other-date">2023-4-15</div>
+            <div class="other-summary">Linux debug 环境搭建</div>
+            <div class="other-date">2023-2-1</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B601-cache/">
+            <a href="https://cnjslw.github.io/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C01-%E6%A6%82%E8%BF%B0/">
                 
-<a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B601-cache/">
+<a href="https://cnjslw.github.io/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C01-%E6%A6%82%E8%BF%B0/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -813,18 +1035,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【计算机组成原理与体系架构05】Cache原理与设计
+                【计算机网络 01】概述
             </div>
-            <div class="other-summary">Cache</div>
-            <div class="other-date">2023-3-30</div>
+            <div class="other-summary">计算机网络</div>
+            <div class="other-date">2022-7-17</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E5%A4%9A%E6%A0%B8%E6%9E%B6%E6%9E%84%E7%AE%80%E4%BB%8B/">
+            <a href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF%E4%B8%8E%E5%8F%8B%E5%85%83/">
                 
-<a href="https://cnjslw.github.io/posts/%E5%A4%9A%E6%A0%B8%E6%9E%B6%E6%9E%84%E7%AE%80%E4%BB%8B/">
+<a href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF%E4%B8%8E%E5%8F%8B%E5%85%83/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -833,10 +1055,10 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【计算机组成原理与体系架构04】常见并行架构
+                【模板与泛型编程03】类模板和友元
             </div>
-            <div class="other-summary">常见并行架构</div>
-            <div class="other-date">2023-3-21</div>
+            <div class="other-summary">类模板</div>
+            <div class="other-date">2022-6-22</div>
         </div>
     </div>
 </a>
@@ -853,6 +1075,46 @@
 
             </div>
         </div>
+    </div>
+</div>
+
+    
+
+<div class="sponsor">
+    <div class="sponsor-self">
+        <div class="sponsor-title">赞赏</div>
+        <div class="sponsor-btn">
+            
+                
+                    
+                        <div class="sponsor-btn-1 border-r">Wechat</div>
+                    
+                
+                
+            
+                
+                    
+                        <div class="sponsor-btn-2 border-l">Alipay</div>
+                    
+                
+                
+            
+        </div>
+        
+        <div class="sponsor-img">
+            
+                
+                    <img class="sponsor-img-1" src="/images/wechat.png" alt="">
+                
+                
+            
+                
+                    <img class="sponsor-img-2" src="/images/alipay.png" alt="" style="display: none;">
+                
+                
+            
+        </div>
+        <div class="cancel efct-button">取消</div>
     </div>
 </div>
 
