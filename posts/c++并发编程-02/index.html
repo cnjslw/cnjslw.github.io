@@ -3,23 +3,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>AWei’s Kernel Tour | 【现代C&#43;&#43;】语言可用性的强化</title>
+    <title>AWei’s Kernel Tour | 【C&#43;&#43;并发编程】线程同步与互斥</title>
     <meta name="description"
-        content="可用性强化 ">
-    <link rel="canonical" href="https://cnjslw.github.io/posts/%E7%8E%B0%E4%BB%A3c&#43;&#43;%E7%89%B9%E6%80%A7-01/" />
+        content="线程同步与互斥 ">
+    <link rel="canonical" href="https://cnjslw.github.io/posts/c&#43;&#43;%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-02/" />
     <link rel="icon" type="image/x-icon" href="/images/linux_pic.ico">
-    <meta property="og:title" content="【现代C&#43;&#43;】语言可用性的强化" />
-<meta property="og:description" content="可用性强化" />
+    <meta property="og:title" content="【C&#43;&#43;并发编程】线程同步与互斥" />
+<meta property="og:description" content="线程同步与互斥" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://cnjslw.github.io/posts/%E7%8E%B0%E4%BB%A3c&#43;&#43;%E7%89%B9%E6%80%A7-01/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2021-11-14T00:00:00+00:00" />
-<meta property="article:modified_time" content="2021-11-14T00:00:00+00:00" />
+<meta property="og:url" content="https://cnjslw.github.io/posts/c&#43;&#43;%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-02/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-05-25T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-05-25T00:00:00+00:00" />
 
 
 
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="【现代C&#43;&#43;】语言可用性的强化"/>
-<meta name="twitter:description" content="可用性强化"/>
+<meta name="twitter:title" content="【C&#43;&#43;并发编程】线程同步与互斥"/>
+<meta name="twitter:description" content="线程同步与互斥"/>
 
     
     
@@ -212,11 +212,11 @@
             </div>
         
         <div class="hero-content">
-            <div class="hero-title">【现代C&#43;&#43;】语言可用性的强化</div>
+            <div class="hero-title">【C&#43;&#43;并发编程】线程同步与互斥</div>
             <div class="hero-subtitle"></div>
             <div class="hero-date">
-                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2021-11-14 &nbsp;</span>
-                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2021-11-14 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-5-25 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-5-25 &nbsp;</span>
                     <span class="no-wrap"><i class="fa fa-folder"></i>
                         收录于:
                         
@@ -228,8 +228,8 @@
                     </span>    
             </div>
             <div class="timelong">
-                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 1451 &nbsp;</span>
-                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 7 分钟 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 1815 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 9 分钟 &nbsp;</span>
                 <span class="no-wrap"><i class="fa fa-eye"></i> 阅读量: <span id="busuanzi_value_page_pv"></span></span>
             </div>
         </div>
@@ -265,681 +265,21 @@
     
         <div class="content">
             <div class="content-self">
-                <h1 id="常量">常量</h1>
-<h2 id="nullptr">nullptr</h2>
-<p><code>nullptr</code> 出现的目的是为了替代 <code>NULL</code>。在某种意义上来说，传统 C++ 会把 <code>NULL</code>、<code>0</code> 视为同一种东西，这取决于编译器如何定义 NULL，有些编译器会将 NULL 定义为 <code>((void*)0)</code>，有些则会直接将其定义为 <code>0</code>。C++11 引入了 <code>nullptr</code> 关键字，专门用来区分空指针、0。而 <code>nullptr</code> 的类型为 <code>nullptr_t</code>。能够隐式的转换为任何指针或成员指针的类型，也能和他们进行相等或者不等的比较。</p>
-<h2 id="constexpr">constexpr</h2>
-<p>C++11 提供了 <code>constexpr</code> 让用户显式的声明函数或对象构造函数在编译期会成为常量表达式
-可以使用递归，从 C++14 开始，constexpr 函数可以在内部使用局部变量、循环和分支等简单语句</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">len</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="kt">char</span> <span class="n">arr_3</span><span class="p">[</span><span class="n">len</span><span class="p">];</span> <span class="c1">// 非法，即便这种行为在大部分编译器中都支持，但是）它是一个非法的行为
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">constexpr</span> <span class="kt">int</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="k">const</span> <span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">fibonacci</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>这段代码在C++11中编译报错的原因是因为constexpr函数的递归定义中有多个分支，无法被编译器转换为常量表达式。constexpr函数要求其参数和返回值都是常量表达式，并且函数体中只能包含单个表达式。如果有多个分支或递归调用，编译器无法确定函数能否在编译时求值，因此会报错。在C++14标准下，上述代码是可以通过编译的，因为C++14标准中允许constexpr函数的定义中包含多个分支和递归调用，只要在编译时可以确定函数的返回值为常量表达式即可。因此， C++14标准允许constexpr函数在递归中调用自身，只要递归调用最终会终止并返回常量表达式。不过需要注意，C++14标准对constexpr函数的要求更加严格，对于某些复杂的递归函数也可能无法满足constexpr函数的要求。做出如下修改即可在C++11中运行：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">constexpr</span> <span class="kt">int</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="k">const</span> <span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">||</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">2</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="n">fibonacci</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h1 id="变量及其初始化">变量及其初始化</h1>
-<h2 id="ifswitch-变量声明强化">if/switch 变量声明强化</h2>
-<p>C++17 消除了没有办法在 <code>if</code> 和 <code>switch</code> 语句中声明一个临时的变量的规定，使得我们可以在 if（或 switch）中完成这一操作</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">// 将临时变量放到 if 语句内
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">if</span> <span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">itr</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">find</span><span class="p">(</span><span class="n">vec</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">vec</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="mi">3</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="n">itr</span> <span class="o">!=</span> <span class="n">vec</span><span class="p">.</span><span class="n">end</span><span class="p">())</span> 
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="o">*</span><span class="n">itr</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">switch</span> <span class="p">(</span><span class="kt">int</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span> <span class="n">y</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">            <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Case 1&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">            <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Case 2&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="初始化列表">初始化列表</h2>
-<p>C++11 首先把初始化列表的概念绑定到了类型上，并将其称之为 <code>std::initializer_list</code>，允许构造函数或其他函数像参数一样使用初始化列表，这就为类对象的初始化与普通数组和 POD 的初始化方法提供了统一的桥梁(在传统 C++ 中，不同的对象有着不同的初始化方法，例如普通数组、 POD （<strong>P</strong>lain <strong>O</strong>ld <strong>D</strong>ata，即没有构造、析构和虚函数的类或结构体） 类型都可以使用 <code>{}</code> 进行初始化)</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;initializer_list&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="k">class</span> <span class="nc">MagicFoo</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">vec</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">MagicFoo</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">initializer_list</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">list</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">initializer_list</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">it</span> <span class="o">=</span> <span class="n">list</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span> 
-</span></span><span class="line"><span class="cl">             <span class="n">it</span> <span class="o">!=</span> <span class="n">list</span><span class="p">.</span><span class="n">end</span><span class="p">();</span> <span class="o">++</span><span class="n">it</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">            <span class="n">vec</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="o">*</span><span class="n">it</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// after C++11
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">MagicFoo</span> <span class="n">magicFoo</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">};</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;magicFoo: &#34;</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">it</span> <span class="o">=</span> <span class="n">magicFoo</span><span class="p">.</span><span class="n">vec</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span> <span class="n">it</span> <span class="o">!=</span> <span class="n">magicFoo</span><span class="p">.</span><span class="n">vec</span><span class="p">.</span><span class="n">end</span><span class="p">();</span> <span class="o">++</span><span class="n">it</span><span class="p">)</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">it</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="结构化绑定">结构化绑定</h2>
-<p>结构化绑定提供了类似其他语言中提供的多返回值的功能。在容器一章中，我们会学到 C++11 新增了 <code>std::tuple</code> 容器用于构造一个元组，进而囊括多个返回值。但缺陷是，C++11/14 并没有提供一种简单的方法直接从元组中拿到并定义元组中的元素，尽管我们可以使用 <code>std::tie</code> 对元组进行拆包，但我们依然必须非常清楚这个元组包含多少个对象，各个对象是什么类型，非常麻烦。
-C++17 完善了这一设定</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;tuple&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="n">std</span><span class="o">::</span><span class="n">tuple</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">double</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">f</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">make_tuple</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">2.3</span><span class="p">,</span> <span class="s">&#34;456&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">auto</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;, &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">y</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;, &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">z</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h1 id="类型推导">类型推导</h1>
-<h2 id="auto">auto</h2>
-<p><code>auto</code>是C++11引入的关键字，用于类型推导，可以自动推导出表达式的数据类型。使用<code>auto</code>关键字声明变量，编译器会自动进行类型推导，根据变量被初始化赋值的表达式来确定变量的类型。<code>auto</code>可以用于任何类型，包括基础类型、自定义类型、函数指针等等。
-<code>auto</code> 不能用于函数传参，考虑重载的问题，我们应该使用模板</p>
-<h2 id="decltype">decltype</h2>
-<p><code>decltype</code> 关键字是为了解决 auto 关键字只能对变量进行类型推导的缺陷而出现的。
-比如：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">auto</span> <span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="k">auto</span> <span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="k">decltype</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">)</span> <span class="n">z</span><span class="p">;</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="尾返回类型推导">尾返回类型推导</h2>
-<p> <code>auto</code> 不能用于函数形参进行类型推导，那么 <code>auto</code> 能不能用于推导函数的返回类型呢？尾返回类型推导</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="k">typename</span> <span class="n">U</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="k">auto</span> <span class="n">add2</span><span class="p">(</span><span class="n">T</span> <span class="n">x</span><span class="p">,</span> <span class="n">U</span> <span class="n">y</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">decltype</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">){</span>
-</span></span><span class="line"><span class="cl">   <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>为什么不能用</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">decltype</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">)</span> <span class="n">add</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span> <span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">){</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">;</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>编译器读到 decltype(x+y) 时，<code>x</code> 和 <code>y</code> 尚未被定义</p>
-<p> C++14 开始是可以直接让普通函数具备返回值推导，因此下面的写法变得合法：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="k">typename</span> <span class="n">U</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="k">auto</span> <span class="n">add3</span><span class="p">(</span><span class="n">T</span> <span class="n">x</span><span class="p">,</span> <span class="n">U</span> <span class="n">y</span><span class="p">){</span>
-</span></span><span class="line"><span class="cl">   <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="decltypeauto">decltype(auto)</h2>
-<p><code>decltype(auto)</code> 是 C++14 开始提供的一个略微复杂的用法。
-<code>decltype(auto)</code> 主要用于对转发函数或封装的返回类型进行推导，它使我们无需显式的指定 <code>decltype</code> 的参数表达式。考虑看下面的例子，当我们需要对下面两个函数进行封装时：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">string</span>  <span class="n">lookup1</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">lookup2</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl"><span class="c1">//C++11
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">look_up_a_string_1</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nf">lookup1</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">look_up_a_string_2</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nf">lookup2</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="c1">//C++14
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">decltype</span><span class="p">(</span><span class="k">auto</span><span class="p">)</span> <span class="n">look_up_a_string_1</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nf">lookup1</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="k">decltype</span><span class="p">(</span><span class="k">auto</span><span class="p">)</span> <span class="n">look_up_a_string_2</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nf">lookup2</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h1 id="控制流">控制流</h1>
-<h2 id="if-constexpr">if constexpr</h2>
-<p>C++17将 <code>constexpr</code> 这个关键字引入到 <code>if</code> 语句中，允许在代码中声明常量表达式的判断条件,可以实现让代码在编译时就完成分支判断。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="k">auto</span> <span class="n">print_type_info</span><span class="p">(</span><span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nf">constexpr</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_integral</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">value</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">t</span> <span class="o">+</span> <span class="mf">0.001</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">print_type_info</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">print_type_info</span><span class="p">(</span><span class="mf">3.14</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">print_type_info</span><span class="p">(</span><span class="k">const</span> <span class="kt">int</span><span class="o">&amp;</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="kt">double</span> <span class="nf">print_type_info</span><span class="p">(</span><span class="k">const</span> <span class="kt">double</span><span class="o">&amp;</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">t</span> <span class="o">+</span> <span class="mf">0.001</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">print_type_info</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">print_type_info</span><span class="p">(</span><span class="mf">3.14</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="区间-for-迭代">区间 for 迭代</h2>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="nl">element</span> <span class="p">:</span> <span class="n">vec</span><span class="p">)</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h1 id="模板">模板</h1>
-<p>模板的哲学在于将一切能够在编译期处理的问题丢到编译期进行处理，仅在运行时处理那些最核心的动态服务，进而大幅优化运行期的性能。</p>
-<h2 id="外部模板">外部模板</h2>
-<p>传统 C++ 中，模板只有在使用时才会被编译器实例化。换句话说，只要在每个编译单元（文件）中编译的代码中遇到了被完整定义的模板，都会实例化。这就产生了重复实例化而导致的编译时间的增加。并且，我们没有办法通知编译器不要触发模板的实例化。
-为此，C++11 引入了外部模板，扩充了原来的强制编译器在特定位置实例化模板的语法，使我们能够显式的通知编译器何时进行模板的实例化：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">template</span> <span class="k">class</span> <span class="nc">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">;</span> <span class="c1">// 强行实例化
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">extern</span> <span class="k">template</span> <span class="k">class</span> <span class="nc">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">;</span> <span class="c1">// 不在该当前编译文件中实例化模板
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>C++11中的模板强行实例化（template instantiation）是一种强制编译器实例化模板的技术，以确保特定类型或值的模板实例被编译器创建。它是通过在代码中使用特化或显式实例化来实现的。使用<code>template</code>关键字、尖括号和类型或值来指定要实例化的特定模板，然后使用分号结束即可。</p>
-<p>这种技术的好处在于，可以实现一些优化，比如提前生成某些类型的实例，减少编译时间和空间占用。另外，它也可以用于在编译期间检查类型错误或者语法错误，避免在运行时出现错误。</p>
-<p>举个例子，考虑下面这个模板函数：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="n">T</span> <span class="n">add</span><span class="p">(</span><span class="n">T</span> <span class="n">a</span><span class="p">,</span> <span class="n">T</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>如果我们要确保这个函数被实例化为<code>int</code>类型，可以使用强行实例化技术，代码如下：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">template</span> <span class="kt">int</span> <span class="n">add</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span><span class="p">);</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>这段代码告诉编译器要强制实例化<code>add</code>模板为<code>int</code>类型，这样，在编译器遇到使用<code>add</code>模板创建<code>int</code>类型实例的时候，它就会去查找已经实例化的<code>int</code>类型的版本，而不是生成一个新的模板实例。这样可以提高程序的运行效率，尤其是在模板的代码较多的情况下，可以有效地缩短编译时间和减少空间占用。</p>
-<p>需要注意的是，强行实例化是一种高级用法，需要谨慎使用，过度使用会导致代码可读性和可维护性下降。只有在特定需求和优化要求下，才可以考虑使用这种方法。</p>
-<h2 id="尖括号-">尖括号 “&gt;”</h2>
-<p>在传统C++编译器下是不能够被编译的，而 C++11 开始，连续的右尖括号将变得合法</p>
-<h2 id="类型别名模板">类型别名模板</h2>
-<p><strong>模板是用来产生类型的</strong>
-<code>typedef</code> 可以为类型定义一个新的名称，但是却没有办法为模板定义一个新的名称。因为，模板不是类型。
-C++11使用 <code>using</code> 引入了下面这种形式的写法，并且同时支持对传统 <code>typedef</code> 相同的功效</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="n">MagicType</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">FakeDarkMagic</span><span class="p">;</span><span class="c1">//不合法
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">using</span> <span class="n">TrueDarkMagic</span> <span class="o">=</span> <span class="n">MagicType</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">;</span><span class="c1">//合法
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="默认模板参数">默认模板参数</h2>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span> <span class="o">=</span> <span class="kt">int</span><span class="p">,</span> <span class="k">typename</span> <span class="n">U</span> <span class="o">=</span> <span class="kt">int</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="k">auto</span> <span class="n">add</span><span class="p">(</span><span class="n">T</span> <span class="n">x</span><span class="p">,</span> <span class="n">U</span> <span class="n">y</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">decltype</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="变长参数模板">变长参数模板</h2>
-<p>而 C++11 加入了新的表示方法， 允许任意个数、任意类别的模板参数，同时也不需要在定义时将参数的个数固定。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span> <span class="n">Ts</span><span class="o">&gt;</span> <span class="k">class</span> <span class="nc">Magic</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Magic</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">            <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">            <span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">            <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;&gt;</span> <span class="n">darkMagic</span><span class="p">;</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>如果不希望产生的模板参数个数为0，可以手动的定义至少一个模板参数：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">Require</span><span class="p">,</span> <span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span> <span class="k">class</span> <span class="nc">Magic</span><span class="p">;</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>变长参数模板也能被直接调整到到模板函数上。传统 C 中的 <code>printf</code> 函数， 虽然也能达成不定个数的形参的调用，但其并非类别安全。 而 C++11 除了能定义类别安全的变长参数函数外， 还可以使类似 printf 的函数能自然地处理非自带类别的对象。 除了在模板参数中能使用 <code>...</code> 表示不定长模板参数外， 函数参数也使用同样的表示法代表不定长参数， 这也就为我们简单编写变长参数函数提供了便捷的手段，例如：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span> <span class="kt">void</span> <span class="n">printf</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">str</span><span class="p">,</span> <span class="n">Args</span><span class="p">...</span> <span class="n">args</span><span class="p">);</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>那么我们定义了变长的模板参数，如何对参数进行解包呢？</p>
-<p>首先，我们可以使用 <code>sizeof...</code> 来计算参数的个数：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span> <span class="n">Ts</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">magic</span><span class="p">(</span><span class="n">Ts</span><span class="p">...</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="k">sizeof</span><span class="p">...(</span><span class="n">args</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>我们可以传递任意个参数给 <code>magic</code> 函数：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">magic</span><span class="p">();</span> <span class="c1">// 输出0
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">magic</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// 输出1
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">magic</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#34;&#34;</span><span class="p">);</span> <span class="c1">// 输出2
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>其次，对参数进行解包，到目前为止还没有一种简单的方法能够处理参数包，但有两种经典的处理手法：</p>
-<p><strong>1. 递归模板函数</strong></p>
-<p>递归是非常容易想到的一种手段，也是最经典的处理方法。这种方法不断递归地向函数传递模板参数，进而达到递归遍历所有模板参数的目的：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T0</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">printf1</span><span class="p">(</span><span class="n">T0</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">value</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="k">typename</span><span class="p">...</span> <span class="n">Ts</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">printf1</span><span class="p">(</span><span class="n">T</span> <span class="n">value</span><span class="p">,</span> <span class="n">Ts</span><span class="p">...</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">value</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">printf1</span><span class="p">(</span><span class="n">args</span><span class="p">...);</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">printf1</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&#34;123&#34;</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>2. 变参模板展开</strong>
-你应该感受到了这很繁琐，在 C++17 中增加了变参模板展开的支持，于是你可以在一个函数中完成 <code>printf</code> 的编写：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T0</span><span class="p">,</span> <span class="k">typename</span><span class="p">...</span> <span class="n">T</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">printf2</span><span class="p">(</span><span class="n">T0</span> <span class="n">t0</span><span class="p">,</span> <span class="n">T</span><span class="p">...</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">t0</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nf">constexpr</span> <span class="p">(</span><span class="k">sizeof</span><span class="p">...(</span><span class="n">t</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="n">printf2</span><span class="p">(</span><span class="n">t</span><span class="p">...);</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>3. 初始化列表展开</strong></p>
-<p>递归模板函数是一种标准的做法，但缺点显而易见的在于必须定义一个终止递归的函数。
-这里介绍一种使用初始化列表展开的黑魔法：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="k">typename</span><span class="p">...</span> <span class="n">Ts</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="k">auto</span> <span class="n">printf3</span><span class="p">(</span><span class="n">T</span> <span class="n">value</span><span class="p">,</span> <span class="n">Ts</span><span class="p">...</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">value</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="n">std</span><span class="o">::</span><span class="n">initializer_list</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">{([</span><span class="o">&amp;</span><span class="n">args</span><span class="p">]</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">args</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}(),</span> <span class="n">value</span><span class="p">)...};</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p>在这个代码中，额外使用了 C++11 中提供的初始化列表以及 Lambda 表达式的特性（下一节中将提到）。</p>
-<p>通过初始化列表，<code>(lambda 表达式, value)...</code> 将会被展开。由于逗号表达式的出现，首先会执行前面的 lambda 表达式，完成参数的输出。 为了避免编译器警告，我们可以将 <code>std::initializer_list</code> 显式的转为 <code>void</code>。</p>
-<h2 id="折叠表达式">折叠表达式</h2>
-<p>C++ 17 中将变长参数这种特性进一步带给了表达式，考虑下面这个例子：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="p">...</span> <span class="n">T</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="k">auto</span> <span class="n">sum</span><span class="p">(</span><span class="n">T</span> <span class="p">...</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="p">...);</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="非类型模板参数推导">非类型模板参数推导</h2>
-<p>有一种常见模板参数形式可以让不同字面量成为模板参数，即非类型模板参数</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span><span class="lnt">9
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="kt">int</span> <span class="n">BufSize</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">buffer_t</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">    <span class="n">T</span><span class="o">&amp;</span> <span class="n">alloc</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="nf">free</span><span class="p">(</span><span class="n">T</span><span class="o">&amp;</span> <span class="n">item</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="k">private</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">    <span class="n">T</span> <span class="n">data</span><span class="p">[</span><span class="n">BufSize</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="n">buffer_t</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="mi">100</span><span class="o">&gt;</span> <span class="n">buf</span><span class="p">;</span> <span class="c1">// 100 作为模板参数
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>在这种模板参数形式下，我们可以将 <code>100</code> 作为模板的参数进行传递。 在 C++11 引入了类型推导这一特性后，我们会很自然的问，既然此处的模板参数 以具体的字面量进行传递，能否让编译器辅助我们进行类型推导， 通过使用占位符 <code>auto</code> 从而不再需要明确指明类型？ 幸运的是，C++17 引入了这一特性，我们的确可以 <code>auto</code> 关键字，让编译器辅助完成具体类型的推导， 例如：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;</span><span class="k">auto</span> <span class="n">value</span><span class="o">&gt;</span> <span class="kt">void</span> <span class="n">foo</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">value</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">foo</span><span class="o">&lt;</span><span class="mi">10</span><span class="o">&gt;</span><span class="p">();</span>  <span class="c1">// value 被推导为 int 类型
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h1 id="面向对象">面向对象</h1>
-<h2 id="委托构造">委托构造</h2>
-<p>C++11 引入了委托构造的概念，这使得构造函数可以在同一个类中一个构造函数调用另一个构造函数，从而达到简化代码的目的：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="k">class</span> <span class="nc">Base</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">value1</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">value2</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">Base</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">value1</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="n">Base</span><span class="p">(</span><span class="kt">int</span> <span class="n">value</span><span class="p">)</span> <span class="o">:</span> <span class="n">Base</span><span class="p">()</span> <span class="p">{</span> <span class="c1">// 委托 Base() 构造函数
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">value2</span> <span class="o">=</span> <span class="n">value</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">Base</span> <span class="n">b</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">b</span><span class="p">.</span><span class="n">value1</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">b</span><span class="p">.</span><span class="n">value2</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="继承构造">继承构造</h2>
-<p>在传统 C++ 中，构造函数如果需要继承是需要将参数一一传递的，这将导致效率低下。C++11 利用关键字 using 引入了继承构造函数的概念：</p>
+                <h1 id="线程状态">线程状态</h1>
+<h2 id="线程状态说明">线程状态说明</h2>
+<p>初始化（Init）：该线程正在被创建。
+就绪（Ready）：该线程在就绪列表中，等待 CPU 调度。
+运行（Running）：该线程正在运行。
+阻塞（Blocked）：该线程被阻塞挂起。Blocked 状态包括：pend(锁、 事件、信号量等阻塞)、suspend（主动 pend）、delay(延时阻塞)、 pendtime(因为锁、事件、信号量时间等超时等待)
+退出（Exit）：该线程运行结束，等待父线程回收其控制块资源</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310022230305.png" alt="Pasted image 20230219180727|800"></p>
+<h2 id="竞争条件和临界区">竞争条件和临界区</h2>
+<p>竞争条件（Race Condition）是指当两个或多个线程访问共享数据时，对数据的访问顺序取决于线程调度的顺序，而导致程序出现错误结果的情况。</p>
+<p>临界区（Critical Section）是指一段程序中访问共享资源（如全局变量、共享内存等）的代码片段，每次只允许一个线程访问，如果多个线程同时访问，就会导致竞争条件。</p>
+<p>为了避免竞争条件和保护临界区，需要使用同步机制，例如互斥锁、条件变量、信号量等，来协调线程之间的访问，保证共享资源在任何时刻都只被一个线程访问。</p>
+<h1 id="互斥锁">互斥锁</h1>
+<h2 id="互斥锁mutex">互斥锁mutex</h2>
+<p>互斥锁（Mutex）是多线程编程中最常用的同步机制之一，主要用于保护共享资源，防止多个线程同时访问同一份数据。当一个线程获得了互斥锁之后，其他线程就不能再获取该互斥锁，只能等待该线程释放该互斥锁后才能获取它。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -963,76 +303,43 @@ C++11使用 <code>using</code> 引入了下面这种形式的写法，并且�
 </span><span class="lnt">19
 </span><span class="lnt">20
 </span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="k">class</span> <span class="nc">Base</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">value1</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">value2</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">Base</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">value1</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="n">Base</span><span class="p">(</span><span class="kt">int</span> <span class="n">value</span><span class="p">)</span> <span class="o">:</span> <span class="n">Base</span><span class="p">()</span> <span class="p">{</span> <span class="c1">// 委托 Base() 构造函数
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">value2</span> <span class="o">=</span> <span class="n">value</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span>
-</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Subclass</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Base</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">    <span class="k">using</span> <span class="n">Base</span><span class="o">::</span><span class="n">Base</span><span class="p">;</span> <span class="c1">// 继承构造
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">};</span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">Subclass</span> <span class="n">s</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">s</span><span class="p">.</span><span class="n">value1</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">s</span><span class="p">.</span><span class="n">value2</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#incldue &lt;iostream&gt;
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;thread&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;mutex&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="n">mutex</span> <span class="n">mux</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">TestThread</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">mux</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;===============================&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;test 001&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;test 002&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;test 003&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;===============================</span><span class="se">\n</span><span class="s">&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">mux</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">*</span> <span class="n">argv</span><span class="p">[])</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="kr">thread</span> <span class="n">th</span><span class="p">(</span><span class="n">TestThread</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="n">th</span><span class="p">.</span><span class="n">detach</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="n">getchar</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="显式虚函数重载">显式虚函数重载</h2>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">Base</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">foo</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span>
-</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">SubClass</span><span class="o">:</span> <span class="n">Base</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="nf">foo</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><code>SubClass::foo</code> 可能并不是程序员尝试重载虚函数，只是恰好加入了一个具有相同名字的函数。另一个可能的情形是，当基类的虚函数被删除后，子类拥有旧的函数就不再重载该虚拟函数并摇身一变成为了一个普通的类方法，这将造成灾难性的后果。</p>
-<p>C++11 引入了 <code>override</code> 和 <code>final</code> 这两个关键字来防止上述情形的发生。</p>
-<h3 id="override">override</h3>
-<p>当重载虚函数时，引入 <code>override</code> 关键字将显式的告知编译器进行重载，编译器将检查基函数是否存在这样的虚函数，否则将无法通过编译：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">Base</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">foo</span><span class="p">(</span><span class="kt">int</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span>
-</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">SubClass</span><span class="o">:</span> <span class="n">Base</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">foo</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span> <span class="c1">// 合法
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">foo</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span> <span class="c1">// 非法, 父类没有此虚函数
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">};</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="final">final</h3>
-<p><code>final</code> 则是为了防止类被继续继承以及终止虚函数继续重载引入的。</p>
+</div><h2 id="互斥锁的问题">互斥锁的问题</h2>
+<p>在使用互斥锁时，需要注意避免死锁（Deadlock）的问题，即多个线程相互等待对方释放锁而陷入无限等待的状态。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -1045,108 +352,1081 @@ C++11使用 <code>using</code> 引入了下面这种形式的写法，并且�
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">Base</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">foo</span><span class="p">()</span> <span class="k">final</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span>
-</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">SubClass1</span> <span class="k">final</span><span class="o">:</span> <span class="n">Base</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span> <span class="c1">// 合法
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">struct</span> <span class="nc">SubClass2</span> <span class="o">:</span> <span class="n">SubClass1</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl"><span class="p">};</span> <span class="c1">// 非法, SubClass1 已 final
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">struct</span> <span class="nc">SubClass3</span><span class="o">:</span> <span class="n">Base</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="nf">foo</span><span class="p">();</span> <span class="c1">// 非法, foo 已 final
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">};</span>
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">mutex</span> <span class="n">mux</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">ThreadMainMux</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//不断的循环可能会导致某个线程独占锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">for</span> <span class="p">(;;)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">mux</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">		<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;[in]&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">1000</span><span class="n">ms</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="n">mux</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//通过让刚获取过锁的线程睡眠一会，防止独占
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">1</span><span class="n">ms</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span><span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="kr">thread</span> <span class="n">th</span><span class="p">(</span><span class="n">ThreadMainMux</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="n">th</span><span class="p">.</span><span class="n">detach</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//....
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="显式禁用默认函数">显式禁用默认函数</h2>
-<p>在传统 C++ 中，如果程序员没有提供，编译器会默认为对象生成默认构造函数、 复制构造、赋值算符以及析构函数。 另外，C++ 也为所有类定义了诸如 <code>new</code> <code>delete</code> 这样的运算符。 当程序员有需要时，可以重载这部分函数。</p>
-<p>这就引发了一些需求：无法精确控制默认函数的生成行为。 例如禁止类的拷贝时，必须将复制构造函数与赋值算符声明为 <code>private</code>。 尝试使用这些未定义的函数将导致编译或链接错误，则是一种非常不优雅的方式。</p>
-<p>并且，编译器产生的默认构造函数与用户定义的构造函数无法同时存在。 若用户定义了任何构造函数，编译器将不再生成默认构造函数， 但有时候我们却希望同时拥有这两种构造函数，这就造成了尴尬。</p>
-<p>C++11 提供了上述需求的解决方案，允许显式的声明采用或拒绝编译器自带的函数。 例如：</p>
+</div><h2 id="超时锁time_mutex避免长时间死锁">超时锁time_mutex—避免长时间死锁</h2>
+<p>time_mutex（超时锁）是一种基于互斥锁的扩展，它允许在给定的超时时间内获取互斥锁。它在多线程编程中非常有用，因为它可以防止线程在获取互斥锁时无限期地阻塞，从而导致死锁。在获取互斥锁时，线程会等待一段时间，如果在超时时间内没有获得锁，则线程会放弃获取锁。</p>
+<p>一般情况下，互斥锁是一种阻塞锁，如果一个线程获取不到锁，则会一直等待，直到另一个线程释放了锁。而使用超时锁，可以避免线程阻塞时间过长，造成线程资源的浪费，从而提高程序的性能。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Magic</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">public</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">    <span class="n">Magic</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span> <span class="c1">// 显式声明使用编译器生成的构造
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">Magic</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Magic</span><span class="o">&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">delete</span><span class="p">;</span> <span class="c1">// 显式声明拒绝编译器生成构造
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">Magic</span><span class="p">(</span><span class="kt">int</span> <span class="n">magic_number</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">timed_mutex</span> <span class="n">tmux</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">ThreadMainTime</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="p">(;;)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">tmux</span><span class="p">.</span><span class="n">try_lock_for</span><span class="p">(</span><span class="n">milliseconds</span><span class="p">(</span><span class="mi">1000</span><span class="p">)))</span>
+</span></span><span class="line"><span class="cl">		<span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;[try_lock_for] timeout&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">			<span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;[in]&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">2000</span><span class="n">ms</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="n">tmux</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">		<span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">1</span><span class="n">ms</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span><span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="kr">thread</span> <span class="n">th</span><span class="p">(</span><span class="n">ThreadMainTime</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="n">th</span><span class="p">.</span><span class="n">detach</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="递归锁-recursive_mutex-和-recursive_timed_mutex">递归锁 recursive_mutex 和 recursive_timed_mutex</h2>
+<p><code>recursive_mutex</code> 和 <code>recursive_timed_mutex</code> 都是互斥锁的类型，它们的特点是可以被同一线程多次获得，即支持递归锁。具体来说，一个线程可以多次获得一个递归锁，但是在这个线程释放同样次数的锁之前，其它线程无法获得这个锁。</p>
+<p><code>recursive_mutex</code> 和 <code>recursive_timed_mutex</code> 的区别在于前者没有超时限制，而后者支持超时限制。在使用时，可以通过成员函数 <code>lock()</code>、<code>try_lock()</code> 和 <code>unlock()</code> 来进行锁的操作。</p>
+<p>递归锁的使用场景通常是在函数或类成员函数的递归调用中，避免出现死锁等问题。例如，在递归地遍历一棵树的时候，可能需要在每个节点上获取锁，避免并发修改节点数据导致数据不一致或者崩溃的问题。此时，如果使用普通的互斥锁，会因为同一线程多次获取锁而造成死锁，而使用递归锁则能够很好地解决这个问题。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">recursive_mutex</span> <span class="n">rmux</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">Task1</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">rmux</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 组合业务 用到同一个锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;task1 [in]&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">rmux</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">Task2</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">rmux</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 组合业务 用到同一个锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;task2 [in]&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">rmux</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">ThreadMainRec</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="p">(;;)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">rmux</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// 组合业务 用到同一个锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="n">Task1</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">		<span class="n">Task2</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">		<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;[in]&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">2000</span><span class="n">ms</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="n">rmux</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">		<span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">1</span><span class="n">ms</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span><span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="kr">thread</span> <span class="n">th</span><span class="p">(</span><span class="n">ThreadMainRec</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="n">th</span><span class="p">.</span><span class="n">detach</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//....
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="共享锁share_mutex">共享锁share_mutex</h2>
+<p><code>std::shared_mutex</code> 是一个提供共享访问控制的互斥量。与 <code>std::mutex</code> 不同，它允许多个线程同时访问共享资源，提高了并发性能。</p>
+<p><code>std::shared_mutex</code> 支持两种锁定方式：独占锁和共享锁。当一个线程拥有独占锁时，它可以独占地访问被保护的资源。当多个线程拥有共享锁时，它们可以同时读取被保护的资源。与 <code>std::mutex</code> 不同的是，多个线程可以同时拥有共享锁，而只有一个线程可以拥有独占锁。</p>
+<p>使用 <code>std::shared_mutex</code> 时，可以调用 <code>std::shared_mutex::lock()</code> 函数获得独占锁，并调用 <code>std::shared_mutex::lock_shared()</code> 函数获得共享锁。与独占锁不同，共享锁不会阻塞其他线程获取共享锁，但会阻塞其他线程获取独占锁。在完成对被保护资源的读取后，必须调用 <code>std::shared_mutex::unlock_shared()</code> 或 <code>std::shared_mutex::unlock()</code> 函数释放锁。</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310022230307.png" alt="Pasted image 20230220153908|800"></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">//c++17
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">shared_mutex</span> <span class="n">smux</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//c++ 14
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">shared_timed_mutex</span> <span class="n">stmux</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">ThreadWrite</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="p">(;;)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">stmux</span><span class="p">.</span><span class="n">lock_shared</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">//读数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="n">stmux</span><span class="p">.</span><span class="n">unlock_shared</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">		<span class="n">stmux</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">		<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">&#34; Write&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">100</span><span class="n">ms</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="n">stmux</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">		<span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">3000</span><span class="n">ms</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">ThreadRead</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span><span class="p">(;;)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">stmux</span><span class="p">.</span><span class="n">lock_shared</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">		<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">&#34; Read&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">500</span><span class="n">ms</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="n">stmux</span><span class="p">.</span><span class="n">unlock_shared</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">		<span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">50</span><span class="n">ms</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span><span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="kr">thread</span> <span class="n">th</span><span class="p">(</span><span class="n">ThreadWrite</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="n">th</span><span class="p">.</span><span class="n">detach</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">100</span><span class="n">ms</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="kr">thread</span> <span class="n">th</span><span class="p">(</span><span class="n">ThreadRead</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="n">th</span><span class="p">.</span><span class="n">detach</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="利用栈特性自动释放锁-raii">利用栈特性自动释放锁 RAII</h1>
+<p>在多线程编程中，经常需要用到锁来保证共享资源的同步访问。一般情况下，在获取锁之后需要在适当的时候手动释放锁，否则就会出现死锁等问题。而RAII技术可以自动管理锁的生命周期，确保在使用完锁之后能够自动释放锁。
+使用RAII技术实现自动释放锁的方法是定义一个类，在类的构造函数中获取锁，在类的析构函数中释放锁。这样，只要定义的类实例在作用域内，就可以保证获取到锁，并在离开作用域时自动释放锁。</p>
+<h2 id="什么是raii手动代码实现">什么是RAII，手动代码实现</h2>
+<p>RAII（Resource Acquisition Is Initialization）是一种C++编程技术，旨在管理资源的生命周期，确保资源在需要时被正确地获取，并在使用后被正确地释放。利用栈特性自动释放锁就是RAII技术在多线程编程中的应用。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">XMutex</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">public</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">	<span class="n">XMutex</span><span class="p">(</span><span class="n">mutex</span><span class="o">&amp;</span> <span class="n">mux</span><span class="p">)</span><span class="o">:</span><span class="n">mux_</span><span class="p">(</span><span class="n">mux</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Lock&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">mux_</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="o">~</span><span class="n">XMutex</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;UnLock&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">mux_</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">private</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">	<span class="n">mutex</span> <span class="o">&amp;</span><span class="n">mux_</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h2 id="强类型枚举">强类型枚举</h2>
-<p>在传统 C++中，枚举类型并非类型安全，枚举类型会被视作整数，则会让两种完全不同的枚举类型可以进行直接的比较（虽然编译器给出了检查，但并非所有），<strong>甚至同一个命名空间中的不同枚举类型的枚举值名字不能相同</strong>，这通常不是我们希望看到的结果。</p>
-<p>C++11 引入了枚举类（enumeration class），并使用 <code>enum class</code> 的语法进行声明：</p>
+</div><h2 id="支持的raii管理互斥资源-lock_guard">支持的RAII管理互斥资源 lock_guard</h2>
+<p><code>std::lock_guard</code> 的构造函数需要一个互斥锁对象作为参数，当它的作用域被创建时，会调用互斥锁的 <code>lock()</code> 方法锁住资源，当作用域结束时，析构函数自动释放锁，从而保证了锁在有需要的时候上锁，在不需要的时候释放锁。
+在调用方已经拥有互斥锁的所有权时，可以使用<code>std::adopt_lock_t</code>参数来表示锁已经被持有，避免在<code>std::lock_guard</code>的析构函数中再次进行加锁操作。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">enum</span> <span class="k">class</span> <span class="nc">new_enum</span> <span class="o">:</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">value1</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="n">value2</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="n">value3</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">    <span class="n">value4</span> <span class="o">=</span> <span class="mi">100</span>
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">//lock_guard 源代码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">_Mutex</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">lock_guard</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">	<span class="c1">// class with destructor that unlocks a mutex
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">public</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">	<span class="k">using</span> <span class="n">mutex_type</span> <span class="o">=</span> <span class="n">_Mutex</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">explicit</span> <span class="nf">lock_guard</span><span class="p">(</span><span class="n">_Mutex</span><span class="o">&amp;</span> <span class="n">_Mtx</span><span class="p">)</span> <span class="o">:</span> <span class="n">_MyMutex</span><span class="p">(</span><span class="n">_Mtx</span><span class="p">)</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">		<span class="c1">// construct and lock
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="n">_MyMutex</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="n">lock_guard</span><span class="p">(</span><span class="n">_Mutex</span><span class="o">&amp;</span> <span class="n">_Mtx</span><span class="p">,</span> <span class="n">adopt_lock_t</span><span class="p">)</span> <span class="o">:</span> <span class="n">_MyMutex</span><span class="p">(</span><span class="n">_Mtx</span><span class="p">)</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">		 <span class="c1">// construct but don&#39;t lock
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="o">~</span><span class="n">lock_guard</span><span class="p">()</span> <span class="k">noexcept</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">_MyMutex</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="n">lock_guard</span><span class="p">(</span><span class="k">const</span> <span class="n">lock_guard</span><span class="o">&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">delete</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">lock_guard</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">lock_guard</span><span class="o">&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">delete</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>这样定义的枚举实现了类型安全，首先他不能够被隐式的转换为整数，同时也不能够将其与整数数字进行比较， 更不可能对不同的枚举类型的枚举值进行比较。但相同枚举值之间如果指定的值相同，那么可以进行比较：</p>
-<div class="highlight"><div class="chroma">
+</div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">new_enum</span><span class="o">::</span><span class="n">value3</span> <span class="o">==</span> <span class="n">new_enum</span><span class="o">::</span><span class="n">value4</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// 会输出
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;new_enum::value3 == new_enum::value4&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;thread&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;string&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;mutex&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;shared_mutex&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="c1">//Linux -lpthread
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="n">mutex</span> <span class="n">gmutex</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">TestLockGuard</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">gmutex</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//已经拥有锁，不lock
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">gmutex</span><span class="p">,</span><span class="n">adopt_lock</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//结束释放锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">gmutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;begin thread &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(;;)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">gmutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;In &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">500</span><span class="n">ms</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">*</span> <span class="n">argv</span><span class="p">[])</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kr">thread</span> <span class="n">th</span><span class="p">(</span><span class="n">TestLockGuard</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">th</span><span class="p">.</span><span class="n">detach</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">getchar</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>在这个语法中，枚举类型后面使用了冒号及类型关键字来指定枚举中枚举值的类型，这使得我们能够为枚举赋值（未指定时将默认使用 int）。</p>
+</div><h2 id="unique_lock">unique_lock</h2>
+<p>它提供了比 <code>lock_guard</code> 更多的灵活性。<code>unique_lock</code> 的特点是支持锁的所有权的转移、可被中断的锁等待、延后拥有、以及超时的锁等待。</p>
+<p>使用 <code>unique_lock</code> 时，可以通过构造函数或成员函数指定互斥量，并且可以指定锁的状态：已锁或未锁。若指定了已锁状态，则会立即尝试对互斥量加锁；若指定未锁状态，则可以在需要时手动加锁。在 <code>unique_lock</code> 对象生命周期结束时，会自动解锁互斥量。</p>
+<h2 id="defer_lock">defer_lock</h2>
+<p><code>std::unique_lock</code> 对象的延后拥有（deferred ownership）是指在创建 <code>unique_lock</code> 对象时并不立即锁定互斥量，而是在对象的某个后续时刻进行锁定。这种锁定方式有时可以提高代码的效率。</p>
+<p>延后拥有可以通过在创建 <code>std::unique_lock</code> 对象时，将第二个参数设为 <code>std::defer_lock</code> 来实现。这会使 <code>unique_lock</code> 对象不会立即尝试获取互斥量的所有权。之后，可以调用 <code>unique_lock</code> 对象的 <code>lock</code> 成员函数来获取互斥量的所有权</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">//延后拥有
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#include</span> <span class="cpf">&lt;mutex&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;thread&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">mutex</span> <span class="n">mtx</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">func</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lck</span><span class="p">(</span><span class="n">mtx</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">defer_lock</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// ... some other operations
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">lck</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span> <span class="c1">// 程序执行到此处时才会锁定互斥量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// ... critical section
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="n">t1</span><span class="p">(</span><span class="n">func</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="n">t2</span><span class="p">(</span><span class="n">func</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">t1</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">t2</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="try_to_lock">try_to_lock</h2>
+<p><code>std::unique_lock</code> 中的 <code>try_to_lock</code> 选项表示尝试锁定互斥量但不会阻塞线程，而是立即返回。如果互斥量当前被另一个线程锁定，则 <code>try_to_lock</code> 操作将不会等待该线程释放互斥量，而是返回一个指示锁定失败的值。如果互斥量当前未被锁定，则尝试锁定它并返回一个指示锁定成功的值。此操作不会阻塞线程，因此可以用于非阻塞代码中。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="k">typename</span> <span class="n">std</span><span class="o">::</span><span class="n">enable_if</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">is_enum</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">value</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">ostream</span><span class="o">&gt;::</span><span class="n">type</span><span class="o">&amp;</span> <span class="n">stream</span><span class="p">,</span> <span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">e</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">stream</span> <span class="o">&lt;&lt;</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">std</span><span class="o">::</span><span class="n">underlying_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">type</span><span class="o">&gt;</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;thread&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;mutex&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">mutex</span> <span class="n">mtx</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lck</span><span class="p">(</span><span class="n">mtx</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">try_to_lock</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">lck</span><span class="p">.</span><span class="n">owns_lock</span><span class="p">())</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Mutex locked by this thread&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Mutex not available&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>而我们希望获得枚举值的值时，将必须显式的进行类型转换，不过我们可以通过重载 <code>&lt;&lt;</code> 这个算符来进行输出，可以收藏下面这个代码段：</p>
+</div><p>在此示例中，<code>std::unique_lock</code> 尝试锁定 <code>std::mutex</code>，但不会阻塞线程。如果锁定成功，则输出 <code>Mutex locked by this thread</code>。否则，输出 <code>Mutex not available</code>。</p>
+<h2 id="shared_lockc14">shared_lock（c++14）</h2>
+<p><code>shared_lock</code>是一个在共享情况下保护共享数据的锁，允许多个线程同时访问共享数据。与<code>unique_lock</code>不同，<code>shared_lock</code>支持共享锁定和延迟锁定。</p>
+<p><code>shared_lock</code>是由<code>&lt;shared_mutex&gt;</code>头文件中的<code>std::shared_lock</code>类实现的。它可以与<code>std::shared_mutex</code>或<code>std::shared_timed_mutex</code>一起使用，以实现共享所有权的锁。[[03 多线程通信与同步#5、共享锁share_mutex|share_mutex]]</p>
+<p>与<code>unique_lock</code>一样，<code>shared_lock</code>也使用RAII技术来管理锁的生命周期。在构造函数中获取锁，在析构函数中释放锁。可以通过<code>lock()</code>和<code>unlock()</code>方法手动控制锁的获取和释放。</p>
+<p>与<code>unique_lock</code>不同的是，<code>shared_lock</code>提供了<code>lock_shared()</code>方法来获取共享锁，它会阻塞线程直到可以获得共享锁。<code>try_lock_shared()</code>方法则尝试获取共享锁，如果无法获取则立即返回，不会阻塞线程。此外，<code>shared_lock</code>还提供了<code>unlock_shared()</code>方法来释放共享锁。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;thread&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;shared_mutex&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">shared_mutex</span> <span class="n">mutex</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">shared_data</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">read_thread</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">shared_lock</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Reading shared_data: &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">shared_data</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">write_thread</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//组合使用，也可以和lock_guard组合使用
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">shared_data</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Writing shared_data: &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">shared_data</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="n">t1</span><span class="p">(</span><span class="n">read_thread</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="n">t2</span><span class="p">(</span><span class="n">read_thread</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="n">t3</span><span class="p">(</span><span class="n">write_thread</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">t1</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">t2</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">t3</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>shared_lock</code> 是一个共享的互斥锁，用于读取共享资源。相比 <code>unique_lock</code> 和<code> lock_guard</code>，它的特点是可以被多个线程同时获取锁并访问共享资源，因此能够提高并发性能。</p>
+<p>但是，<code>shared_lock</code> 也存在一些缺陷，例如不能在获取锁后修改共享资源（因为它是一个共享锁），不能使用 try_lock() 函数尝试获取锁等。</p>
+<p>因此，将 <code>shared_lock</code> 与 <code>unique_lock</code>、<code>lock_guard</code> 结合使用，可以在获取锁时根据具体情况选择使用 <code>shared_lock</code> 或 <code>unique_lock</code>/<code>lock_guard</code>，从而兼顾并发性能和对共享资源的修改操作。比如，在读多写少的场景中，可以使用 shared_lock 获取读取锁，而在需要修改共享资源时，再使用 unique_lock 获取写入锁。这种方式称为“读写分离”，可以有效地提高并发性能。</p>
+<h2 id="scoped_lockc17">scoped_lock（c++17)</h2>
+<p><code>scoped_lock</code> 是一个 C++11 中的锁类型，它是一个锁卫士（lock guard）类型，可以用来保护多个锁的同时加锁和解锁。<code>scoped_lock</code> 在构造函数中获得指定的锁，并在析构函数中释放所有已获取的锁。因此，它遵循 RAII 原则，可以防止忘记释放锁，避免死锁的问题。</p>
+<p><code>scoped_lock</code> 类的构造函数可以接受多个互斥量，并按照定义的顺序对这些互斥量进行加锁。同时，<code>scoped_lock</code> 还支持不同的锁类型，比如 <code>std::mutex</code>、<code>std::timed_mutex</code>、<code>std::recursive_mutex</code> 等等。如果在构造函数中无法获取所有互斥量的锁，则会阻塞当前线程，直到获取所有互斥量的锁为止。</p>
+<blockquote>
+<p>c++11
+<code>std::lock</code> 是一个函数模板，用于在一个操作中锁定多个互斥量，以避免死锁。它会锁定提供的互斥量，如果所有互斥量都成功锁定，则函数返回。如果某个互斥量无法锁定，则所有已经锁定的互斥量都将被解锁，以避免死锁。</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;mutex&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;thread&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">mutex</span> <span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">increment_both</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">scoped_lock</span> <span class="n">lock</span><span class="p">(</span><span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">++</span><span class="n">counter</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="n">t1</span><span class="p">(</span><span class="n">increment_both</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="n">t2</span><span class="p">(</span><span class="n">increment_both</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">t1</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">t2</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;Counter value: &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">counter</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="总结">总结</h2>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310022230308.png" alt="Pasted image 20230225185443|800"></p>
+<h1 id="条件变量">条件变量</h1>
+<p>条件变量（condition variable）是一种线程间同步的机制，它允许一个线程等待另一个线程满足某个特定条件。当条件不满足时，线程可以进入等待状态，不会消耗 CPU 资源，直到另一个线程满足了条件并通知等待线程。</p>
+<p>在 C++ 中，条件变量通常和互斥量（mutex）一起使用，来实现线程之间的同步。具体来说，当一个线程在条件变量上等待时，它会释放对互斥量的占有，让其他线程能够访问共享资源。等待线程会在条件变量被通知时，重新获取互斥量的占有，检查条件是否已满足，如果满足，则继续执行；如果不满足，则继续等待。</p>
+<p>C++ 中使用条件变量需要借助 <code>std::condition_variable</code> 类，它定义在 <code>&lt;condition_variable&gt;</code> 头文件中。常见的使用方式是定义一个条件变量对象和一个互斥量对象，然后在等待线程中使用条件变量对象的 <code>wait()</code> 函数来等待条件的满足，使用 <code>notify_one()</code> 或 <code>notify_all()</code> 函数来通知等待线程条件已经满足。</p>
+<h2 id="condition_variable">condition_variable</h2>
+<p>在调用 <code>wait()</code> 函数时，需要提供一个已经加锁的互斥量对象作为参数，即 <code>std::unique_lock&lt;std::mutex&gt;</code>，这个互斥量是用来保护条件变量的。</p>
+<p>当线程调用 <code>wait()</code> 后，它会释放互斥量的所有权，然后等待条件变量被通知。当条件变量被其他线程通知后，线程会重新获得互斥量的所有权并从 <code>wait()</code> 函数返回，此时它可以再次使用共享资源。</p>
+<p>需要注意的是，虽然 <code>wait()</code> 在等待期间会释放锁，但当它被唤醒后会自动重新获取锁，所以唤醒线程应该在释放锁之前完成所有必要的修改。</p>
+<p><strong>生产者-消费者模型</strong></p>
+<ul>
+<li>生产者和消费者共享资源变量（list队列）</li>
+<li>生产者生产一个产品，通知消费者消费</li>
+<li>消费者阻塞等待信号-获取信号后消费产品（取出list队列中数据）</li>
+</ul>
+<p><strong>（一）改变共享变量的线程步骤（生产者线程）</strong></p>
+<ul>
+<li>准备好信号量</li>
+</ul>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">new_enum</span><span class="o">::</span><span class="n">value3</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">condition_variable</span> <span class="n">cv</span><span class="p">;</span>
 </span></span></code></pre></td></tr></table>
 </div>
+</div><ul>
+<li>获得 std::mutex （常通过 std::unique_lock ）</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">unique_lock</span> <span class="nf">lock</span><span class="p">(</span><span class="n">mux</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
 </div>
+</div><ul>
+<li>在获取锁时进行修改</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">msgs_</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>释放锁并通知读取线程</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">lock</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="n">cv</span><span class="p">.</span><span class="n">notify_one</span><span class="p">();</span> <span class="c1">//通知一个等待信号线程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">cv</span><span class="p">.</span><span class="n">notify_all</span><span class="p">();</span> <span class="c1">//通知所有等待信号线程
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>（二）等待信号读取共享变量的线程步骤</strong></p>
+<ul>
+<li>获得与改变共享变量线程共同的mutex</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">unique_lock</span> <span class="nf">lock</span><span class="p">(</span><span class="n">mux</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>wait()等待信号通知</li>
+<li>
+<ol>
+<li>无lambada表达式</li>
+</ol>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">//解锁lock,并阻塞等待 notify_one notify_all 通知
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">cv</span><span class="p">.</span><span class="n">wait</span><span class="p">(</span><span class="n">lock</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//接收到通知会再次获取锁标注，也就是说如果此时mux资源被占用，wait函数会阻塞
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">msgs_</span><span class="p">.</span><span class="n">front</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//处理数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">msgs_</span><span class="p">.</span><span class="n">pop_front</span><span class="p">();</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>2 lambada 表 达 式 <code>cv.wait(lock, [] {return !msgs_.empty();});</code>
+只在 std::unique_lock<a href="std::mutex">std::mutex</a> 上工作的 std::condition_variable</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">wait</span><span class="p">(</span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">mutex</span><span class="o">&gt;&amp;</span> <span class="n">_Lck</span><span class="p">)</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl"><span class="c1">// wait for signal
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Nothing to do to comply with LWG‐2135 because std::mutex lock/unlock are nothrow
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">_Check_C_return</span><span class="p">(</span><span class="n">_Cnd_wait</span><span class="p">(</span><span class="n">_Mycnd</span><span class="p">(),</span> <span class="n">_Lck</span><span class="p">.</span><span class="n">mutex</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">_Mymtx</span><span class="p">()));</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">_Predicate</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">void</span> <span class="n">wait</span><span class="p">(</span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">mutex</span><span class="o">&gt;&amp;</span> <span class="n">_Lck</span><span class="p">,</span> <span class="n">_Predicate</span> <span class="n">_Pred</span><span class="p">)</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">	 <span class="c1">// wait for signal and test predicate
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">_Pred</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span> 
+</span></span><span class="line"><span class="cl">		 <span class="n">wait</span><span class="p">(</span><span class="n">_Lck</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="线程异步和通信">线程异步和通信</h1>
+<h2 id="条件变量和互斥锁-vs--promise-和-future">条件变量和互斥锁 VS  promise 和 future</h2>
+<p>条件变量和互斥锁是一种解决并发同步的方案，而 promise 和 future 则是另外一种解决方案。它们的异同点如下：</p>
+<ol>
+<li>异同点：</li>
+</ol>
+<ul>
+<li>条件变量和互斥锁通常用于解决多个线程对共享数据的并发访问问题，通过互斥锁实现数据的独占和同步，而条件变量则用于在多线程之间进行通信，等待某个条件满足时唤醒线程。promise 和 future 则主要用于解决单个线程内的异步操作问题。</li>
+<li>promise 和 future 通过一个线程设置某个值，并在另一个线程中获取该值，实现异步操作和同步等待。在实现异步操作时，线程不必等待某个操作完成，而是可以继续执行其他操作，然后在需要该操作结果时，通过 future 来获取该结果。这种方式避免了线程的阻塞等待，提高了并发性能。</li>
+</ul>
+<ol start="2">
+<li>进步：</li>
+</ol>
+<ul>
+<li>promise 和 future 支持异步操作，使得线程可以并发执行多个操作，提高了并发性能，而条件变量和互斥锁则只能在单个线程内进行同步等待，无法实现多线程的并发执行。</li>
+<li>packaged_task 结合 future 和异步任务，可以实现任务的延迟执行，也就是可以把任务提交到一个线程池中，等待线程池中的线程执行。</li>
+</ul>
+<p>总的来说，互斥锁和条件变量主要解决的是多线程之间的数据同步和互斥访问，而 promise 和 future 主要解决的是单个线程内的异步操作和同步等待，两者各有优劣，具体使用时需要根据具体的场景和需求来选择。<strong>而packaged_task 则结合了两者的优点，实现了异步任务的延迟执行</strong>。</p>
+<h2 id="promise-和-future">promise 和 future</h2>
+<p><code>promise</code> 用于异步传输变量。这是一个类模饭，这个类模板的作用是：能够在某个线程中为其赋值，然后就可以在其他的线程中，把这个值取出来使用。
+<code>std::promise</code> 提供存储异步通信的值，再通过其对象创建的<code>std::future</code>异步获得结果。
+<code>std::promise</code> 只能使用一次。 <code>void set_value(_Ty&amp;&amp; _Val)</code> 设置传递值，只能掉用一次</p>
+<p><code>std::future</code> 提供访问异步操作结果的机制
+<code>get()</code> 阻塞等待promise set_value 的值</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">TestFuture</span><span class="p">(</span><span class="n">promise</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">p</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//假装有业务1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">//一设置，主线成中get就结束阻塞
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">ps</span><span class="p">.</span><span class="n">set_value</span><span class="p">(</span><span class="s">&#34;TestFuture value&#34;</span><span class="p">);</span> 
+</span></span><span class="line"><span class="cl">	<span class="c1">//继续线程业务
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">//假装有业务2
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//这段代码创建了一个 promise 对象 p，并通过 get_future() 成员函数获取了一个与该 promise 对象相关联的 future 对象。通过这个 future 对象，我们可以在异步任务完成后获取其返回值。在这个例子中，promise 对象和 future 对象之间建立了一条双向通道，通过该通道，异步任务产生的结果可以传递给等待其完成的线程。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">//使用 `move(p)` 的原因是要将 `p` 对象转移到新线程中。由于 `promise` 对象不可复制，因此将其作为参数传递给新线程需要使用 `move` 将其所有权转移到新线程中，否则编译器会报错。如果直接传递 `p`，编译器会尝试进行拷贝，但由于 `promise` 对象不可复制，编译器会报错。另外，`move(p)` 的语义是将 `p` 对象的状态转移到新的对象中，并使 `p` 对象的状态处于一个无效但可销毁的状态。因此，在将 `p` 对象转移给另一个对象之后，就不能再次使用 `p` 对象了，因为其状态已经无效。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">promise</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">p</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">auto</span> <span class="n">fu</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">get_future</span><span class="p">();</span> <span class="c1">//std::future&lt;string&gt;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">	<span class="k">auto</span> <span class="n">re</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="p">(</span><span class="n">TestFuture</span><span class="p">,</span><span class="n">move</span><span class="p">(</span><span class="n">p</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//get方法只要线程一设置了value就立刻停止阻塞，而不需要等待线程结束
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;fu = &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">fu</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;end std::async&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">re</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//始终都是一个线程在活动
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="packaged_task-异步调用函数打包">packaged_task 异步调用函数打包</h2>
+<p>![[Recording 20230221135027.webm]]
+<code>std::packaged_task</code> 是一个模板类，用于将一个可调用对象（函数、函数指针、函数对象）封装成一个可调用的任务（task），并且可以将任务的结果传递给一个 <code>std::future</code> 对象。其实现方式是将一个函数对象和一个 <code>std::promise</code> 对象结合起来，从而实现了在<strong>不同的线程之间传递一个可调用对象并且获取其返回值的功能</strong>。</p>
+<p><strong>总的来说，就是将调用和返回值分离开来！</strong></p>
+<p>举个例子，假设我们有一个函数 <code>add</code>，可以计算两个整数的和，并且希望将其封装成一个任务，在另外一个线程中执行。使用 <code>std::packaged_task</code> 可以这么做</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">string</span> <span class="nf">TestPack</span><span class="p">(</span><span class="kt">int</span> <span class="n">index</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;begin Test Pack &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">index</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">2</span><span class="n">s</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="s">&#34;Test Pack return&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">*</span> <span class="n">argv</span><span class="p">[])</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">packaged_task</span><span class="o">&lt;</span> <span class="n">string</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">task</span><span class="p">(</span><span class="n">TestPack</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">auto</span> <span class="n">result</span> <span class="o">=</span> <span class="n">task</span><span class="p">.</span><span class="n">get_future</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//task(100);
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">//⭐我在这里调用
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">//使用`move`将`task`转移给新线程中的`packaged_task`对象，以确保在将任务与新线程关联之后，不会再有其他线程对该任务进行修改。如果不使用`move`，则可能会导致多个线程同时访问同一个`packaged_task`对象，从而导致不可预知的行为。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kr">thread</span> <span class="n">th</span><span class="p">(</span><span class="n">move</span><span class="p">(</span><span class="n">task</span><span class="p">),</span><span class="mi">101</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;begin result get&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//测试是否超时
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">//⭐我在这里取返回值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">wait_for</span><span class="p">(</span><span class="mi">100</span><span class="n">ms</span><span class="p">)</span> <span class="o">!=</span> <span class="n">future_status</span><span class="o">::</span><span class="n">ready</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">wait_for</span><span class="p">(</span><span class="mi">100</span><span class="n">ms</span><span class="p">)</span> <span class="o">==</span> <span class="n">future_status</span><span class="o">::</span><span class="n">timeout</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;wait result timeout&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span>
+</span></span><span class="line"><span class="cl">        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;result get &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">result</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">th</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">getchar</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="async-创建异步线程">async 创建异步线程</h2>
+<p>C++11 异步运行一个函数，并返回保有其结果的<code>std::future</code></p>
+<ul>
+<li><code>launch::deferred</code> 延迟执行 在调用<code>wait</code>和<code>get</code>时，调用函数代码</li>
+<li><code>launch::async</code> 创建线程（默认）</li>
+<li>返回的线程函数的返回值类型的<code>std::future&lt;int&gt; （std::future&lt;线程函数的返回值类型&gt;）</code></li>
+<li>re.get() 获取结果，会阻塞等待</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">string</span> <span class="nf">TestAsync</span><span class="p">(</span><span class="kt">int</span> <span class="n">index</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">index</span><span class="o">&lt;&lt;</span><span class="s">&#34; begin in TestAsync &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">this_thread</span><span class="o">::</span><span class="n">get_id</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">2</span><span class="n">s</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="s">&#34;TestAsync string return&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">*</span> <span class="n">argv</span><span class="p">[])</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">//创建异步线程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;main thread id &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">this_thread</span><span class="o">::</span><span class="n">get_id</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//不创建线程启动异步任务
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">//result.get来请求结果，那么这个异步任务就运行在执行这条 get 语句所在的线程上.，而不创建新线程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">auto</span> <span class="n">future</span> <span class="o">=</span> <span class="n">async</span><span class="p">(</span><span class="n">launch</span><span class="o">::</span><span class="n">deferred</span><span class="p">,</span> <span class="n">TestAsync</span><span class="p">,</span><span class="mi">100</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">100</span><span class="n">ms</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;begin future get &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;future.get() = &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">future</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;end future get&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//创建异步线程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;=====创建异步线程====&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">auto</span> <span class="n">future2</span> <span class="o">=</span> <span class="n">async</span><span class="p">(</span><span class="n">TestAsync</span><span class="p">,</span> <span class="mi">101</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="mi">100</span><span class="n">ms</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;begin future2 get &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;future2.get() = &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">future2</span><span class="p">.</span><span class="n">get</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;end future2 get&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">getchar</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310022230309.png" alt="Pasted image 20230222200946|800"></p>
+<p>所谓的不创建线程,就是主线程自行运行</p>
+<h2 id="总结-1">总结</h2>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310022230310.png" alt="Pasted image 20230225201505|800"></p>
+
             </div>
             
                 <div class="tags">
@@ -1164,19 +1444,9 @@ C++11使用 <code>using</code> 引入了下面这种形式的写法，并且�
                     <span class="down-type-item">
                         <div class="type-text">
                             <a href='
-                                        /tags/#%E8%AF%AD%E6%B3%95%E7%89%B9%E6%80%A7
+                                        /tags/#%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B
                                     '>
-                                <i class="fa fa-tag"></i> #语法特性
-                            </a>
-                        </div>
-                    </span>
-                    
-                    <span class="down-type-item">
-                        <div class="type-text">
-                            <a href='
-                                        /tags/#%E7%BC%96%E7%A8%8B
-                                    '>
-                                <i class="fa fa-tag"></i> #编程
+                                <i class="fa fa-tag"></i> #并发编程
                             </a>
                         </div>
                     </span>
@@ -1190,18 +1460,18 @@ C++11使用 <code>using</code> 引入了下面这种形式的写法，并且�
                     
     
         
-        <a href="https://cnjslw.github.io/posts/%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="pre">
+        <a href="https://cnjslw.github.io/posts/%E7%8E%B0%E4%BB%A3c&#43;&#43;%E7%89%B9%E6%80%A7-04/" class="pre">
             <span class="pre-icon"><i class="fa fa-hand-o-left"></i></span>
             <div class="pre-title-root">
-                <span>【从汇编的视角重学C&#43;&#43; 01】基本数据类型的表现形式</span>
+                <span>【现代C&#43;&#43;】容器</span>
             </div>
         </a>
         
 
         
-        <a href="https://cnjslw.github.io/posts/%E7%8E%B0%E4%BB%A3c&#43;&#43;%E7%89%B9%E6%80%A7-02/" class="next">
+        <a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/" class="next">
             <div class="next-title-root">
-                <span>【现代C&#43;&#43;】语言运行期间的强化</span>
+                <span>【模板与泛型编程01】函数模板</span>
             </div>
             <span class="next-icon"><i class="fa fa-hand-o-right"></i></span>
         </a>
@@ -1313,9 +1583,9 @@ C++11使用 <code>using</code> 引入了下面这种形式的写法，并且�
     </div>
     <div class="list">
         
-            <a href="https://cnjslw.github.io/posts/%E7%8E%B0%E4%BB%A3c&#43;&#43;%E7%89%B9%E6%80%A7-02/">
+            <a href="https://cnjslw.github.io/posts/c&#43;&#43;%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B01/">
                 
-<a href="https://cnjslw.github.io/posts/%E7%8E%B0%E4%BB%A3c&#43;&#43;%E7%89%B9%E6%80%A7-02/">
+<a href="https://cnjslw.github.io/posts/c&#43;&#43;%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B01/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -1324,18 +1594,18 @@ C++11使用 <code>using</code> 引入了下面这种形式的写法，并且�
         </div>
         <div class="list-right">
             <div class="other-title">
-                【现代C&#43;&#43;】语言运行期间的强化
+                【C&#43;&#43;并发编程】线程管理
             </div>
-            <div class="other-summary">可用性强化</div>
-            <div class="other-date">2021-12-17</div>
+            <div class="other-summary">线程管理</div>
+            <div class="other-date">2022-4-14</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">
+            <a href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF%E4%B8%8E%E5%8F%8B%E5%85%83/">
                 
-<a href="https://cnjslw.github.io/posts/%E5%8F%98%E9%87%8F%E5%92%8C%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">
+<a href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF%E4%B8%8E%E5%8F%8B%E5%85%83/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -1344,18 +1614,18 @@ C++11使用 <code>using</code> 引入了下面这种形式的写法，并且�
         </div>
         <div class="list-right">
             <div class="other-title">
-                【从汇编的视角重学C&#43;&#43; 01】基本数据类型的表现形式
+                【模板与泛型编程03】类模板和友元
             </div>
-            <div class="other-summary">基本数据类型的表现形式</div>
-            <div class="other-date">2021-11-1</div>
+            <div class="other-summary">类模板</div>
+            <div class="other-date">2022-6-22</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E5%A4%9A%E6%80%81/">
+            <a href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF/">
                 
-<a href="https://cnjslw.github.io/posts/%E5%A4%9A%E6%80%81/">
+<a href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -1364,18 +1634,18 @@ C++11使用 <code>using</code> 引入了下面这种形式的写法，并且�
         </div>
         <div class="list-right">
             <div class="other-title">
-                【C&#43;&#43; Primer(edition 5) 15】多态
+                【模板与泛型编程02】类模板
             </div>
-            <div class="other-summary">多态</div>
-            <div class="other-date">2021-10-27</div>
+            <div class="other-summary">类模板</div>
+            <div class="other-date">2022-6-20</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E7%BB%A7%E6%89%BF/">
+            <a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/">
                 
-<a href="https://cnjslw.github.io/posts/%E7%BB%A7%E6%89%BF/">
+<a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -1384,18 +1654,18 @@ C++11使用 <code>using</code> 引入了下面这种形式的写法，并且�
         </div>
         <div class="list-right">
             <div class="other-title">
-                【C&#43;&#43; Primer(edition 5) 14】继承
+                【模板与泛型编程01】函数模板
             </div>
-            <div class="other-summary">继承</div>
-            <div class="other-date">2021-10-22</div>
+            <div class="other-summary">函数模板</div>
+            <div class="other-date">2022-6-8</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E6%93%8D%E4%BD%9C%E9%87%8D%E8%BD%BD%E4%B8%8E%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">
+            <a href="https://cnjslw.github.io/posts/%E7%8E%B0%E4%BB%A3c&#43;&#43;%E7%89%B9%E6%80%A7-04/">
                 
-<a href="https://cnjslw.github.io/posts/%E6%93%8D%E4%BD%9C%E9%87%8D%E8%BD%BD%E4%B8%8E%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">
+<a href="https://cnjslw.github.io/posts/%E7%8E%B0%E4%BB%A3c&#43;&#43;%E7%89%B9%E6%80%A7-04/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -1404,18 +1674,18 @@ C++11使用 <code>using</code> 引入了下面这种形式的写法，并且�
         </div>
         <div class="list-right">
             <div class="other-title">
-                【C&#43;&#43; Primer(edition 5) 13】操作重载与类型转换
+                【现代C&#43;&#43;】容器
             </div>
-            <div class="other-summary">操作重载与类型转换</div>
-            <div class="other-date">2021-10-19</div>
+            <div class="other-summary">容器</div>
+            <div class="other-date">2022-4-29</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E6%8B%B7%E8%B4%9D%E6%8E%A7%E5%88%B6/">
+            <a href="https://cnjslw.github.io/posts/%E7%8E%B0%E4%BB%A3c&#43;&#43;%E7%89%B9%E6%80%A7-03/">
                 
-<a href="https://cnjslw.github.io/posts/%E6%8B%B7%E8%B4%9D%E6%8E%A7%E5%88%B6/">
+<a href="https://cnjslw.github.io/posts/%E7%8E%B0%E4%BB%A3c&#43;&#43;%E7%89%B9%E6%80%A7-03/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -1424,10 +1694,10 @@ C++11使用 <code>using</code> 引入了下面这种形式的写法，并且�
         </div>
         <div class="list-right">
             <div class="other-title">
-                【C&#43;&#43; Primer(edition 5) 12】拷贝控制
+                【现代C&#43;&#43;】容器
             </div>
-            <div class="other-summary">拷贝控制</div>
-            <div class="other-date">2021-10-11</div>
+            <div class="other-summary">容器</div>
+            <div class="other-date">2022-1-2</div>
         </div>
     </div>
 </a>
