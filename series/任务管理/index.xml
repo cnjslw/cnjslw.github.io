@@ -1,30 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Linux Kernel on AWei’s Kernel Tour</title>
-    <link>https://cnjslw.github.io/categories/linux-kernel/</link>
-    <description>Recent content in Linux Kernel on AWei’s Kernel Tour</description>
+    <title>任务管理 on AWei’s Kernel Tour</title>
+    <link>https://cnjslw.github.io/series/%E4%BB%BB%E5%8A%A1%E7%AE%A1%E7%90%86/</link>
+    <description>Recent content in 任务管理 on AWei’s Kernel Tour</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 12 Feb 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://cnjslw.github.io/categories/linux-kernel/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>【Linux Kernel 0.12】启动流程</title>
-      <link>https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/</link>
-      <pubDate>Sun, 12 Feb 2023 00:00:00 +0000</pubDate>
-      
-      <guid>https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/</guid>
-      <description>Linux0.12的启动流程</description>
-    </item>
-    
-    <item>
-      <title>【Linux Kernel】Linux debug 环境搭建：qemu&#43;vscode内核源码调试配置教程</title>
-      <link>https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/</link>
-      <pubDate>Wed, 01 Feb 2023 00:00:00 +0000</pubDate>
-      
-      <guid>https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/</guid>
-      <description>Linux debug 环境搭建</description>
-    </item>
-    
+    <lastBuildDate>Mon, 15 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://cnjslw.github.io/series/%E4%BB%BB%E5%8A%A1%E7%AE%A1%E7%90%86/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>【同步机制】RCU</title>
       <link>https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-rcu/</link>
@@ -68,15 +50,6 @@
       
       <guid>https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/</guid>
       <description>原子操作</description>
-    </item>
-    
-    <item>
-      <title>【Linux Document】Memory Manager : Concept</title>
-      <link>https://cnjslw.github.io/posts/linuxdocument-00/</link>
-      <pubDate>Sat, 19 Feb 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://cnjslw.github.io/posts/linuxdocument-00/</guid>
-      <description>Linux官方文档阅读笔记</description>
     </item>
     
   </channel>

@@ -26,6 +26,15 @@
     </item>
     
     <item>
+      <title>【同步机制】RCU</title>
+      <link>https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-rcu/</link>
+      <pubDate>Mon, 15 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-rcu/</guid>
+      <description>RCU</description>
+    </item>
+    
+    <item>
       <title>【同步机制】mutex</title>
       <link>https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-mutex/</link>
       <pubDate>Tue, 05 Apr 2022 00:00:00 +0000</pubDate>

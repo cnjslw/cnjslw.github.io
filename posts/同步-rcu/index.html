@@ -3,23 +3,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>AWei’s Kernel Tour | 【计算机网络 01】概述</title>
+    <title>AWei’s Kernel Tour | 【同步机制】RCU</title>
     <meta name="description"
-        content="计算机网络 ">
-    <link rel="canonical" href="https://cnjslw.github.io/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C01-%E6%A6%82%E8%BF%B0/" />
+        content="RCU ">
+    <link rel="canonical" href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-rcu/" />
     <link rel="icon" type="image/x-icon" href="/images/linux_pic.ico">
-    <meta property="og:title" content="【计算机网络 01】概述" />
-<meta property="og:description" content="计算机网络" />
+    <meta property="og:title" content="【同步机制】RCU" />
+<meta property="og:description" content="RCU" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://cnjslw.github.io/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C01-%E6%A6%82%E8%BF%B0/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2022-07-17T00:00:00+00:00" />
-<meta property="article:modified_time" content="2022-07-17T00:00:00+00:00" />
+<meta property="og:url" content="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-rcu/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-08-15T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-08-15T00:00:00+00:00" />
 
 
 
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="【计算机网络 01】概述"/>
-<meta name="twitter:description" content="计算机网络"/>
+<meta name="twitter:title" content="【同步机制】RCU"/>
+<meta name="twitter:description" content="RCU"/>
 
     
     
@@ -212,24 +212,24 @@
             </div>
         
         <div class="hero-content">
-            <div class="hero-title">【计算机网络 01】概述</div>
+            <div class="hero-title">【同步机制】RCU</div>
             <div class="hero-subtitle"></div>
             <div class="hero-date">
-                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-7-17 &nbsp;</span>
-                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-7-17 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2022-8-15 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2022-8-15 &nbsp;</span>
                     <span class="no-wrap"><i class="fa fa-folder"></i>
                         收录于:
                         
                             <a href='
-                                /categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C
+                                /categories/linux-kernel
                             '>
-                                计算机网络
+                                Linux Kernel
                             </a>
                     </span>    
             </div>
             <div class="timelong">
-                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 59 &nbsp;</span>
-                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 1 分钟 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 318 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 2 分钟 &nbsp;</span>
                 <span class="no-wrap"><i class="fa fa-eye"></i> 阅读量: <span id="busuanzi_value_page_pv"></span></span>
             </div>
         </div>
@@ -265,71 +265,148 @@
     
         <div class="content">
             <div class="content-self">
-                <table>
-<thead>
-<tr>
-<th style="text-align:center">OSI七层网络模型</th>
-<th style="text-align:center">TCP/IP四层概念模型</th>
-<th style="text-align:center">对应网络协议</th>
-<th style="text-align:center">设备</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">应用层（Application）</td>
-<td style="text-align:center">应用层</td>
-<td style="text-align:center">HTTP, TFTP, FTP, NFS, WAIS, SMTP</td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center">表示层（Presentation）</td>
-<td style="text-align:center">^^</td>
-<td style="text-align:center">Telnet, Rlogin, SNMP, Gopher</td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center">会话层（Session）</td>
-<td style="text-align:center">^^</td>
-<td style="text-align:center">SMTP, DNS</td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center">传输层（Transport）</td>
-<td style="text-align:center">传输层</td>
-<td style="text-align:center">TCP, UDP</td>
-<td style="text-align:center">四层交换机、四层路由器</td>
-</tr>
-<tr>
-<td style="text-align:center">网络层（Transport）</td>
-<td style="text-align:center">网络层</td>
-<td style="text-align:center">IP, ICMP, ARP, RARP, AKP, UUCP</td>
-<td style="text-align:center">路由器、三层交换机</td>
-</tr>
-<tr>
-<td style="text-align:center">数据链路层（Data Link）</td>
-<td style="text-align:center">数据链路层</td>
-<td style="text-align:center">FDDI, Ethernet, Arpanet, PDN, SLIP, PPP</td>
-<td style="text-align:center">网桥、以太网交换机、网卡</td>
-</tr>
-<tr>
-<td style="text-align:center">物理层（Physical）</td>
-<td style="text-align:center">^^</td>
-<td style="text-align:center">IEEE 802.1A, IEEE 802.2到IEEE 802.11</td>
-<td style="text-align:center">中继器、集线器、双绞线</td>
-</tr>
-</tbody>
-</table>
-<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202307121046510.png" alt="aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X2pwZy90VDl0VDJzaWJpYTVCZWEzbjNma09kbDNoaWN4eTFUNm9Zb05JeTJsYXl3ejFGV0tydGdCUGRGMGZTZmM4bFVKc0t3Ym55c0oyOE5vYkE0OXVaMWd4ZHE4Zy82NDA|1200"></p>
-<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202307121046512.gif" alt="OSI七层协议模型、TCP_IP四层模型学习笔记 - 好就分享 - 博客园|1200"></p>
-<h1 id="tcpip协议族">TCP/IP协议族</h1>
-<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202307121046513.png" alt="Pasted image 20230712104056|800"></p>
-<h1 id="tcpip分层">TCP/IP分层</h1>
-<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202307121046514.png" alt="Pasted image 20230712104303|800"></p>
-<h1 id="分用">分用</h1>
-<p>每层协议盒都要去检查报文首部中的协议标识，以确定接收数据的上层协议。这个过程称作分用(Demultiplexing)</p>
-<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202307121046515.png" alt="Pasted image 20230712104348|800"></p>
-<h1 id="封装">封装</h1>
-<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202307121046516.png" alt="Pasted image 20230712104542|800"></p>
+                <h1 id="rcu是什么">RCU是什么</h1>
+<p>在Linux中，RCU代表&quot;Read-Copy-Update&quot;（读-拷贝-更新），是一种用于实现并发性的技术。它主要应用于多核系统中的共享数据结构，以提高读操作的性能，并减少对写操作的影响。</p>
+<h1 id="为什么需要rcu它解决了什么问题">为什么需要RCU？它解决了什么问题</h1>
+<h2 id="性能提升">性能提升</h2>
+<p>当线程在多个cpu上争抢进入临界区的时候，都会操作那个在多个cpu之间共享的数据lock。cpu0操作了lock，为了数据的一致性，cpu0的操作会导致其他cpu的L1中的lock变成无效，在随后的来自其他cpu对lock的访问会导致L1 cache miss（更准确的说是communication cache miss），必须从下一个level的cache中获取，同样的，其他cpu的L1 cache中的lock也被设定为invalid，从而引起下一次其他cpu上的communication cache miss。</p>
+<p>RCU的read side不需要访问这样的“共享数据”，从而极大的提升了reader侧的性能。</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310022252685.png" alt="Pasted image 20231002002640|800"></p>
+<h2 id="支持writer和readers的并发">支持writer和readers的并发</h2>
+<p>spin lock是互斥的，任何时候只有一个thread（reader or writer）进入临界区，rwlock要好一些，允许多个reader并发执行，提高了性能。不过，reader和updater不能并发执行，RCU解除了这些限制，允许一个updater（不能多个updater进入临界区，这可以通过spinlock来保证）和多个reader并发执行。</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310022252686.png" alt="Pasted image 20231002002921|800"></p>
+<p>rwlock允许多个reader并发，因此，在上图中，三个rwlock reader可以并行执行。当rwlock writer试图进入的时候（红色虚线），只能spin，直到所有的reader退出临界区。一旦有rwlock writer在临界区，任何的reader都不能进入，直到writer完成数据更新，立刻临界区。绿色的reader thread们又可以并发访问了。</p>
+<p>rwlock的一个特点就是确定性，白色的reader一定是读取的是old data，而绿色的reader一定获取的是writer更新之后的new data。</p>
+<p>RCU和传统的锁机制不同，当RCU updater进入临界区的时候，即便是有reader在也无所谓，它可以长驱直入，不需要spin。同样的，即便有一个updater正在临界区里面工作，这并不能阻挡RCU reader的步伐。由此可见，RCU的并发性能要好于rwlock，特别如果考虑cpu的数目比较多的情况，那些处于spin状态的cpu在无谓的消耗，多么可惜，随着cpu的数目增加，rwlock性能不断的下降。</p>
+<p>RCU reader和updater由于可以并发执行，因此这时候的被保护的数据有两份，一份是旧的，一份是新的，对于白色的RCU reader，其读取的数据可能是旧的，也可能是新的，和数据访问的timing相关，当然，当RCU update完成更新之后，新启动的RCU reader（绿色block）读取的一定是新的数据。</p>
+<h1 id="实现原理">实现原理</h1>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310022252687.png" alt="Pasted image 20231002003542|800"></p>
+<p>RCU涉及的数据有两种，一个是指向要保护数据的指针，我们称之RCU protected pointer。另外一个是通过指针访问的共享数据，我们称之RCU protected data，当然，这个数据必须是动态分配的  。对共享数据的访问有两种，一种是writer，即对数据要进行更新，另外一种是reader。如果在有reader在临界区内进行数据访问，对于传统的，基于锁的同步机制而言，reader会阻止writer进入（例如spin lock和rw spin lock。seqlock不会这样，因此本质上seqlock也是lock-free的），因为在有reader访问共享数据的情况下，write直接修改data会破坏掉共享数据。怎么办呢？当然是移除了reader对共享数据的访问之后，再让writer进入了（writer稍显悲剧）。对于RCU而言，其原理是类似的，为了能够让writer进入，必须首先移除reader对共享数据的访问，怎么移除呢？创建一个新的copy是一个不错的选择。</p>
+<p>因此RCU writer的动作分成了两步：</p>
+<p>（1）removal：write分配一个new version的共享数据进行数据更新，更新完毕后将RCU protected pointer指向新版本的数据。一旦把RCU protected pointer指向的新的数据，也就意味着将其推向前台，公布与众（reader都是通过pointer访问数据的）。通过这样的操作，原来read 0、1、2对共享数据的reference被移除了（对于新版本的受RCU保护的数据而言），它们都是在旧版本的RCU protected data上进行数据访问。</p>
+<p>（2）reclamation：共享数据不能有两个版本，因此一定要在适当的时机去回收旧版本的数据。当然，不能太着急，不能reader线程还访问着old version的数据的时候就强行回收，这样会让reader crash的。reclamation必须发生在所有的访问旧版本数据的那些reader离开临界区之后再回收，而这段等待的时间被称为grace period。</p>
+<p>顺便说明一下，reclamation并不需要等待read3和4，因为write端的为RCU protected pointer赋值的语句是原子的，乱入的reader线程要么看到的是旧的数据，要么是新的数据。对于read3和4，它们访问的是新的共享数据，因此不会reference旧的数据，因此reclamation不需要等待read3和4离开临界区。</p>
+<h1 id="接口">接口</h1>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310022252688.png" alt="Pasted image 20231002160900|800"></p>
+<h2 id="reader接口">Reader接口</h2>
+<p>（1）rcu_read_lock：用来标识RCU read side临界区的开始。</p>
+<p>（2）rcu_dereference：该接口用来获取RCU protected pointer。reader要访问RCU保护的共享数据，当然要获取RCU protected pointer，然后通过该指针进行dereference的操作。</p>
+<p>（3）rcu_read_unlock：用来标识reader离开RCU read side临界区</p>
+<h2 id="writer接口">Writer接口</h2>
+<p>（1）rcu_assign_pointer：该接口被writer用来进行removal的操作，在witer完成新版本数据分配和更新之后，调用这个接口可以让RCU protected pointer指向RCU protected data。即publish后进入grace period 。</p>
+<p>（2）synchronize_rcu：writer端的操作可以是同步的，也就是说，完成更新操作之后，可以调用该接口函数等待所有在旧版本数据上的reader线程离开临界区，一旦从该函数返回，说明旧的共享数据没有任何引用了，可以直接进行reclaimation的操作。</p>
+<p>（3）call_rcu：当然，某些情况下（例如在softirq context中），writer无法阻塞，这时候可以调用call_rcu接口函数，该函数仅仅是注册了callback就直接返回了，在适当的时机会调用callback函数，完成reclaimation的操作。这样的场景其实是分开removal和reclaimation的操作在两个不同的线程中：updater和reclaimer。</p>
+<h1 id="一个使用的案例---链表节点的删除">一个使用的案例 - 链表节点的删除</h1>
+<p><em>案例来自术道经纬的一篇博文</em></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">//查找
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">int</span> <span class="nf">search</span><span class="p">(</span><span class="kt">long</span> <span class="n">key</span> <span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">result</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">struct</span> <span class="n">list_head</span> <span class="o">*</span><span class="n">lp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">struct</span> <span class="n">el</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl">	<span class="n">rcu_read_lock</span><span class="p">();</span><span class="c1">//关闭CPU的可抢占性能
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">list_for_each_entry_rcu</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">head</span><span class="p">,</span><span class="n">lp</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">key</span> <span class="o">==</span> <span class="n">key</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span> <span class="p">;</span> 
+</span></span><span class="line"><span class="cl">			<span class="n">rcu_read_unlock</span><span class="p">();</span><span class="c1">//打开CPU的可抢占性能
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="k">return</span> <span class="mi">1</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="n">rcu_read_unlock</span><span class="p">();</span><span class="c1">//打开CPU的可抢占性能
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">return</span> <span class="mi">0</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//删除
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">int</span> <span class="nf">delete</span><span class="p">(</span><span class="kt">long</span> <span class="n">key</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">struct</span> <span class="n">el</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">spin_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">listmutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="n">list_for_each_entry</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">head</span><span class="p">,</span><span class="n">lp</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">key</span><span class="o">==</span><span class="n">key</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="n">list_del_rcu</span><span class="p">(</span><span class="o">&amp;</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">list</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">			<span class="n">spin_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">listmutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">			<span class="n">synchronize_rcu</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">			<span class="n">kfree</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span> <span class="mi">1</span> <span class="p">;</span> 
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="n">spin_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">listmutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="mi">0</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>synchronize_rcu() 是关键的一步，代表writer两个阶段的转换（removal-&gt;reclamation），该调用给在synchronize之前的reader一段退出临界区的时间，被称为Grace Period（简称GP），以grace period为界，整个更新操作被划分为了&quot;removal&quot;和&quot;reclamation&quot;两个阶段，writer的角色也被对应地划分为了updater和reclaimer。removal阶段将一个节点从链表中移除，而等待所有reader解除对该节点的引用后，就进入回收/释放这个节点所占内存reclamation阶段。</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310022252689.png" alt="Pasted image 20231002105151|800"></p>
+<h1 id="gp-的生命周期">GP 的生命周期</h1>
+<h2 id="何时开始">何时开始</h2>
+<p>前文的例子中提到，synchronize_rcu()（或者call_rcu） 是GP开始，writer的操作被分为两个阶段removal和reclamation，分别作为updater和reclaimer两种角色，负责新数据的更新，和旧数据的移除。</p>
+<h2 id="何时结束">何时结束</h2>
+<p>writer如何判断所有的reader已经退出临界区，从而移除旧数据呢？</p>
+<h3 id="qs">QS</h3>
+<p>什么是QS，QS是每一个reader从退出临界区，到可以判定已经退出临界区的这段时间，被称为 Quiescent State。只有所有的reader都进入QS，writer才可以结束GP
+具体的做法是：分配一个 bitmap（在 CPU 这里一般叫做cpumask），开始一个 GP 后，将 bitmap 中所有的 bits 置 1，当一个 CPU 进入 QS 后，就将自己对应的 bit 清零。所有 bits 都被置 0 后，就可以判断 GP 的结束了。</p>
+<h3 id="tree-rcu">Tree RCU</h3>
+<p>因为众多reader访问bitmap，所以需要使用一个spinlock来保护，但是如果spinlock的竞争过于激烈对性能的影响不言而喻，所以采用层级化管理，某些reader被标记为leader，只有该leader的下属reader全部报告QS复位并且自己同样进入QS后，才会向自己的上级报告。这样一种树形结构，减少了锁竞争带来的性能问题。被称为Tree RCU（Linux中采用array形式组织）</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310022252690.png" alt="Pasted image 20231002163425|800"></p>
+<h1 id="srcu">SRCU</h1>
+<h2 id="什么是srcu它解决了什么问题">什么是SRCU？它解决了什么问题？</h2>
+<p>GP 是 RCU 实现 reader 和 writer 同步的关键，而它的长度取决于 reader 临界区的执行时间。如果其中某个 reader 在临界区中陷入了死循环，那么 GP 就无法结束，形成 RCU Stall。</p>
+<p>传统的 RCU，它对读取一侧的临界区的要求同spinlock一样，不能睡眠/阻塞。</p>
+<p>但是对于实时性系统，要求支持可抢占可睡眠的RCU的呼声越来越多，但是支持可睡眠的RCU会使得GP的时间变得很长，writer无法释放旧数据，存在内存耗尽的风险，所以一个折中的方案“Sleepable RCU”被提出，着力如何减少需要等待GP才能释放的内存总量。</p>
+<p>简而言之，SRCU是为了满足对于Linux实时性的要求而提出的可睡眠RCU</p>
+<h2 id="如何实现">如何实现</h2>
+<p>第一，SRCU 摒弃了异步的 call_rcu()，因为使用这个 API 的线程，理论上可以产生大量等待 GP 结束后释放的内存，而使用同步的 synchronize_rcu() 的线程，最多产生一个。SRCU 提供的对应API是 synchronize_srcu()。</p>
+<p>第二，如果系统中 CPU 数量较多，那么一个 reader 在临界区的阻塞可能影响众多的CPU，所以 SRCU 将整个系统进行了细分，划分为若干个 subsystem。这样，一个reader 只会影响和它同属一个 subsystem 的其他 CPU。</p>
+<p>第三，SRCU通过在进入/退出临界区时加/减一个 counter，借助 counter 的值来判断是否已退出</p>
+<hr>
+<p>[1] <a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-rwlock%E5%92%8Cseqlock/">AWei’s Kernel Tour | 【同步机制】rwlock和seqlock (cnjslw.github.io)</a></p>
+<p>[2] <a href="http://www.wowotech.net/kernel_synchronization/rcu_fundamentals.html">Linux内核同步机制之（七）：RCU基础</a></p>
+<p>[3] <a href="https://zhuanlan.zhihu.com/p/89439043">Linux 中的 RCU 机制 [一] - 原理与使用方法</a></p>
+<p>[4] <a href="https://zhuanlan.zhihu.com/p/104581361">Linux 中的 RCU 机制 [二] - GP 的处理</a></p>
+<p>[5] <a href="https://zhuanlan.zhihu.com/p/90223380">Linux 中的 RCU 机制 [三] - 性能与实时性</a></p>
 
             </div>
             
@@ -338,9 +415,19 @@
                     <span class="down-type-item">
                         <div class="type-text">
                             <a href='
-                                        /tags/#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C
+                                        /tags/#linux-kernel
                                     '>
-                                <i class="fa fa-tag"></i> #计算机网络
+                                <i class="fa fa-tag"></i> #Linux Kernel
+                            </a>
+                        </div>
+                    </span>
+                    
+                    <span class="down-type-item">
+                        <div class="type-text">
+                            <a href='
+                                        /tags/#%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6
+                                    '>
+                                <i class="fa fa-tag"></i> #同步机制
                             </a>
                         </div>
                     </span>
@@ -354,18 +441,18 @@
                     
     
         
-        <a href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF%E4%B8%8E%E5%8F%8B%E5%85%83/" class="pre">
+        <a href="https://cnjslw.github.io/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C01-%E6%A6%82%E8%BF%B0/" class="pre">
             <span class="pre-icon"><i class="fa fa-hand-o-left"></i></span>
             <div class="pre-title-root">
-                <span>【模板与泛型编程03】类模板和友元</span>
+                <span>【计算机网络 01】概述</span>
             </div>
         </a>
         
 
         
-        <a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-rcu/" class="next">
+        <a href="https://cnjslw.github.io/posts/%E6%8C%87%E4%BB%A4%E6%A6%82%E8%BF%B0/" class="next">
             <div class="next-title-root">
-                <span>【同步机制】RCU</span>
+                <span>【计算机组成原理与体系架构01】指令系统设计</span>
             </div>
             <span class="next-icon"><i class="fa fa-hand-o-right"></i></span>
         </a>
@@ -477,9 +564,9 @@
     </div>
     <div class="list">
         
-            <a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-rcu/">
+            <a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-mutex/">
                 
-<a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-rcu/">
+<a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-mutex/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -488,18 +575,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【同步机制】RCU
+                【同步机制】mutex
             </div>
-            <div class="other-summary">RCU</div>
-            <div class="other-date">2022-8-15</div>
+            <div class="other-summary">mutex</div>
+            <div class="other-date">2022-4-5</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF%E4%B8%8E%E5%8F%8B%E5%85%83/">
+            <a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-rwlock%E5%92%8Cseqlock/">
                 
-<a href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF%E4%B8%8E%E5%8F%8B%E5%85%83/">
+<a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-rwlock%E5%92%8Cseqlock/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -508,18 +595,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【模板与泛型编程03】类模板和友元
+                【同步机制】rwlock和seqlock
             </div>
-            <div class="other-summary">类模板</div>
-            <div class="other-date">2022-6-22</div>
+            <div class="other-summary">rwlock和seqlock</div>
+            <div class="other-date">2022-3-22</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF/">
+            <a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-spinlock/">
                 
-<a href="https://cnjslw.github.io/posts/%E7%B1%BB%E6%A8%A1%E6%9D%BF/">
+<a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-spinlock/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -528,18 +615,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【模板与泛型编程02】类模板
+                【同步机制】SpinLock
             </div>
-            <div class="other-summary">类模板</div>
-            <div class="other-date">2022-6-20</div>
+            <div class="other-summary">SpinLock</div>
+            <div class="other-date">2022-3-19</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/">
+            <a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/">
                 
-<a href="https://cnjslw.github.io/posts/%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF/">
+<a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -548,18 +635,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【模板与泛型编程01】函数模板
+                【同步机制】原子操作
             </div>
-            <div class="other-summary">函数模板</div>
-            <div class="other-date">2022-6-8</div>
+            <div class="other-summary">原子操作</div>
+            <div class="other-date">2022-3-3</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/c&#43;&#43;%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-02/">
+            <a href="https://cnjslw.github.io/posts/linuxdocument-00/">
                 
-<a href="https://cnjslw.github.io/posts/c&#43;&#43;%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-02/">
+<a href="https://cnjslw.github.io/posts/linuxdocument-00/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -568,18 +655,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【C&#43;&#43;并发编程】线程同步与互斥
+                【Linux Document】Memory Manager : Concept
             </div>
-            <div class="other-summary">线程同步与互斥</div>
-            <div class="other-date">2022-5-25</div>
+            <div class="other-summary">Linux官方文档阅读笔记</div>
+            <div class="other-date">2022-2-19</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E7%8E%B0%E4%BB%A3c&#43;&#43;%E7%89%B9%E6%80%A7-04/">
+            <a href="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">
                 
-<a href="https://cnjslw.github.io/posts/%E7%8E%B0%E4%BB%A3c&#43;&#43;%E7%89%B9%E6%80%A7-04/">
+<a href="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -588,10 +675,10 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【现代C&#43;&#43;】容器
+                【Linux Kernel 0.12】启动流程
             </div>
-            <div class="other-summary">容器</div>
-            <div class="other-date">2022-4-29</div>
+            <div class="other-summary">Linux0.12的启动流程</div>
+            <div class="other-date">2023-2-12</div>
         </div>
     </div>
 </a>
