@@ -3,23 +3,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>AWei’s Kernel Tour | 【计算机组成原理与体系架构03】流水线升级</title>
+    <title>AWei’s Kernel Tour | 【网络系统】I/O模型</title>
     <meta name="description"
-        content="流水线升级 ">
-    <link rel="canonical" href="https://cnjslw.github.io/posts/%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%8D%87%E7%BA%A7/" />
+        content="I/O模型 ">
+    <link rel="canonical" href="https://cnjslw.github.io/posts/%E7%BD%91%E7%BB%9C-io%E6%A8%A1%E5%9E%8B/" />
     <link rel="icon" type="image/x-icon" href="/images/linux_pic.ico">
-    <meta property="og:title" content="【计算机组成原理与体系架构03】流水线升级" />
-<meta property="og:description" content="流水线升级" />
+    <meta property="og:title" content="【网络系统】I/O模型" />
+<meta property="og:description" content="I/O模型" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://cnjslw.github.io/posts/%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%8D%87%E7%BA%A7/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2023-03-09T00:00:00+00:00" />
-<meta property="article:modified_time" content="2023-03-09T00:00:00+00:00" />
+<meta property="og:url" content="https://cnjslw.github.io/posts/%E7%BD%91%E7%BB%9C-io%E6%A8%A1%E5%9E%8B/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-08-18T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-08-18T00:00:00+00:00" />
 
 
 
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="【计算机组成原理与体系架构03】流水线升级"/>
-<meta name="twitter:description" content="流水线升级"/>
+<meta name="twitter:title" content="【网络系统】I/O模型"/>
+<meta name="twitter:description" content="I/O模型"/>
 
     
     
@@ -212,24 +212,24 @@
             </div>
         
         <div class="hero-content">
-            <div class="hero-title">【计算机组成原理与体系架构03】流水线升级</div>
+            <div class="hero-title">【网络系统】I/O模型</div>
             <div class="hero-subtitle"></div>
             <div class="hero-date">
-                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2023-3-9 &nbsp;</span>
-                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2023-3-9 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2023-8-18 &nbsp;</span>
+                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2023-8-18 &nbsp;</span>
                     <span class="no-wrap"><i class="fa fa-folder"></i>
                         收录于:
                         
                             <a href='
-                                /categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BD%93%E7%B3%BB%E6%9E%B6%E6%9E%84
+                                /categories/linux-kernel
                             '>
-                                计算机组成原理与体系架构
+                                Linux Kernel
                             </a>
                     </span>    
             </div>
             <div class="timelong">
-                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 29 &nbsp;</span>
-                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 1 分钟 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 313 &nbsp;</span>
+                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 2 分钟 &nbsp;</span>
                 <span class="no-wrap"><i class="fa fa-eye"></i> 阅读量: <span id="busuanzi_value_page_pv"></span></span>
             </div>
         </div>
@@ -265,36 +265,229 @@
     
         <div class="content">
             <div class="content-self">
-                <h1 id="如何衡量处理器性能">如何衡量处理器性能</h1>
-<p>应用的执行时间等于指令数乘以CPI（Cycles Per Instruction，每指令执行周期数）再乘以时钟周期，当算法、程序、指令系统、编译器都确定之后，一个应用的指令数就确定下来了，时钟周期与结构设计、电路设计、生产工艺以及工作环境都有关系，本文注重讨论如何降低CPI，即如何通过结构设计提高流水线效率</p>
-<pre tabindex="0"><code>流水线CPI=理想CPI+结构相关阻塞周期数+RAW阻塞周期数+WAR阻塞周期数+WAW阻塞周期数+控制相关阻塞周期数
-</code></pre><h1 id="多发射">多发射</h1>
-<p>最直观的方法就是让处理器中==每级流水线都可以同时处理更多的指令，这被称为多发射数据通路技术==。例如双发射流水线意味着每一拍用PC从指令存储器中取两条指令，在译码级同时进行两条指令的译码、读源寄存器操作，还能同时执行两条指令的运算操作和访存操作，并同时写回两条指令的结果。那么双发射流水线的理想CPI就从单发射流水线的1降至0.5。
-要在处理器中支持多发射，==首先就要将处理器中的各种资源翻倍==，包括采用支持双端口的存储器。其次还要增加额外的阻塞判断逻辑，当同一个时钟周期执行的两条指令存在指令相关时，也需要进行阻塞。包括数据相关、控制相关和结构相关在内的阻塞机制都需要改动。</p>
-<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309272322912.png" alt="Pasted image 20230927223503|800|800"></p>
-<p>多发射数据通路技术虽然从理论上而言可以大幅度降低处理器的CPI，但是由于各类相关所引起的阻塞影响，其实际执行效率是要大打折扣的。所以我们还要进一步从减少各类相关引起的阻塞这个方面入手来提高流水线的执行效率。</p>
-<h1 id="动态调度">动态调度</h1>
+                <p><em>本篇是阅读笔记, 所有内容来自公众号bin的技术小屋, 非原创, 感谢大神的无私分享</em></p>
+<h1 id="阻塞与非阻塞">阻塞与非阻塞</h1>
+<p>阻塞与非阻塞主要发生在第一阶段：网卡将网络把数据发送到内核协议栈进行处理</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310041724108.png" alt="Pasted image 20230902175739|800"></p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310041724109.png" alt="Pasted image 20230902175746|800"></p>
+<p>第二阶段，从内核的数据缓冲区等待数据从内核拷贝到用户空间，无论阻塞还是非阻塞IO都会等待数据拷贝的完成</p>
+<h1 id="同步与异步">同步与异步</h1>
+<p>同步与异步主要的区别发生在第二阶段：数据拷贝阶段。
+Linux下的 epoll和Mac 下的 kqueue都属于同步 IO。</p>
+<h2 id="同步">同步</h2>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310041724110.png" alt="Pasted image 20230902180004|800"></p>
+<h2 id="异步">异步</h2>
+<p>异步模式下是由内核来执行第二阶段的数据拷贝操作，当内核执行完第二阶段，会通知用户线程IO操作已经完成，并将数据回调给用户线程。所以在异步模式下 数据准备阶段和数据拷贝阶段均是由内核来完成，不会对应用程序造成任何阻塞。</p>
+<p>基于以上特征，我们可以看到异步模式需要内核的支持，比较依赖操作系统底层的支持。
+在目前流行的操作系统中，只有Windows 中的 IOCP才真正属于异步 IO，实现的也非常成熟。但Windows很少用来作为服务器使用。
+但Linux kernel 在5.1版本由Facebook的大神Jens Axboe引入了新的异步IO库io_uring 改善了原来Linux native AIO的一些性能问题。性能相比Epoll以及之前原生的AIO提高了不少，值得关注。</p>
+<h1 id="io模型">IO模型</h1>
+<p>《UNIX 网络编程》一书中介绍了五种IO模型：阻塞IO,非阻塞IO,IO多路复用,信号驱动IO,异步IO，每一种IO模型的出现都是对前一种的升级优化</p>
+<h2 id="阻塞io">阻塞IO</h2>
+<p>阻塞IO模型下的写操作做事风格比较硬刚，非得要把全部的发送数据写入发送缓冲区才肯善罢甘休。</p>
+<h2 id="非阻塞io">非阻塞IO</h2>
+<p>非阻塞写的特点是能写多少写多少，写不下了，就立即返回。并将写入到发送缓冲区的字节数返回给应用程序，方便用户线程不断的轮训尝试将剩下的数据写入发送缓冲区中。和一点与阻塞IO的写是不同的</p>
+<h2 id="io多路复用">IO多路复用</h2>
+<p>多路：我们的核心需求是要用尽可能少的线程来处理尽可能多的连接，这里的多路指的就是我们需要处理的众多连接。</p>
+<p>复用：核心需求要求我们使用尽可能少的线程，尽可能少的系统开销去处理尽可能多的连接（多路），那么这里的复用指的就是用有限的资源，比如用一个线程或者固定数量的线程去处理众多连接上的读写事件。换句话说，在阻塞IO模型中一个连接就需要分配一个独立的线程去专门处理这个连接上的读写，到了IO多路复用模型中，多个连接可以复用这一个独立的线程去处理这多个连接上的读写</p>
+<p>显而易见,非阻塞IO能够满足我们的需要,但是非阻塞IO模型最大的问题就是需要不断的发起系统调用去轮询各个Socket中的接收缓冲区是否有数据到来，频繁的系统调用随之带来了大量的上下文切换开销。随着并发量的提升，这样也会导致非常严重的性能问题。</p>
+<p><strong>那么如何避免频繁的系统调用同时又可以实现我们的核心需求呢？</strong></p>
+<p>这就需要操作系统的内核来支持这样的操作，我们可以把频繁的轮询操作交给操作系统内核来替我们完成，这样就避免了在用户空间频繁的去使用系统调用来轮询所带来的性能开销。</p>
+<h3 id="select">select</h3>
+<h4 id="原理">原理</h4>
+<p>select是操作系统内核提供给我们使用的一个系统调用，它解决了在非阻塞IO模型中需要不断的发起系统IO调用去轮询各个连接上的Socket接收缓冲区所带来的用户空间与内核空间不断切换的系统开销。</p>
+<p>select系统调用将轮询的操作交给了内核来帮助我们完成，从而避免了在用户空间不断的发起轮询所带来的的系统性能开销。</p>
+<h4 id="流程">流程</h4>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310041724112.png" alt="Pasted image 20230902205355|800"></p>
+<ul>
+<li>首先用户线程在发起select系统调用的时候会阻塞在select系统调用上。此时，用户线程从用户态切换到了内核态完成了一次上下文切换</li>
+<li>用户线程将需要监听的Socket对应的文件描述符fd数组通过select系统调用传递给内核。此时，用户线程将用户空间中的文件描述符fd数组拷贝到内核空间。这里的<strong>文件描述符数组</strong>其实是一个BitMap，BitMap下标为文件描述符fd，下标对应的值为：1表示该fd上有读写事件，0表示该fd上没有读写事件。</li>
+<li>当用户线程调用完select后开始进入阻塞状态，内核开始轮询遍历fd数组，查看fd对应的Socket接收缓冲区中是否有数据到来。如果有数据到来，则将fd对应BitMap的值设置为1。如果没有数据到来，则保持值为0。</li>
+<li>内核遍历一遍fd数组后，如果发现有些fd上有IO数据到来，则将修改后的fd数组返回给用户线程。此时，会将fd数组从内核空间拷贝到用户空间。</li>
+<li>当内核将修改后的fd数组返回给用户线程后，用户线程解除阻塞，由用户线程开始遍历fd数组然后找出fd数组中值为1的Socket文件描述符。最后对这些Socket发起系统调用读取数据。</li>
+<li>由于内核在遍历的过程中已经修改了fd数组，所以在用户线程遍历完fd数组后获取到IO就绪的Socket后，就需要重置fd数组，并重新调用select传入重置后的fd数组，让内核发起新的一轮遍历轮询。</li>
+</ul>
+<h4 id="性能分析">性能分析</h4>
+<ul>
+<li>在发起select系统调用以及返回时，用户线程各发生了一次用户态到内核态以及内核态到用户态的上下文切换开销。<strong>发生2次上下文切换</strong></li>
+<li>在发起select系统调用以及返回时，用户线程在内核态需要将文件描述符集合从用户空间拷贝到内核空间。以及在内核修改完文件描述符集合后，又要将它从内核空间拷贝到用户空间。<strong>发生2次文件描述符集合的拷贝</strong></li>
+<li>虽然由原来在用户空间发起轮询优化成了在内核空间发起轮询但select不会告诉用户线程到底是哪些Socket上发生了IO就绪事件，只是对IO就绪的Socket作了标记，用户线程依然要遍历文件描述符集合去查找具体IO就绪的Socket。时间复杂度依然为O(n)。</li>
+<li>内核会对原始的文件描述符集合进行修改。导致每次在用户空间重新发起select调用时，都需要对文件描述符集合进行重置。</li>
+<li>BitMap结构的文件描述符集合，长度为固定的1024,所以只能监听0~1023的文件描述符。</li>
+<li>select系统调用 不是线程安全的。</li>
+</ul>
+<h3 id="poll">poll</h3>
+<p>select中使用的文件描述符集合是采用的固定长度为1024的BitMap结构的fd_set，而poll换成了一个pollfd结构没有固定长度的数组，这样就没有了最大描述符数量的限制（当然还会受到系统文件描述符限制）
+poll只是改进了select只能监听1024个文件描述符的数量限制，但是并没有在性能方面做出改进。和select上本质并没有多大差别。</p>
+<ul>
+<li>同样需要在内核空间和用户空间中对文件描述符集合进行轮询，查找出IO就绪的Socket的时间复杂度依然为O(n)。</li>
+<li>同样需要将包含大量文件描述符的集合整体在用户空间和内核空间之间来回复制，<strong>无论这些文件描述符是否就绪</strong>。他们的开销都会随着文件描述符数量的增加而线性增大。</li>
+<li>select，poll在每次新增，删除需要监听的socket时，都需要将整个新的socket集合全量传至内核。</li>
+</ul>
+<h3 id="epoll">epoll</h3>
+<h4 id="socket创建">Socket创建</h4>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310041724113.png" alt="Pasted image 20230902225014|800"></p>
+<p>进程内打开的所有文件是通过一个数组fd_array来进行组织管理，数组的下标即为我们常提到的文件描述符，数组中存放的是对应的文件数据结构struct file。每打开一个文件，内核都会创建一个struct file与之对应，并在fd_array中找到一个空闲位置分配给它，数组中对应的下标，就是我们在用户空间用到的文件描述符。</p>
+<p>c
+static const struct file_operations socket_file_ops = {<br>
+  .owner =  THIS_MODULE,<br>
+  .llseek =  no_llseek,<br>
+  .read_iter =  sock_read_iter,<br>
+  .write_iter =  sock_write_iter,<br>
+  .poll =    sock_poll,<br>
+  .unlocked_ioctl = sock_ioctl,<br>
+  .mmap =    sock_mmap,<br>
+  .release =  sock_close,<br>
+  .fasync =  sock_fasync,<br>
+  .sendpage =  sock_sendpage,<br>
+  .splice_write = generic_splice_sendpage,<br>
+  .splice_read =  sock_splice_read,<br>
+};</p>
+<p>我们在用户空间对Socket发起的读写等系统调用，进入内核首先会调用的是Socket对应的struct file中指向的socket_file_ops。<strong>比如</strong>：对Socket发起write写操作，在内核中首先被调用的就是socket_file_ops中定义的sock_write_iter。Socket发起read读操作内核中对应的则是sock_read_iter。</p>
+<h4 id="socket内核结构这段有点没明白">Socket内核结构(这段有点没明白)</h4>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310041724114.png" alt="Pasted image 20230902225319|800"></p>
+<ol>
+<li>
+<p>当我们调用accept后，内核会基于监听Socket创建出来一个新的Socket专门用于与客户端之间的网络通信。并将监听Socket中的Socket操作函数集合（inet_stream_ops）ops赋值到新的Socket的ops属性中。</p>
+</li>
+<li>
+<p>接着内核会为已连接的Socket创建struct file并初始化，并把Socket文件操作函数集合（socket_file_ops）赋值给struct file中的f_ops指针。然后将struct socket中的file指针指向这个新分配申请的struct file结构体。</p>
+</li>
+</ol>
 <blockquote>
-<p>如果我们用道路交通来类比的话，多发射数据通路就类似于把马路从单车道改造为多车道，但是这个多车道的马路有个奇怪的景象——速度快的车（如跑车）不能超过前面速度慢的车（如马车），即使马车前面的车道是空闲的。直觉上我们肯定觉得这样做效率低，只要车道有空闲，就应该允许后面速度快的车超过前面速度慢的车。这就是动态调度的基本出发点</p>
+<p>内核会维护两个队列：</p>
+<ul>
+<li>一个是已经完成TCP三次握手，连接状态处于established的连接队列。内核中为icsk_accept_queue。</li>
+<li>一个是还没有完成TCP三次握手，连接状态处于syn_rcvd的半连接队列。</li>
+</ul>
 </blockquote>
-<p>动态调度器通过分析指令之间的依赖关系和资源的可用性，选择最合适的指令进行执行。它可以重新排序指令的执行顺序，以最大程度地减少指令之间的相关性和等待时间。这种指令重排序可以利用程序中的并行性，提高指令级并行和数据流并行的执行效率。</p>
-<p>通过动态调度，CPU可以更好地隐藏指令延迟和资源竞争的影响，提高指令的吞吐量和整体性能。动态调度器还可以对指令进行一些优化，比如重命名寄存器、执行细分等，以进一步提高执行效率。</p>
-<h1 id="转移预测">转移预测</h1>
-<p>现代处理器普遍采用==硬件转移预测机制==来解决转移指令引起的控制相关阻塞，==其基本思路是在转移指令的取指或译码阶段预测出转移指令的方向和目标地址，并从预测的目标地址继续取指令执行，这样在猜对的情况下就不用阻塞流水线==。</p>
-<p>既然是猜测，就有错误的可能。硬件转移预测的实现分为两个步骤：第一步是预测，即在取指或译码阶段预测转移指令是否跳转以及转移的目标地址，并根据预测结果进行后续指令的取指；第二步是确认，即在转移指令执行完毕后，比较最终确定的转移条件和转移目标与之前预测的结果是否相同，如果不同则需要取消预测后的指令执行，并从正确的目标重新取指执行。</p>
-<h1 id="高速缓存">高速缓存</h1>
-<p>Cache是微体系结构的概念，它没有程序上的意义，没有独立的编址空间，处理器访问Cache和访问存储器使用的是相同的地址，因而Cache对于编程功能正确性而言是透明的</p>
-<h2 id="cache设计需要考虑的问题">Cache设计需要考虑的问题</h2>
-<h3 id="cache索引方式">Cache索引方式</h3>
-<p>Cache的容量远小于内存，会涉及多个内存单元映射到同一个Cache单元的情况，具体怎么映射需要考虑。通常分为3种索引方式：直接相连、全相连和组相连。</p>
-<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309272322913.png" alt="Pasted image 20230927230933|800"></p>
-<h3 id="cache与下一层存储的数据关系">Cache与下一层存储的数据关系</h3>
-<p>即写策略，分为写穿透和写回两种。存数指令需要修改下一层存储的值，如果将修改后的值暂时放在Cache中，当Cache替换回下一层存储时再写回，则称为写回Cache；如果每条存数指令都要立即更新下一层存储的值，则称为写穿透Cache。</p>
-<h3 id="cache的替换策略">Cache的替换策略</h3>
-<p>分为随机替换、LRU替换和FIFO替换。当发生Cache失效而需要取回想要的Cache行，此时如果Cache满了，则需要进行替换。进行Cache替换时，如果有多个Cache行可供替换，可以选择随机进行替换，也可以替换掉最先进入Cache的Cache行（FIFO替换），或者替换掉最近最少使用的Cache行（LRU替换）。</p>
+<ol start="3">
+<li>然后调用socket-&gt;ops-&gt;accept，从Socket内核结构图中我们可以看到其实调用的是inet_accept，该函数会在icsk_accept_queue中查找是否有已经建立好的连接，如果有的话，直接从icsk_accept_queue中获取已经创建好的struct sock。并将这个struct sock对象赋值给struct socket中的sock指针。</li>
+</ol>
+<p>struct sock在struct socket中是一个非常核心的内核对象，正是在这里定义了我们在介绍网络包的接收发送流程中提到的接收队列，发送队列，等待队列，数据就绪回调函数指针，内核协议栈操作函数集合</p>
+<ul>
+<li>根据创建Socket时发起的系统调用sock_create中的protocol参数(对于TCP协议这里的参数值为SOCK_STREAM)查找到对于 tcp 定义的操作方法实现集合 inet_stream_ops 和tcp_prot。并把它们分别设置到socket-&gt;ops和sock-&gt;sk_prot上。</li>
+</ul>
+<blockquote>
+<p>socket相关的操作接口定义在inet_stream_ops函数集合中，负责对上给用户提供接口。而socket与内核协议栈之间的操作接口定义在struct sock中的sk_prot指针上，这里指向tcp_prot协议操作函数集合。</p>
+</blockquote>
+<p>对Socket发起的系统IO调用，在内核中首先会调用Socket的文件结构struct file中的file_operations文件操作集合，然后调用struct socket中的ops指向的inet_stream_opssocket操作函数，最终调用到struct sock中sk_prot指针指向的tcp_prot内核协议栈操作函数接口集合</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310041724115.png" alt="Pasted image 20230902231345|800"></p>
+<ul>
+<li>将struct sock 对象中的sk_data_ready 函数指针设置为 sock_def_readable，在Socket数据就绪的时候内核会回调该函数。</li>
+<li>struct sock中的等待队列中存放的是系统IO调用发生阻塞的进程fd，以及相应的回调函数。<strong>记住这个地方，后边介绍epoll的时候我们还会提到！</strong></li>
+</ul>
+<h4 id="阻塞io中用户进程阻塞以及唤醒原理">阻塞IO中用户进程阻塞以及唤醒原理</h4>
+<ul>
+<li>首先我们在用户进程中对Socket进行read系统调用时，用户进程会从用户态转为内核态。</li>
+<li>在进程的struct task_struct结构找到fd_array，并根据Socket的文件描述符fd找到对应的struct file，调用struct file中的文件操作函数结合file_operations，read系统调用对应的是sock_read_iter。</li>
+<li>在sock_read_iter函数中找到struct file指向的struct socket，并调用socket-&gt;ops-&gt;recvmsg，这里我们知道调用的是inet_stream_ops集合中定义的inet_recvmsg。</li>
+<li>在inet_recvmsg中会找到struct sock，并调用sock-&gt;skprot-&gt;recvmsg,这里调用的是tcp_prot集合中定义的tcp_recvmsg函数。</li>
+</ul>
+<p>阻塞流程:
+<img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310041724116.png" alt="Pasted image 20230902231803|800"></p>
+<ul>
+<li>首先会在DEFINE_WAIT中创建struct sock中等待队列上的等待类型wait_queue_t。</li>
+<li>调用sk_sleep(sk)获取struct sock对象中的等待队列头指针wait_queue_head_t。</li>
+<li>调用prepare_to_wait将新创建的等待项wait_queue_t插入到等待队列中，并将进程设置为可打断 INTERRUPTIBL。</li>
+<li>调用sk_wait_event让出CPU，进程进入睡眠状态。</li>
+</ul>
+<p>唤醒流程:
+<img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310041724117.png" alt="Pasted image 20230902232424|800"></p>
+<ul>
+<li>当软中断将sk_buffer放到Socket的接收队列上时，接着就会调用数据就绪函数回调指针sk_data_ready，前边我们提到，这个函数指针在初始化的时候指向了sock_def_readable函数。</li>
+<li>在sock_def_readable函数中会去获取socket-&gt;sock-&gt;sk_wq等待队列。在wake_up_common函数中从等待队列sk_wq中找出一个等待项wait_queue_t，回调注册在该等待项上的func回调函数（wait_queue_t-&gt;func）,创建等待项wait_queue_t是我们提到，这里注册的回调函数是autoremove_wake_function。</li>
+<li>在autoremove_wake_function函数中，根据等待项wait_queue_t上的private关联的阻塞进程fd调用try_to_wake_up唤醒阻塞在该Socket上的进程。</li>
+</ul>
+<h4 id="epoll_create创建epoll对象">epoll_create创建epoll对象</h4>
+<p>epoll_create是内核提供给我们创建epoll对象的一个系统调用，当我们在用户进程中调用epoll_create时，内核会为我们创建一个struct eventpoll对象，并且也有相应的struct file与之关联，同样需要把这个struct eventpoll对象所关联的struct file放入进程打开的文件列表fd_array中管理。</p>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310041724118.png" alt="Pasted image 20230902232922|800"></p>
+<p>c
+struct eventpoll {</p>
+<pre><code>//等待队列，阻塞在epoll上的进程会放在这里
+wait_queue_head_t wq;
+
+//就绪队列，IO就绪的socket连接会放在这里
+//这里正是epoll比select ，poll高效之处，select ，poll返回的是全部的socket连接，我们需要在用户空间再次遍历找出真正IO活跃的Socket连接。而epoll只是返回IO活跃的Socket连接。用户进程可以直接进行IO操作。
+struct list_head rdllist;
+
+//红黑树用来管理所有监听的socket连接
+struct rb_root rbr;
+
+......
+</code></pre>
+<p>}</p>
+<h4 id="epoll_ctl向epoll对象中添加监听的socket">epoll_ctl向epoll对象中添加监听的Socket</h4>
+<ol>
+<li>首先要在epoll内核中创建一个表示Socket连接的数据结构struct epitem，而在epoll中为了综合性能的考虑，采用一颗红黑树来管理这些海量socket连接。所以struct epitem是一个红黑树节点。
+c</li>
+</ol>
+<p>struct epitem
+{
+//指向所属epoll对象
+struct eventpoll *ep; 
+//注册的感兴趣的事件,也就是用户空间的epoll_event  <br>
+struct epoll_event event; 
+//指向epoll对象中的就绪队列
+struct list_head rdllink;<br>
+//指向epoll中对应的红黑树节点
+struct rb_node rbn;  <br>
+//指向epitem所表示的socket-&gt;file结构以及对应的fd
+struct epoll_filefd ffd;               <br>
+}</p>
+<ol start="2">
+<li>在内核中创建完表示Socket连接的数据结构struct epitem后，我们就需要在Socket中的等待队列上创建等待项wait_queue_t并且注册epoll的回调函数ep_poll_callback。</li>
+</ol>
+<blockquote>
+<p>epoll的回调函数ep_poll_callback正是epoll同步IO事件通知机制的核心所在，也是区别于select，poll采用内核轮询方式的根本性能差异所在。</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202310041724119.png" alt="Pasted image 20230902233944|800"></p>
+<p>socket等待队列中类型是wait_queue_t无法关联到epitem。所以就出现了struct eppoll_entry结构体，它的作用就是关联Socket等待队列中的等待项wait_queue_t和epitem。</p>
+<ol start="3">
+<li>当在Socket的等待队列中创建好等待项wait_queue_t并且注册了epoll的回调函数ep_poll_callback，然后又通过eppoll_entry关联了epitem后。剩下要做的就是将epitem插入到epoll中的红黑树struct rb_root rbr中。</li>
+</ol>
+<h4 id="epoll_wait同步阻塞获取io就绪的socket">epoll_wait同步阻塞获取IO就绪的Socket</h4>
+<ol>
+<li>用户程序调用epoll_wait后，内核首先会查找epoll中的就绪队列eventpoll-&gt;rdllist是否有IO就绪的epitem。epitem里封装了socket的信息。如果就绪队列中有就绪的epitem，就将就绪的socket信息封装到epoll_event返回。</li>
+<li>如果eventpoll-&gt;rdllist就绪队列中没有IO就绪的epitem，则会创建等待项wait_queue_t，将用户进程的fd关联到wait_queue_t-&gt;private上，并在等待项wait_queue_t-&gt;func上注册回调函数default_wake_function。最后将等待项添加到epoll中的等待队列中。用户进程让出CPU，进入阻塞状态。</li>
+<li></li>
+</ol>
+<ul>
+<li>当网络数据包在软中断中经过内核协议栈的处理到达socket的接收缓冲区时，紧接着会调用socket的数据就绪回调指针sk_data_ready，回调函数为sock_def_readable。在socket的等待队列中找出等待项，其中等待项中注册的回调函数为ep_poll_callback。</li>
+<li>在回调函数ep_poll_callback中，根据struct eppoll_entry中的struct wait_queue_t wait通过container_of宏找到eppoll_entry对象并通过它的base指针找到封装socket的数据结构struct epitem，并将它加入到epoll中的就绪队列rdllist中。</li>
+<li>随后查看epoll中的等待队列中是否有等待项，也就是说查看是否有进程阻塞在epoll_wait上等待IO就绪的socket。如果没有等待项，则软中断处理完成。</li>
+<li>如果有等待项，则回到注册在等待项中的回调函数default_wake_function,在回调函数中唤醒阻塞进程，并将就绪队列rdllist中的epitem的IO就绪socket信息封装到struct epoll_event中返回。</li>
+<li>用户进程拿到epoll_event获取IO就绪的socket，发起系统IO调用读取数据。</li>
+</ul>
+<p>总结: 
+经过上边对epoll工作过程的详细解读，我们知道，当我们监听的socket上有数据到来时，软中断会执行epoll的回调函数ep_poll_callback,在回调函数中会将epoll中描述socket信息的数据结构epitem插入到epoll中的就绪队列rdllist中。随后用户进程从epoll的等待队列中被唤醒，epoll_wait将IO就绪的socket返回给用户进程，随即epoll_wait会清空rdllist。</p>
+<h4 id="边缘触发与边缘触发">边缘触发与边缘触发</h4>
+<p><strong>水平触发</strong>和<strong>边缘触发</strong>最关键的<strong>区别</strong>就在于当socket中的接收缓冲区还有数据可读时。<strong>epoll_wait是否会清空rdllist。</strong></p>
+<ul>
+<li>
+<p><strong>水平触发</strong>：在这种模式下，用户线程调用epoll_wait获取到IO就绪的socket后，对Socket进行系统IO调用读取数据，假设socket中的数据只读了一部分没有全部读完，这时再次调用epoll_wait，epoll_wait会检查这些Socket中的接收缓冲区是否还有数据可读，如果还有数据可读，就将socket重新放回rdllist。所以当socket上的IO没有被处理完时，再次调用epoll_wait依然可以获得这些socket，用户进程可以接着处理socket上的IO事件。</p>
+</li>
+<li>
+<p><strong>边缘触发：</strong> 在这种模式下，epoll_wait就会直接清空rdllist，不管socket上是否还有数据可读。所以在边缘触发模式下，当你没有来得及处理socket接收缓冲区的剩下可读数据时，再次调用epoll_wait，因为这时rdlist已经被清空了，socket不会再次从epoll_wait中返回，所以用户进程就不会再次获得这个socket了，也就无法在对它进行IO处理了。<strong>除非，这个socket上有新的IO数据到达</strong>，根据epoll的工作过程，该socket会被再次放入rdllist中。</p>
+</li>
+</ul>
+<blockquote>
+<p>如果你在边缘触发模式下，处理了部分socket上的数据，那么想要处理剩下部分的数据，就只能等到这个socket上再次有网络数据到达。</p>
+</blockquote>
+<h2 id="信号驱动io">信号驱动IO</h2>
+<p>在信号驱动IO模型下，用户进程操作通过系统调用 sigaction 函数发起一个 IO 请求，在对应的socket注册一个信号回调，此时不阻塞用户进程，进程会继续工作。当内核数据就绪时，内核就为该进程生成一个 SIGIO 信号，通过信号回调通知进程进行相关 IO 操作。</p>
+<p>这里需要注意的是：信号驱动式 IO 模型依然是同步IO，因为它虽然可以在等待数据的时候不被阻塞，也不会频繁的轮询，但是当数据就绪，内核信号通知后，用户进程依然要自己去读取数据，在数据拷贝阶段发生阻塞。</p>
+<p>但是实际上，使用TCP协议通信时，信号驱动IO模型几乎不会被采用。原因如下：</p>
+<ul>
+<li>信号IO 在大量 IO 操作时可能会因为信号队列溢出导致没法通知</li>
+<li>SIGIO 信号是一种 Unix 信号，信号没有附加信息，如果一个信号源有多种产生信号的原因，信号接收者就无法确定究竟发生了什么。而 TCP socket 生产的信号事件有七种之多，这样应用程序收到 SIGIO，根本无从区分处理。</li>
+</ul>
+<p>但信号驱动IO模型可以用在 UDP通信上，因为UDP 只有一个数据请求事件，这也就意味着在正常情况下 UDP 进程只要捕获 SIGIO 信号，就调用 read 系统调用读取到达的数据。如果出现异常，就返回一个异常错误。</p>
+<h1 id="异步io">异步IO</h1>
+<p>异步IO模型下，IO操作在数据准备阶段和数据拷贝阶段均是由内核来完成，不会对应用程序造成任何阻塞。应用进程只需要在指定的数组中引用数据即可。</p>
+<p>异步 IO 与信号驱动 IO 的主要区别在于：信号驱动 IO 由内核通知何时可以开始一个 IO 操作，而异步 IO由内核通知 IO 操作何时已经完成。</p>
 <hr>
-<p>[1] <a href="https://foxsen.github.io/archbase/%E6%8C%87%E4%BB%A4%E6%B5%81%E6%B0%B4%E7%BA%BF.html#%E6%8F%90%E9%AB%98%E6%B5%81%E6%B0%B4%E7%BA%BF%E6%95%88%E7%8E%87%E7%9A%84%E6%8A%80%E6%9C%AF">《计算机体系结构基础》胡伟武等</a></p>
-<p>[2] <a href="https://www.bilibili.com/video/BV1YP411u7me/?spm_id_from=333.337.search-card.all.click">【中国科学院大学】计算机体系结构-胡伟武（2022年秋）</a></p>
+<p>[1] <a href="https://mp.weixin.qq.com/s/zAh1yD5IfwuoYdrZ1tGf5Q">聊聊Netty那些事儿之从内核角度看IO模型</a></p>
 
             </div>
             
@@ -303,9 +496,9 @@
                     <span class="down-type-item">
                         <div class="type-text">
                             <a href='
-                                        /tags/#%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84
+                                        /tags/#linux-kernel
                                     '>
-                                <i class="fa fa-tag"></i> #计算机体系结构
+                                <i class="fa fa-tag"></i> #Linux Kernel
                             </a>
                         </div>
                     </span>
@@ -313,9 +506,9 @@
                     <span class="down-type-item">
                         <div class="type-text">
                             <a href='
-                                        /tags/#%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86
+                                        /tags/#i/o
                                     '>
-                                <i class="fa fa-tag"></i> #底层原理
+                                <i class="fa fa-tag"></i> #I/O
                             </a>
                         </div>
                     </span>
@@ -329,23 +522,13 @@
                     
     
         
-        <a href="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/" class="pre">
+        <a href="https://cnjslw.github.io/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B603-%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90%E5%92%8C%E4%BC%AA%E5%85%B1%E4%BA%AB/" class="pre pre-last" style="text-align: center;">
             <span class="pre-icon"><i class="fa fa-hand-o-left"></i></span>
             <div class="pre-title-root">
-                <span>【Linux Kernel 0.12】启动流程</span>
+                <span>【计算机组成原理与体系架构09】内存对齐与伪共享</span>
             </div>
         </a>
         
-
-        
-        <a href="https://cnjslw.github.io/posts/%E5%A4%9A%E6%A0%B8%E6%9E%B6%E6%9E%84%E7%AE%80%E4%BB%8B/" class="next">
-            <div class="next-title-root">
-                <span>【计算机组成原理与体系架构04】常见并行架构</span>
-            </div>
-            <span class="next-icon"><i class="fa fa-hand-o-right"></i></span>
-        </a>
-        
-
     
     
 
@@ -452,9 +635,9 @@
     </div>
     <div class="list">
         
-            <a href="https://cnjslw.github.io/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B603-%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90%E5%92%8C%E4%BC%AA%E5%85%B1%E4%BA%AB/">
+            <a href="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">
                 
-<a href="https://cnjslw.github.io/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B603-%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90%E5%92%8C%E4%BC%AA%E5%85%B1%E4%BA%AB/">
+<a href="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -463,18 +646,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【计算机组成原理与体系架构09】内存对齐与伪共享
+                【Linux Kernel 0.12】启动流程
             </div>
-            <div class="other-summary">内存对齐与伪共享</div>
-            <div class="other-date">2023-5-21</div>
+            <div class="other-summary">Linux0.12的启动流程</div>
+            <div class="other-date">2023-2-12</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B802-%E5%86%85%E5%AD%98%E5%B1%8F%E9%9A%9C/">
+            <a href="https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/">
                 
-<a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B802-%E5%86%85%E5%AD%98%E5%B1%8F%E9%9A%9C/">
+<a href="https://cnjslw.github.io/posts/qemu&#43;vscode&#43;kernel-debug/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -483,18 +666,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【计算机组成原理与体系架构08】内存屏障
+                【Linux Kernel】Linux debug 环境搭建：qemu&#43;vscode内核源码调试配置教程
             </div>
-            <div class="other-summary">内存屏障</div>
-            <div class="other-date">2023-5-7</div>
+            <div class="other-summary">Linux debug 环境搭建</div>
+            <div class="other-date">2023-2-1</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B801-%E5%A4%9A%E6%A0%B8%E8%AE%BF%E5%AD%98/">
+            <a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-rcu/">
                 
-<a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E5%A4%9A%E6%A0%B801-%E5%A4%9A%E6%A0%B8%E8%AE%BF%E5%AD%98/">
+<a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-rcu/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -503,18 +686,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【计算机组成原理与体系架构07】多核访存架构
+                【同步机制】RCU
             </div>
-            <div class="other-summary">多核访存架构</div>
-            <div class="other-date">2023-4-20</div>
+            <div class="other-summary">RCU</div>
+            <div class="other-date">2022-8-15</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B602-%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/">
+            <a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-mutex/">
                 
-<a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B602-%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7/">
+<a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-mutex/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -523,18 +706,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【计算机组成原理与体系架构06】缓存一致性
+                【同步机制】mutex
             </div>
-            <div class="other-summary">缓存一致性</div>
-            <div class="other-date">2023-4-15</div>
+            <div class="other-summary">mutex</div>
+            <div class="other-date">2022-4-5</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B601-cache/">
+            <a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-rwlock%E5%92%8Cseqlock/">
                 
-<a href="https://cnjslw.github.io/posts/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B601-cache/">
+<a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-rwlock%E5%92%8Cseqlock/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -543,18 +726,18 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【计算机组成原理与体系架构05】Cache原理与设计
+                【同步机制】rwlock和seqlock
             </div>
-            <div class="other-summary">Cache</div>
-            <div class="other-date">2023-3-30</div>
+            <div class="other-summary">rwlock和seqlock</div>
+            <div class="other-date">2022-3-22</div>
         </div>
     </div>
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E5%A4%9A%E6%A0%B8%E6%9E%B6%E6%9E%84%E7%AE%80%E4%BB%8B/">
+            <a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-spinlock/">
                 
-<a href="https://cnjslw.github.io/posts/%E5%A4%9A%E6%A0%B8%E6%9E%B6%E6%9E%84%E7%AE%80%E4%BB%8B/">
+<a href="https://cnjslw.github.io/posts/%E5%90%8C%E6%AD%A5-spinlock/">
     <div class="list-item">
         <div class="icon-other-root">
             
@@ -563,10 +746,10 @@
         </div>
         <div class="list-right">
             <div class="other-title">
-                【计算机组成原理与体系架构04】常见并行架构
+                【同步机制】SpinLock
             </div>
-            <div class="other-summary">常见并行架构</div>
-            <div class="other-date">2023-3-21</div>
+            <div class="other-summary">SpinLock</div>
+            <div class="other-date">2022-3-19</div>
         </div>
     </div>
 </a>

@@ -3,23 +3,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>AWei’s Kernel Tour | 【计算机组成原理与体系架构03】流水线升级</title>
+    <title>AWei’s Kernel Tour | 网络系统</title>
     <meta name="description"
-        content="流水线升级 ">
-    <link rel="canonical" href="https://cnjslw.github.io/posts/%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%8D%87%E7%BA%A7/" />
+        content=" ">
+    <link rel="canonical" href="https://cnjslw.github.io/series/%E7%BD%91%E7%BB%9C%E7%B3%BB%E7%BB%9F/" />
     <link rel="icon" type="image/x-icon" href="/images/linux_pic.ico">
-    <meta property="og:title" content="【计算机组成原理与体系架构03】流水线升级" />
-<meta property="og:description" content="流水线升级" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://cnjslw.github.io/posts/%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%8D%87%E7%BA%A7/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2023-03-09T00:00:00+00:00" />
-<meta property="article:modified_time" content="2023-03-09T00:00:00+00:00" />
-
+    <meta property="og:title" content="网络系统" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://cnjslw.github.io/series/%E7%BD%91%E7%BB%9C%E7%B3%BB%E7%BB%9F/" />
 
 
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="【计算机组成原理与体系架构03】流水线升级"/>
-<meta name="twitter:description" content="流水线升级"/>
+<meta name="twitter:title" content="网络系统"/>
+<meta name="twitter:description" content=""/>
 
     
     
@@ -197,41 +194,29 @@
 
 
         <div id="content">
+    
 
 
 
 
+
+
+    
+        
+    
 
 
 
 
     <div class="hero">
         
-            <div class="hero-img">
-                <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500" alt="">
-            </div>
-        
+            
+                <div class="hero-img">
+                    <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500" alt="">
+                </div>
+            
         <div class="hero-content">
-            <div class="hero-title">【计算机组成原理与体系架构03】流水线升级</div>
-            <div class="hero-subtitle"></div>
-            <div class="hero-date">
-                    <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2023-3-9 &nbsp;</span>
-                    <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2023-3-9 &nbsp;</span>
-                    <span class="no-wrap"><i class="fa fa-folder"></i>
-                        收录于:
-                        
-                            <a href='
-                                /categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BD%93%E7%B3%BB%E6%9E%B6%E6%9E%84
-                            '>
-                                计算机组成原理与体系架构
-                            </a>
-                    </span>    
-            </div>
-            <div class="timelong">
-                <span class="no-wrap"><i class="fa fa-pencil"></i> 文章字数: 29 &nbsp;</span>
-                <span class="no-wrap"><i class="fa fa-clock-o"></i> 阅读时间: 1 分钟 &nbsp;</span>
-                <span class="no-wrap"><i class="fa fa-eye"></i> 阅读量: <span id="busuanzi_value_page_pv"></span></span>
-            </div>
+            <h1 class="hero-title">系列: 网络系统</h1>
         </div>
     </div>
 
@@ -250,7 +235,7 @@
     
 
 
-<div class="content-root">
+<div class="terms-body">
     <div class="long">
         <button class="tosides-1 text-wbd">
             <i class="fa fa-arrow-right"></i>
@@ -263,108 +248,88 @@
         </button>
     </div>
     
-        <div class="content">
-            <div class="content-self">
-                <h1 id="如何衡量处理器性能">如何衡量处理器性能</h1>
-<p>应用的执行时间等于指令数乘以CPI（Cycles Per Instruction，每指令执行周期数）再乘以时钟周期，当算法、程序、指令系统、编译器都确定之后，一个应用的指令数就确定下来了，时钟周期与结构设计、电路设计、生产工艺以及工作环境都有关系，本文注重讨论如何降低CPI，即如何通过结构设计提高流水线效率</p>
-<pre tabindex="0"><code>流水线CPI=理想CPI+结构相关阻塞周期数+RAW阻塞周期数+WAR阻塞周期数+WAW阻塞周期数+控制相关阻塞周期数
-</code></pre><h1 id="多发射">多发射</h1>
-<p>最直观的方法就是让处理器中==每级流水线都可以同时处理更多的指令，这被称为多发射数据通路技术==。例如双发射流水线意味着每一拍用PC从指令存储器中取两条指令，在译码级同时进行两条指令的译码、读源寄存器操作，还能同时执行两条指令的运算操作和访存操作，并同时写回两条指令的结果。那么双发射流水线的理想CPI就从单发射流水线的1降至0.5。
-要在处理器中支持多发射，==首先就要将处理器中的各种资源翻倍==，包括采用支持双端口的存储器。其次还要增加额外的阻塞判断逻辑，当同一个时钟周期执行的两条指令存在指令相关时，也需要进行阻塞。包括数据相关、控制相关和结构相关在内的阻塞机制都需要改动。</p>
-<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309272322912.png" alt="Pasted image 20230927223503|800|800"></p>
-<p>多发射数据通路技术虽然从理论上而言可以大幅度降低处理器的CPI，但是由于各类相关所引起的阻塞影响，其实际执行效率是要大打折扣的。所以我们还要进一步从减少各类相关引起的阻塞这个方面入手来提高流水线的执行效率。</p>
-<h1 id="动态调度">动态调度</h1>
-<blockquote>
-<p>如果我们用道路交通来类比的话，多发射数据通路就类似于把马路从单车道改造为多车道，但是这个多车道的马路有个奇怪的景象——速度快的车（如跑车）不能超过前面速度慢的车（如马车），即使马车前面的车道是空闲的。直觉上我们肯定觉得这样做效率低，只要车道有空闲，就应该允许后面速度快的车超过前面速度慢的车。这就是动态调度的基本出发点</p>
-</blockquote>
-<p>动态调度器通过分析指令之间的依赖关系和资源的可用性，选择最合适的指令进行执行。它可以重新排序指令的执行顺序，以最大程度地减少指令之间的相关性和等待时间。这种指令重排序可以利用程序中的并行性，提高指令级并行和数据流并行的执行效率。</p>
-<p>通过动态调度，CPU可以更好地隐藏指令延迟和资源竞争的影响，提高指令的吞吐量和整体性能。动态调度器还可以对指令进行一些优化，比如重命名寄存器、执行细分等，以进一步提高执行效率。</p>
-<h1 id="转移预测">转移预测</h1>
-<p>现代处理器普遍采用==硬件转移预测机制==来解决转移指令引起的控制相关阻塞，==其基本思路是在转移指令的取指或译码阶段预测出转移指令的方向和目标地址，并从预测的目标地址继续取指令执行，这样在猜对的情况下就不用阻塞流水线==。</p>
-<p>既然是猜测，就有错误的可能。硬件转移预测的实现分为两个步骤：第一步是预测，即在取指或译码阶段预测转移指令是否跳转以及转移的目标地址，并根据预测结果进行后续指令的取指；第二步是确认，即在转移指令执行完毕后，比较最终确定的转移条件和转移目标与之前预测的结果是否相同，如果不同则需要取消预测后的指令执行，并从正确的目标重新取指执行。</p>
-<h1 id="高速缓存">高速缓存</h1>
-<p>Cache是微体系结构的概念，它没有程序上的意义，没有独立的编址空间，处理器访问Cache和访问存储器使用的是相同的地址，因而Cache对于编程功能正确性而言是透明的</p>
-<h2 id="cache设计需要考虑的问题">Cache设计需要考虑的问题</h2>
-<h3 id="cache索引方式">Cache索引方式</h3>
-<p>Cache的容量远小于内存，会涉及多个内存单元映射到同一个Cache单元的情况，具体怎么映射需要考虑。通常分为3种索引方式：直接相连、全相连和组相连。</p>
-<p><img src="https://raw.githubusercontent.com/cnjslw/imgcloud/master/202309272322913.png" alt="Pasted image 20230927230933|800"></p>
-<h3 id="cache与下一层存储的数据关系">Cache与下一层存储的数据关系</h3>
-<p>即写策略，分为写穿透和写回两种。存数指令需要修改下一层存储的值，如果将修改后的值暂时放在Cache中，当Cache替换回下一层存储时再写回，则称为写回Cache；如果每条存数指令都要立即更新下一层存储的值，则称为写穿透Cache。</p>
-<h3 id="cache的替换策略">Cache的替换策略</h3>
-<p>分为随机替换、LRU替换和FIFO替换。当发生Cache失效而需要取回想要的Cache行，此时如果Cache满了，则需要进行替换。进行Cache替换时，如果有多个Cache行可供替换，可以选择随机进行替换，也可以替换掉最先进入Cache的Cache行（FIFO替换），或者替换掉最近最少使用的Cache行（LRU替换）。</p>
-<hr>
-<p>[1] <a href="https://foxsen.github.io/archbase/%E6%8C%87%E4%BB%A4%E6%B5%81%E6%B0%B4%E7%BA%BF.html#%E6%8F%90%E9%AB%98%E6%B5%81%E6%B0%B4%E7%BA%BF%E6%95%88%E7%8E%87%E7%9A%84%E6%8A%80%E6%9C%AF">《计算机体系结构基础》胡伟武等</a></p>
-<p>[2] <a href="https://www.bilibili.com/video/BV1YP411u7me/?spm_id_from=333.337.search-card.all.click">【中国科学院大学】计算机体系结构-胡伟武（2022年秋）</a></p>
+        <div class="terms-row">
+            
+            <div class="terms-root">
+                
+                
 
-            </div>
-            
-                <div class="tags">
-                    
-                    <span class="down-type-item">
-                        <div class="type-text">
-                            <a href='
-                                        /tags/#%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84
+
+<div class="card-large">
+    <div class="card-large-img">
+
+        
+        <img class="lazyload" src="/images/thumbnail.gif" data-src="https://picsum.photos/2500/500"
+            alt='图片加载失败'>
+        
+    </div>
+    <div class="card-large-content">
+        <div class="up-title"><a href="https://cnjslw.github.io/posts/%E7%BD%91%E7%BB%9C-io%E6%A8%A1%E5%9E%8B/">【网络系统】I/O模型</a></div>
+        <div class="up-date">
+            <span class="no-wrap"><i class="fa fa-calendar"></i> 发布于: 2023-8-18 &nbsp;</span>
+            <span class="no-wrap"><i class="fa fa-calendar-check-o"></i> 更新于: 2023-8-18 &nbsp;</span>
+            <span class="no-wrap"><i class="fa fa-folder"></i>
+                
+                收录于:
+                
+                <a href='
+                                        /categories/linux-kernel
                                     '>
-                                <i class="fa fa-tag"></i> #计算机体系结构
-                            </a>
-                        </div>
-                    </span>
-                    
-                    <span class="down-type-item">
-                        <div class="type-text">
-                            <a href='
-                                        /tags/#%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86
-                                    '>
-                                <i class="fa fa-tag"></i> #底层原理
-                            </a>
-                        </div>
-                    </span>
-                    
-                </div>
-            
+                    Linux Kernel
+                </a>
+                
+            </span>
         </div>
-        
-            
-                <div class="pre-next">
-                    
-    
-        
-        <a href="https://cnjslw.github.io/posts/01-linux0.12%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/" class="pre">
-            <span class="pre-icon"><i class="fa fa-hand-o-left"></i></span>
-            <div class="pre-title-root">
-                <span>【Linux Kernel 0.12】启动流程</span>
-            </div>
+        <div class="down-summary">I/O模型</div>
+    </div>
+    <div class="card-readmore">
+        <a href="https://cnjslw.github.io/posts/%E7%BD%91%E7%BB%9C-io%E6%A8%A1%E5%9E%8B/">
+            <span><i class="fa fa-arrow-right"></i></span>
         </a>
-        
+    </div>
+</div>
 
-        
-        <a href="https://cnjslw.github.io/posts/%E5%A4%9A%E6%A0%B8%E6%9E%B6%E6%9E%84%E7%AE%80%E4%BB%8B/" class="next">
-            <div class="next-title-root">
-                <span>【计算机组成原理与体系架构04】常见并行架构</span>
-            </div>
-            <span class="next-icon"><i class="fa fa-hand-o-right"></i></span>
-        </a>
-        
 
+
+
+
+
+<div class="down-type">
     
+    <span class="down-type-item">
+        <div class="shuxian-root">
+            <div class="shuxian"></div>
+        </div>
+        <div class="type-text">
+            <a href='
+                            /tags/#linux-kernel
+                        '>
+                <i class="fa fa-tag"></i> #Linux Kernel
+            </a>
+        </div>
+    </span>
     
-
-                </div>
-            
-        
+    <span class="down-type-item">
+        <div class="shuxian-root">
+            <div class="shuxian"></div>
+        </div>
+        <div class="type-text">
+            <a href='
+                            /tags/#i/o
+                        '>
+                <i class="fa fa-tag"></i> #I/O
+            </a>
+        </div>
+    </span>
     
 </div>
 
-    
-        <div class="content-last">
-            
-                <button class="aixin content-last-item efct-button">
-                    <i class="fa fa-heart"></i>
-                </button>
-            
+<div class="dang"></div>
+            </div>
             
         </div>
     
+</div>
 
 
             </div>
@@ -441,16 +406,33 @@
 
 
 
-    
-    
-
 
 <div class="other">
     <div class="other-up">
-        <div class="other-qita text-wbd">相关文章</div>
+        <div class="other-qita text-wbd">最新文章</div>
         <div class="xian"></div>
     </div>
     <div class="list">
+        
+            <a href="https://cnjslw.github.io/posts/%E7%BD%91%E7%BB%9C-io%E6%A8%A1%E5%9E%8B/">
+                
+<a href="https://cnjslw.github.io/posts/%E7%BD%91%E7%BB%9C-io%E6%A8%A1%E5%9E%8B/">
+    <div class="list-item">
+        <div class="icon-other-root">
+            
+                <div class="icon-other" style="background-image: url( https://picsum.photos/2500/500 );"></div>
+            
+        </div>
+        <div class="list-right">
+            <div class="other-title">
+                【网络系统】I/O模型
+            </div>
+            <div class="other-summary">I/O模型</div>
+            <div class="other-date">2023-8-18</div>
+        </div>
+    </div>
+</a>
+            </a>
         
             <a href="https://cnjslw.github.io/posts/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84-%E7%A1%AC%E4%BB%B603-%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90%E5%92%8C%E4%BC%AA%E5%85%B1%E4%BA%AB/">
                 
@@ -552,26 +534,6 @@
 </a>
             </a>
         
-            <a href="https://cnjslw.github.io/posts/%E5%A4%9A%E6%A0%B8%E6%9E%B6%E6%9E%84%E7%AE%80%E4%BB%8B/">
-                
-<a href="https://cnjslw.github.io/posts/%E5%A4%9A%E6%A0%B8%E6%9E%B6%E6%9E%84%E7%AE%80%E4%BB%8B/">
-    <div class="list-item">
-        <div class="icon-other-root">
-            
-                <div class="icon-other" style="background-image: url( https://picsum.photos/2500/500 );"></div>
-            
-        </div>
-        <div class="list-right">
-            <div class="other-title">
-                【计算机组成原理与体系架构04】常见并行架构
-            </div>
-            <div class="other-summary">常见并行架构</div>
-            <div class="other-date">2023-3-21</div>
-        </div>
-    </div>
-</a>
-            </a>
-        
     </div>
 </div>
         </div>
@@ -583,46 +545,6 @@
 
             </div>
         </div>
-    </div>
-</div>
-
-    
-
-<div class="sponsor">
-    <div class="sponsor-self">
-        <div class="sponsor-title">赞赏</div>
-        <div class="sponsor-btn">
-            
-                
-                    
-                        <div class="sponsor-btn-1 border-r">Wechat</div>
-                    
-                
-                
-            
-                
-                    
-                        <div class="sponsor-btn-2 border-l">Alipay</div>
-                    
-                
-                
-            
-        </div>
-        
-        <div class="sponsor-img">
-            
-                
-                    <img class="sponsor-img-1" src="/images/wechat.png" alt="">
-                
-                
-            
-                
-                    <img class="sponsor-img-2" src="/images/alipay.png" alt="" style="display: none;">
-                
-                
-            
-        </div>
-        <div class="cancel efct-button">取消</div>
     </div>
 </div>
 
